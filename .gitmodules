@@ -1,0 +1,3 @@
+[submodule "assets/pmdcollab"]
+	path = assets/pmdcollab
+	url = https://github.com/PMDCollab/SpriteCollab
