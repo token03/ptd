@@ -4,7 +4,7 @@ project(ptd LANGUAGES C CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 add_library(raylib_imgui_compiler_flags INTERFACE)
-target_compile_features(raylib_imgui_compiler_flags INTERFACE cxx_std_17)
+target_compile_features(raylib_imgui_compiler_flags INTERFACE cxx_std_23)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
@@ -33,6 +33,8 @@ target_link_libraries(
     PUBLIC imgui
            raylib
            rlimgui
+           pugixml
+           glaze
            spdlog::spdlog_header_only
            raylib_imgui_compiler_flags)
 target_compile_definitions(ptd PRIVATE SPDLOG_FMT_EXTERNAL)

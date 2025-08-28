@@ -29,6 +29,13 @@ function(raylib_imgui_setup_dependencies)
     GIT_TAG        v1.15
   )
 
+  message(STATUS "Adding glaze v5.6.1")
+  CPMAddPackage(
+    NAME glaze
+    GIT_REPOSITORY https://github.com/stephenberry/glaze
+    GIT_TAG        v5.6.1
+  )
+
   message(STATUS "Adding rlImGui")
   CPMAddPackage(
     NAME rlImGui
@@ -42,6 +49,9 @@ function(raylib_imgui_setup_dependencies)
     ${ImGui_SOURCE_DIR}/imgui_widgets.cpp
     ${ImGui_SOURCE_DIR}/imgui_tables.cpp
   )
+
+  add_library(glaze INTERFACE)
+  target_include_directories(glaze INTERFACE ${glaze_SOURCE_DIR}/include)
 
   target_include_directories(imgui PUBLIC ${ImGui_SOURCE_DIR})
 
