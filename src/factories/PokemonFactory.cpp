@@ -1,6 +1,8 @@
 #include "PokemonFactory.h"
 #include "components/AnimationComponent.h"
+#include "components/SpeciesComponent.h"
 #include "components/SpriteComponent.h"
+#include "components/StatComponent.h"
 #include "components/TransformComponent.h"
 #include "spdlog/spdlog.h"
 #include "utils/PMDLoader.h"
@@ -41,6 +43,21 @@ PokemonFactory::CreatePokemonObject(const std::string &formId,
   gameObject->AddComponent<SpriteComponent>(texture);
   gameObject->AddComponent<AnimationComponent>(m_loader, formId);
 
+  if (formId == "0199") {
+    BaseStats slowkingBaseStats = {95, 75, 80, 100, 110, 30};
+    gameObject->AddComponent<SpeciesComponent>(
+        "0199", "Slowking",
+        std::vector<PokemonType>{PokemonType::Water, PokemonType::Psychic},
+        slowkingBaseStats);
+  } else {
+    BaseStats missingnoStats = {33, 136, 0, 6, 6, 29};
+    gameObject->AddComponent<SpeciesComponent>(
+        "0000", "MissingNo.", std::vector<PokemonType>{PokemonType::Normal},
+        missingnoStats);
+  }
+
+  int initialLevel = 50;
+  gameObject->AddComponent<StatComponent>(initialLevel);
   gameObject->GetComponent<AnimationComponent>().Play(initialAnimation);
 
   return gameObject;

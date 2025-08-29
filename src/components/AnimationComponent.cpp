@@ -1,13 +1,15 @@
 #include "components/AnimationComponent.h"
+#include "core/GameObject.h"
 #include "spdlog/spdlog.h"
 #include "utils/PMDLoader.h"
+#include <memory>
 
 AnimationComponent::AnimationComponent(std::shared_ptr<PMDLoader> loader,
                                        std::string formId)
     : m_loader(std::move(loader)), m_formId(std::move(formId)) {}
 
 void AnimationComponent::Init() {
-  if (auto ownerPtr = owner.lock()) {
+  if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
     if (!ownerPtr->HasComponent<SpriteComponent>()) {
       throw std::runtime_error("AnimationComponent requires a SpriteComponent "
                                "on the same GameObject.");
