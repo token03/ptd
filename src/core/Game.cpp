@@ -1,0 +1,73 @@
+#include "core/Game.h"
+#include "raylib.h"
+#include "rlImGui.h"
+
+#include "components/AnimationComponent.h"
+
+#include <filesystem>
+#include <iostream>
+
+Game::Game() {
+  std::filesystem::path projectRoot = ".";
+  m_loader = std::make_unique<PMDLoader>(projectRoot / "assets");
+}
+
+Game::~Game() {}
+
+void Game::Load() {
+  m_loader->loadPokemon("0199");
+
+  auto slowkingObject = m_loader->CreatePokemonObject(
+      "0199", "Attack", {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f},
+      {2.0f, 2.0f});
+
+  if (slowkingObject) {
+    slowkingObject->GetComponent<AnimationComponent>().SetDirection(
+        Direction::East);
+    m_gameObjects.push_back(slowkingObject);
+  } else {
+    std::cerr << "Failed to create Slowking GameObject!" << std::endl;
+  }
+}
+
+void Game::Update(float deltaTime) {
+  for (auto &go : m_gameObjects) {
+    go->Update(deltaTime);
+  }
+}
+
+void Game::Draw() {
+  ClearBackground(RAYWHITE);
+  DrawText("ptd", 20, 20, 20, DARKGRAY);
+
+  for (auto &go : m_gameObjects) {
+    go->Draw();
+  }
+}
+
+int Game::Run() {
+  InitWindow(screenWidth, screenHeight, "ptd");
+  rlImGuiSetup(true);
+
+  SetTargetFPS(60);
+
+  Load();
+
+  while (!WindowShouldClose()) {
+    float deltaTime = GetFrameTime();
+    Update(deltaTime);
+
+    BeginDrawing();
+    rlImGuiBegin();
+
+    Draw();
+
+    rlImGuiEnd();
+    EndDrawing();
+  }
+
+  rlImGuiShutdown();
+  CloseWindow();
+
+  return 0;
+}
