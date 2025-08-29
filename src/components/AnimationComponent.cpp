@@ -2,8 +2,9 @@
 #include "utils/PMDLoader.h"
 #include <iostream>
 
-AnimationComponent::AnimationComponent(PMDLoader *loader, std::string formId)
-    : m_loader(loader), m_formId(std::move(formId)) {}
+AnimationComponent::AnimationComponent(std::shared_ptr<PMDLoader> loader,
+                                       std::string formId)
+    : m_loader(std::move(loader)), m_formId(std::move(formId)) {}
 
 void AnimationComponent::Init() {
   if (auto ownerPtr = owner.lock()) {
@@ -14,12 +15,17 @@ void AnimationComponent::Init() {
     m_sprite = ownerPtr->GetComponentShared<SpriteComponent>();
   }
 
-  const auto *form = m_loader->getForm(m_formId);
-  if (!form || !form->animData) {
-    throw std::runtime_error(
-        "AnimationComponent could not find form data for " + m_formId);
+  if (auto loader = m_loader.lock()) {
+    const auto *form = loader->getForm(m_formId);
+    if (!form || !form->animData) {
+      throw std::runtime_error(
+          "AnimationComponent could not find form data for " + m_formId);
+    }
+    m_animData = &form->animData.value();
+  } else {
+    throw std::runtime_error("PMDLoader is not available for "
+                             "AnimationComponent initialization.");
   }
-  m_animData = &form->animData.value();
 }
 
 void AnimationComponent::Update(float deltaTime) {
@@ -58,20 +64,26 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
     return;
   }
 
-  const PokemonForm *form = m_loader->getForm(m_formId);
-  if (form) {
-    std::string newTextureBase =
-        m_loader->findAnimationBaseName(*form, animationName);
-    if (newTextureBase != m_currentTextureBase) {
-      Texture2D newTexture =
-          m_loader->getAnimationTexture(m_formId, animationName);
-      if (newTexture.id > 0) {
-        if (auto sprite = m_sprite.lock()) {
-          sprite->texture = newTexture;
-          m_currentTextureBase = newTextureBase;
+  if (auto loader = m_loader.lock()) {
+    const PokemonForm *form = loader->getForm(m_formId);
+    if (form) {
+      std::string newTextureBase =
+          loader->findAnimationBaseName(*form, animationName);
+      if (newTextureBase != m_currentTextureBase) {
+        Texture2D newTexture =
+            loader->getAnimationTexture(m_formId, animationName);
+        if (newTexture.id > 0) {
+          if (auto sprite = m_sprite.lock()) {
+            sprite->texture = newTexture;
+            m_currentTextureBase = newTextureBase;
+          }
         }
       }
     }
+  } else {
+    std::cerr << "Cannot play animation, PMDLoader is not available."
+              << std::endl;
+    return;
   }
 
   m_currentAnimation = animationName;

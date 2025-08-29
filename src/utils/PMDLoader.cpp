@@ -1,7 +1,4 @@
 #include "utils/PMDLoader.h"
-#include "components/AnimationComponent.h"
-#include "components/SpriteComponent.h"
-#include "components/TransformComponent.h"
 #include <algorithm>
 #include <iostream>
 
@@ -190,38 +187,6 @@ PMDLoader::parseAnimationData(const std::filesystem::path &xmlPath) {
 const PokemonForm *PMDLoader::getForm(const std::string &fullId) const {
   auto it = m_loadedForms.find(fullId);
   return (it != m_loadedForms.end()) ? &it->second : nullptr;
-}
-
-std::shared_ptr<GameObject>
-PMDLoader::CreatePokemonObject(const std::string &formId,
-                               const std::string &initialAnimation,
-                               Vector2 position, Vector2 scale) {
-  const PokemonForm *form = getForm(formId);
-  if (!form || !form->animData) {
-    std::cerr << "Could not create GameObject for form ID: " << formId
-              << ". Form data not loaded or has no animations." << std::endl;
-    return nullptr;
-  }
-
-  Texture2D texture = getAnimationTexture(formId, initialAnimation);
-  if (texture.id <= 0) {
-    std::cerr << "Could not load initial texture for animation: "
-              << initialAnimation << std::endl;
-    return nullptr;
-  }
-
-  auto gameObject = std::make_shared<GameObject>();
-
-  auto &transform = gameObject->AddComponent<TransformComponent>();
-  transform.position = position;
-  transform.scale = scale;
-
-  gameObject->AddComponent<SpriteComponent>(texture);
-  gameObject->AddComponent<AnimationComponent>(this, formId);
-
-  gameObject->GetComponent<AnimationComponent>().Play(initialAnimation);
-
-  return gameObject;
 }
 
 std::string PMDLoader::findAnimationBaseName(const PokemonForm &form,

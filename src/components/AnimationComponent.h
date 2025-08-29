@@ -21,7 +21,7 @@ class PMDLoader;
 
 class AnimationComponent : public Component {
 public:
-  AnimationComponent(PMDLoader *loader, std::string formId);
+  AnimationComponent(std::shared_ptr<PMDLoader> loader, std::string formId);
   void Init() override;
   void Update(float deltaTime) override;
   void Play(const std::string &animationName, bool reset = false);
@@ -32,7 +32,7 @@ public:
 private:
   void UpdateSpriteRect();
 
-  PMDLoader *m_loader;
+  std::weak_ptr<PMDLoader> m_loader;
   std::string m_formId;
   const AnimationData *m_animData = nullptr;
   std::weak_ptr<SpriteComponent> m_sprite;

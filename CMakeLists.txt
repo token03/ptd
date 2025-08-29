@@ -24,6 +24,7 @@ add_executable(ptd
   src/core/Game.cpp
   src/utils/PMDLoader.cpp
   src/components/AnimationComponent.cpp
+  src/factories/PokemonFactory.cpp
 )
 set_target_properties(ptd PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 target_link_libraries(

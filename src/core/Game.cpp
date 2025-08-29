@@ -1,15 +1,18 @@
 #include "core/Game.h"
+#include "components/AnimationComponent.h"
 #include "raylib.h"
 #include "rlImGui.h"
 
-#include "components/AnimationComponent.h"
+#include "factories/PokemonFactory.h"
+#include "utils/PMDLoader.h"
 
 #include <filesystem>
 #include <iostream>
 
 Game::Game() {
   std::filesystem::path projectRoot = ".";
-  m_loader = std::make_unique<PMDLoader>(projectRoot / "assets");
+  m_loader = std::make_shared<PMDLoader>(projectRoot / "assets");
+  m_pokemonFactory = std::make_shared<PokemonFactory>(m_loader);
 }
 
 Game::~Game() {}
@@ -17,7 +20,7 @@ Game::~Game() {}
 void Game::Load() {
   m_loader->loadPokemon("0199");
 
-  auto slowkingObject = m_loader->CreatePokemonObject(
+  auto slowkingObject = m_pokemonFactory->CreatePokemonObject( // <-- Changed
       "0199", "Attack", {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f},
       {2.0f, 2.0f});
 

@@ -1,12 +1,10 @@
 #pragma once
 
-#include "core/GameObject.h"
 #include "pugixml.hpp"
 #include "raylib.h"
 #include "utils/PMDData.h"
 #include <filesystem>
 #include <map>
-#include <memory>
 #include <string>
 
 class PMDLoader {
@@ -19,11 +17,6 @@ public:
   const std::map<std::string, PokemonForm> &getAllForms() const {
     return m_loadedForms;
   }
-
-  std::shared_ptr<GameObject>
-  CreatePokemonObject(const std::string &formId,
-                      const std::string &initialAnimation,
-                      Vector2 position = {0, 0}, Vector2 scale = {1, 1});
 
   Texture2D getAnimationTexture(const std::string &formId,
                                 const std::string &animationName);
