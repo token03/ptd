@@ -1,6 +1,6 @@
 #include "components/AnimationComponent.h"
+#include "spdlog/spdlog.h"
 #include "utils/PMDLoader.h"
-#include <iostream>
 
 AnimationComponent::AnimationComponent(std::shared_ptr<PMDLoader> loader,
                                        std::string formId)
@@ -60,12 +60,12 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
 
   auto it = m_animData->animations.find(animationName);
   if (it == m_animData->animations.end()) {
-    std::cerr << "Animation not found: " << animationName << std::endl;
+    spdlog::error("Animation not found: {}", animationName);
     return;
   }
 
   if (auto loader = m_loader.lock()) {
-    const PokemonForm *form = loader->getForm(m_formId);
+    const PMDData *form = loader->getForm(m_formId);
     if (form) {
       std::string newTextureBase =
           loader->findAnimationBaseName(*form, animationName);
@@ -81,8 +81,7 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
       }
     }
   } else {
-    std::cerr << "Cannot play animation, PMDLoader is not available."
-              << std::endl;
+    spdlog::error("Cannot play animation, PMDLoader is not available.");
     return;
   }
 

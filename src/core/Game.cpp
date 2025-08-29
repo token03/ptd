@@ -7,7 +7,6 @@
 #include "utils/PMDLoader.h"
 
 #include <filesystem>
-#include <iostream>
 
 Game::Game() {
   std::filesystem::path projectRoot = ".";
@@ -29,7 +28,7 @@ void Game::Load() {
         Direction::East);
     m_gameObjects.push_back(slowkingObject);
   } else {
-    std::cerr << "Failed to create Slowking GameObject!" << std::endl;
+    spdlog::error("Failed to create Slowking GameObject!");
   }
 }
 

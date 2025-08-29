@@ -19,7 +19,7 @@ public:
   }
 
   void Init() override {
-    if (auto ownerPtr = owner.lock()) {
+    if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
       if (!ownerPtr->HasComponent<TransformComponent>()) {
         ownerPtr->AddComponent<TransformComponent>();
       }

@@ -2,8 +2,8 @@
 #include "components/AnimationComponent.h"
 #include "components/SpriteComponent.h"
 #include "components/TransformComponent.h"
+#include "spdlog/spdlog.h"
 #include "utils/PMDLoader.h"
-#include <iostream>
 
 PokemonFactory::PokemonFactory(std::shared_ptr<PMDLoader> loader)
     : m_loader(std::move(loader)) {}
@@ -13,22 +13,22 @@ PokemonFactory::CreatePokemonObject(const std::string &formId,
                                     const std::string &initialAnimation,
                                     Vector2 position, Vector2 scale) {
   if (!m_loader) {
-    std::cerr << "PokemonFactory error: PMDLoader is not available."
-              << std::endl;
+    spdlog::error("PokemonFactory error: PMDLoader is not available.");
     return nullptr;
   }
 
-  const PokemonForm *form = m_loader->getForm(formId);
+  const PMDData *form = m_loader->getForm(formId);
   if (!form || !form->animData) {
-    std::cerr << "Could not create GameObject for form ID: " << formId
-              << ". Form data not loaded or has no animations." << std::endl;
+    spdlog::error("Could not create GameObject for form ID: {}. Form data not "
+                  "loaded or has no animations.",
+                  formId);
     return nullptr;
   }
 
   Texture2D texture = m_loader->getAnimationTexture(formId, initialAnimation);
   if (texture.id <= 0) {
-    std::cerr << "Could not load initial texture for animation: "
-              << initialAnimation << std::endl;
+    spdlog::error("Could not load initial texture for animation: {}",
+                  initialAnimation);
     return nullptr;
   }
 

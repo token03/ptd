@@ -13,14 +13,14 @@ public:
   ~PMDLoader();
 
   bool loadPokemon(const std::string &dexNumber);
-  const PokemonForm *getForm(const std::string &fullId) const;
-  const std::map<std::string, PokemonForm> &getAllForms() const {
+  const PMDData *getForm(const std::string &fullId) const;
+  const std::map<std::string, PMDData> &getAllForms() const {
     return m_loadedForms;
   }
 
   Texture2D getAnimationTexture(const std::string &formId,
                                 const std::string &animationName);
-  std::string findAnimationBaseName(const PokemonForm &form,
+  std::string findAnimationBaseName(const PMDData &form,
                                     const std::string &animationName);
 
 private:
@@ -37,7 +37,7 @@ private:
   std::filesystem::path m_assetRoot;
   std::filesystem::path m_pmdCollabPath;
   std::filesystem::path m_portraitPath;
-  std::map<std::string, PokemonForm> m_loadedForms;
+  std::map<std::string, PMDData> m_loadedForms;
 
   std::map<std::string, TrackerEntry> m_trackerData;
   bool m_trackerLoaded = false;

@@ -34,9 +34,8 @@ target_link_libraries(
             rlimgui
             pugixml
             glaze::glaze
-            spdlog::spdlog_header_only
+            spdlog
             raylib_imgui_compiler_flags)
-target_compile_definitions(ptd PRIVATE SPDLOG_FMT_EXTERNAL)
 target_compile_definitions(
     ptd PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 target_include_directories(ptd PUBLIC "${PROJECT_SOURCE_DIR}/src")

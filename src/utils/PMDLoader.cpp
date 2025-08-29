@@ -1,6 +1,6 @@
 #include "utils/PMDLoader.h"
 #include <algorithm>
-#include <iostream>
+#include <spdlog/spdlog.h>
 
 PMDLoader::PMDLoader(const std::filesystem::path &assetRoot)
     : m_assetRoot(assetRoot), m_pmdCollabPath(assetRoot / "pmdcollab"),
@@ -16,23 +16,22 @@ PMDLoader::~PMDLoader() {
 bool PMDLoader::loadPokemon(const std::string &dexNumber) {
   if (!m_trackerLoaded) {
     const auto trackerPath = m_pmdCollabPath / "tracker.json";
-    std::cout << "Loading tracker file: " << trackerPath << std::endl;
+    spdlog::debug("Loading tracker file: {}", trackerPath.string());
     std::string buffer;
     auto error = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
         m_trackerData, trackerPath.string(), buffer);
     if (error) {
-      std::cerr << "Failed to parse tracker.json: "
-                << glz::format_error(error, buffer) << std::endl;
+      spdlog::error("Failed to parse tracker.json: {}",
+                    glz::format_error(error, buffer));
       return false;
     }
     m_trackerLoaded = true;
-    std::cout << "Tracker.json loaded successfully." << std::endl;
+    spdlog::info("Tracker.json loaded successfully");
   }
 
   auto it = m_trackerData.find(dexNumber);
   if (it == m_trackerData.end()) {
-    std::cerr << "Could not find Pokémon with dex #" << dexNumber
-              << " in tracker.json" << std::endl;
+    spdlog::error("Pokémon #{} not found in tracker.json", dexNumber);
     return false;
   }
 
@@ -64,7 +63,7 @@ void PMDLoader::processTrackerEntry(const std::string &dex,
     currentFullId += "-" + path_str;
   }
 
-  PokemonForm newForm;
+  PMDData newForm;
   newForm.dex = dex;
   newForm.fullId = currentFullId;
   newForm.fullName = currentFullName;
@@ -110,8 +109,7 @@ void PMDLoader::processTrackerEntry(const std::string &dex,
 
   if (newForm.animData || !newForm.availablePortraits.empty()) {
     m_loadedForms[currentFullId] = newForm;
-    std::cout << "Successfully loaded form: " << newForm.fullName
-              << " (ID: " << newForm.fullId << ")" << std::endl;
+    spdlog::info("Loaded form: {} ({})", newForm.fullName, newForm.fullId);
   }
 
   for (const auto &[id, subEntry] : entry.subgroups) {
@@ -128,8 +126,8 @@ PMDLoader::parseAnimationData(const std::filesystem::path &xmlPath) {
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file(xmlPath.c_str());
   if (!result) {
-    std::cerr << "XML [" << xmlPath
-              << "] parsed with errors: " << result.description() << std::endl;
+    spdlog::warn("Failed to parse XML {}: {}", xmlPath.string(),
+                 result.description());
     return std::nullopt;
   }
 
@@ -184,12 +182,12 @@ PMDLoader::parseAnimationData(const std::filesystem::path &xmlPath) {
   return data;
 }
 
-const PokemonForm *PMDLoader::getForm(const std::string &fullId) const {
+const PMDData *PMDLoader::getForm(const std::string &fullId) const {
   auto it = m_loadedForms.find(fullId);
   return (it != m_loadedForms.end()) ? &it->second : nullptr;
 }
 
-std::string PMDLoader::findAnimationBaseName(const PokemonForm &form,
+std::string PMDLoader::findAnimationBaseName(const PMDData &form,
                                              const std::string &animationName) {
   std::string baseName;
   size_t longestMatch = 0;
@@ -205,18 +203,17 @@ std::string PMDLoader::findAnimationBaseName(const PokemonForm &form,
 
 Texture2D PMDLoader::getAnimationTexture(const std::string &formId,
                                          const std::string &animationName) {
-  const PokemonForm *form = getForm(formId);
+  const PMDData *form = getForm(formId);
   if (!form) {
-    std::cerr << "Form not found for ID: " << formId << std::endl;
+    spdlog::error("Form not found: {}", formId);
     return Texture2D{0};
   }
 
   std::string baseName = findAnimationBaseName(*form, animationName);
 
   if (baseName.empty()) {
-    std::cerr << "Could not determine texture file for animation '"
-              << animationName << "' in form '" << form->fullName << "'"
-              << std::endl;
+    spdlog::error("No texture file for animation '{}' in form '{}'",
+                  animationName, form->fullName);
     return Texture2D{0};
   }
 
@@ -230,17 +227,16 @@ Texture2D PMDLoader::getAnimationTexture(const std::string &formId,
   }
 
   if (!std::filesystem::exists(texturePath)) {
-    std::cerr << "Texture file not found: " << pathString << std::endl;
+    spdlog::error("Texture file not found: {}", pathString);
     return Texture2D{0};
   }
 
   Texture2D texture = LoadTexture(pathString.c_str());
   if (texture.id > 0) {
-    std::cout << "Loaded texture: " << pathString << std::endl;
+    spdlog::debug("Loaded texture: {}", pathString);
     m_textureCache[pathString] = texture;
   } else {
-    std::cerr << "Failed to load texture with raylib: " << pathString
-              << std::endl;
+    spdlog::error("Failed to load texture: {}", pathString);
   }
   return texture;
 }

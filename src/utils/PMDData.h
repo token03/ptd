@@ -54,7 +54,7 @@ template <> struct glz::meta<TrackerEntry> {
              &T::portrait_files, "subgroups", &T::subgroups);
 };
 
-class PokemonForm {
+class PMDData {
 public:
   std::string fullId;
   std::string fullName;

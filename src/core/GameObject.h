@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/Component.h"
+#include "spdlog/spdlog.h"
 #include <iostream>
 #include <map>
 #include <memory>
@@ -40,8 +41,8 @@ public:
   template <typename T> T &GetComponent() {
     auto it = m_components.find(typeid(T));
     if (it == m_components.end()) {
-      std::cerr << "Attempted to get non-existent component: "
-                << typeid(T).name() << std::endl;
+      spdlog::error("Attempted to get non-existent component: {}",
+                    typeid(T).name());
       throw std::runtime_error("Component not found");
     }
     return *std::static_pointer_cast<T>(it->second);
