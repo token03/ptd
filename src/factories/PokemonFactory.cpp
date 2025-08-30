@@ -1,33 +1,52 @@
 #include "PokemonFactory.h"
 #include "components/AnimationComponent.h"
+#include "components/PersonalityComponent.h"
 #include "components/SpeciesComponent.h"
 #include "components/SpriteComponent.h"
 #include "components/StatComponent.h"
 #include "components/TransformComponent.h"
 #include "loaders/PMDLoader.h"
+#include "loaders/PokemonDataLoader.h"
+#include "raylib.h"
 #include "spdlog/spdlog.h"
 
-PokemonFactory::PokemonFactory(std::shared_ptr<PMDLoader> loader)
-    : m_loader(std::move(loader)) {}
+PokemonFactory::PokemonFactory(std::shared_ptr<PMDLoader> loader,
+                               std::shared_ptr<PokemonDataLoader> dataLoader)
+    : m_loader(std::move(loader)), m_dataLoader(std::move(dataLoader)) {}
 
-std::shared_ptr<GameObject>
-PokemonFactory::CreatePokemonObject(const std::string &formId,
-                                    const std::string &initialAnimation,
-                                    Vector2 position, Vector2 scale) {
-  if (!m_loader) {
-    spdlog::error("PokemonFactory error: PMDLoader is not available.");
+std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
+    const std::string &speciesName, const PokemonInstanceConfig &config,
+    const std::string &initialAnimation, Vector2 position, Vector2 scale) {
+  if (!m_loader || !m_dataLoader) {
+    spdlog::error("PokemonFactory error: A loader is not available.");
     return nullptr;
   }
 
-  const PMDData *form = m_loader->getForm(formId);
+  auto dexNumOpt = m_dataLoader->getDexNumber(speciesName);
+  if (!dexNumOpt) {
+    spdlog::error("Could not find dex number for species '{}'.", speciesName);
+    return nullptr;
+  }
+  const std::string &dexNumber = *dexNumOpt;
+
+  auto speciesDataOpt = m_dataLoader->getSpeciesData(dexNumber);
+  if (!speciesDataOpt) {
+    spdlog::error("Could not find species data for dex number: {}", dexNumber);
+    return nullptr;
+  }
+  const SpeciesData &speciesData = *speciesDataOpt;
+
+  m_loader->loadPokemon(dexNumber);
+  const PMDData *form = m_loader->getForm(dexNumber);
   if (!form || !form->animData) {
-    spdlog::error("Could not create GameObject for form ID: {}. Form data not "
-                  "loaded or has no animations.",
-                  formId);
+    spdlog::error("Could not create GameObject for dex number: {}. PMD form "
+                  "data not loaded or has no animations.",
+                  dexNumber);
     return nullptr;
   }
 
-  Texture2D texture = m_loader->getAnimationTexture(formId, initialAnimation);
+  Texture2D texture =
+      m_loader->getAnimationTexture(dexNumber, initialAnimation);
   if (texture.id <= 0) {
     spdlog::error("Could not load initial texture for animation: {}",
                   initialAnimation);
@@ -36,29 +55,41 @@ PokemonFactory::CreatePokemonObject(const std::string &formId,
 
   auto gameObject = std::make_shared<GameObject>();
 
-  auto &transform = gameObject->AddComponent<TransformComponent>();
-  transform.position = position;
-  transform.scale = scale;
-
+  gameObject->AddComponent<TransformComponent>(position, scale);
   gameObject->AddComponent<SpriteComponent>(texture);
-  gameObject->AddComponent<AnimationComponent>(m_loader, formId);
-
-  if (formId == "0199") {
-    BaseStats slowkingBaseStats = {95, 75, 80, 100, 110, 30};
-    gameObject->AddComponent<SpeciesComponent>(
-        "0199", "Slowking",
-        std::vector<PokemonType>{PokemonType::Water, PokemonType::Psychic},
-        slowkingBaseStats);
-  } else {
-    BaseStats missingnoStats = {33, 136, 0, 6, 6, 29};
-    gameObject->AddComponent<SpeciesComponent>(
-        "0000", "MissingNo.", std::vector<PokemonType>{PokemonType::Normal},
-        missingnoStats);
-  }
-
-  int initialLevel = 50;
-  gameObject->AddComponent<StatComponent>(initialLevel);
+  gameObject->AddComponent<AnimationComponent>(m_loader, dexNumber);
+  gameObject->AddComponent<SpeciesComponent>(speciesData);
+  gameObject->AddComponent<PersonalityComponent>(config.nature, config.gender,
+                                                 config.isShiny);
+  gameObject->AddComponent<StatComponent>(config.level, config.ivs, config.evs);
   gameObject->GetComponent<AnimationComponent>().Play(initialAnimation);
 
   return gameObject;
+}
+
+std::shared_ptr<GameObject> PokemonFactory::CreateRandomPokemonObject(
+    const std::string &speciesName, int minLevel, int maxLevel,
+    const std::string &initialAnimation, Vector2 position, Vector2 scale) {
+
+  PokemonInstanceConfig config;
+  config.level = GetRandomValue(minLevel, maxLevel);
+  config.nature = static_cast<Nature>(GetRandomValue(0, 24));
+
+  config.ivs.hp = GetRandomValue(0, 31);
+  config.ivs.attack = GetRandomValue(0, 31);
+  config.ivs.defense = GetRandomValue(0, 31);
+  config.ivs.spAttack = GetRandomValue(0, 31);
+  config.ivs.spDefense = GetRandomValue(0, 31);
+  config.ivs.speed = GetRandomValue(0, 31);
+
+  config.evs = {0, 0, 0, 0, 0, 0};
+
+  // TODO: Determine gender based on species data (e.g., Nidoran, Tauros)
+  config.gender = static_cast<Gender>(GetRandomValue(0, 1));
+
+  // TODO: Remove this hardcoded shiny rate (1 in 4096)
+  config.isShiny = (GetRandomValue(0, 4095) == 0);
+
+  return CreatePokemonObject(speciesName, config, initialAnimation, position,
+                             scale);
 }

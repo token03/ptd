@@ -45,7 +45,6 @@ void PMDLoader::processTrackerEntry(const std::string &dex,
                                     const TrackerEntry &entry,
                                     const std::string &parentName,
                                     const std::filesystem::path &parentPath) {
-  // Construct name, ID, and path
   std::string currentFullName =
       parentName.empty() ? entry.name : parentName + " " + entry.name;
   std::filesystem::path currentRelativePath = parentPath / subgroupId;
@@ -193,7 +192,7 @@ std::string PMDLoader::findAnimationBaseName(const PMDData &form,
   size_t longestMatch = 0;
   for (const auto &potentialBase : form.animFileBases) {
     if (animationName.rfind(potentialBase, 0) == 0 &&
-        potentialBase.length() > longestMatch) { // starts_with
+        potentialBase.length() > longestMatch) {
       baseName = potentialBase;
       longestMatch = potentialBase.length();
     }

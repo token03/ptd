@@ -1,30 +1,29 @@
 #pragma once
 
 #include "core/Component.h"
+#include "data/PokemonData.h"
 
 class SpeciesComponent;
+class PersonalityComponent;
 
 class StatComponent : public Component {
 public:
-  explicit StatComponent(int initialLevel);
-
+  StatComponent(int initialLevel, IVs initialIVs, EVs initialEVs);
   void Init() override;
 
+  void CalculateStats();
+  void SetLevel(int newLevel);
   void TakeDamage(int damage);
   bool IsFainted() const;
-  void SetLevel(int newLevel);
 
   int level;
-  int maxHp;
-  int currentHp;
-  int attack;
-  int spAttack;
-  int defense;
-  int spDefense;
-  int speed;
+  int maxHp, currentHp;
+  int attack, defense, spAttack, spDefense, speed;
 
 private:
-  void CalculateStats();
+  IVs m_ivs;
+  EVs m_evs;
 
-  const SpeciesComponent *m_species = nullptr;
+  SpeciesComponent *m_species = nullptr;
+  PersonalityComponent *m_personality = nullptr;
 };

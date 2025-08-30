@@ -16,6 +16,7 @@ public:
 
 private:
   void Load();
+  void LoadTestData();
   void Update(float deltaTime);
   void Draw();
 

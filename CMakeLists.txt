@@ -23,6 +23,7 @@ add_executable(ptd
   src/main.cpp
   src/core/Game.cpp
   src/loaders/PMDLoader.cpp
+  src/loaders/PokemonDataLoader.cpp
   src/components/AnimationComponent.cpp
   src/components/SpriteComponent.cpp
   src/components/SpeciesComponent.cpp
@@ -30,6 +31,7 @@ add_executable(ptd
   src/components/TransformComponent.cpp
   src/components/PathComponent.cpp
   src/components/PathFollowerComponent.cpp
+  src/components/PersonalityComponent.cpp
   src/factories/PokemonFactory.cpp
 )
 set_target_properties(ptd PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
