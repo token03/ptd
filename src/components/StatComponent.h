@@ -8,7 +8,7 @@ class PersonalityComponent;
 
 class StatComponent : public Component {
 public:
-  StatComponent(int initialLevel, IVs initialIVs, EVs initialEVs);
+  StatComponent(int initialLevel, Stats initialIVs, Stats initialEVs);
   void Init() override;
 
   void CalculateStats();
@@ -21,8 +21,8 @@ public:
   int attack, defense, spAttack, spDefense, speed;
 
 private:
-  IVs m_ivs;
-  EVs m_evs;
+  Stats m_ivs;
+  Stats m_evs;
 
   SpeciesComponent *m_species = nullptr;
   PersonalityComponent *m_personality = nullptr;

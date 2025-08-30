@@ -6,8 +6,8 @@
 struct PokemonInstance {
   int level = 1;
   Nature nature = Nature::Hardy;
-  IVs ivs;
-  EVs evs;
+  Stats ivs;
+  Stats evs;
   Gender gender = Gender::Genderless;
   bool isShiny = false;
 };

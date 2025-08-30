@@ -52,7 +52,8 @@ float getNatureModifier(Nature nature, Stat stat) {
   return 1.0f;
 }
 
-StatComponent::StatComponent(int initialLevel, IVs initialIVs, EVs initialEVs)
+StatComponent::StatComponent(int initialLevel, Stats initialIVs,
+                             Stats initialEVs)
     : level(initialLevel), m_ivs(initialIVs), m_evs(initialEVs), maxHp(0),
       currentHp(0), attack(0), defense(0), spAttack(0), spDefense(0), speed(0) {
 }
@@ -79,7 +80,7 @@ void StatComponent::CalculateStats() {
     return;
   }
 
-  const BaseStats &base = m_species->baseStats;
+  const Stats &base = m_species->baseStats;
 
   maxHp =
       (((2 * base.hp + m_ivs.hp + (m_evs.hp / 4)) * level) / 100) + level + 10;

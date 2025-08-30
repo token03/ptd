@@ -14,5 +14,5 @@ public:
   std::string dexNumber;
   std::string speciesName;
   std::vector<PokemonType> types;
-  BaseStats baseStats;
+  Stats baseStats;
 };
