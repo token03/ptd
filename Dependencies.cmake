@@ -1,6 +1,6 @@
 include(cmake/CPM.cmake)
 
-function(raylib_imgui_setup_dependencies)
+function(raylib_imgui_setup_dependencies target)
   message(STATUS "Adding Dear ImGui v1.92.1")
   CPMAddPackage(
     NAME ImGui
@@ -13,6 +13,13 @@ function(raylib_imgui_setup_dependencies)
     NAME raylib
     GIT_REPOSITORY https://github.com/raysan5/raylib
     GIT_TAG        5.5
+  )
+
+  message(STATUS "Adding raygui")
+  CPMAddPackage(
+    NAME raygui
+    GIT_REPOSITORY https://github.com/raysan5/raygui
+    GIT_TAG        master
   )
 
   message(STATUS "Adding spdlog v1.15.3")
@@ -65,6 +72,10 @@ function(raylib_imgui_setup_dependencies)
   target_link_libraries(rlimgui PUBLIC
     imgui
     raylib
+  )
+
+  target_include_directories(${target} PUBLIC
+    ${raygui_SOURCE_DIR}/src
   )
 
 endfunction()

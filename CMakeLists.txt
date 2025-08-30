@@ -17,15 +17,16 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 include(Dependencies.cmake)
-raylib_imgui_setup_dependencies()
 
 file(GLOB PTD_SOURCES
   "src/main.cpp"
+  "src/impl.cpp"
   "src/core/*.cpp"
   "src/loaders/*.cpp"
   "src/components/*.cpp"
   "src/factories/*.cpp"
   "src/utils/*.cpp"
+  "src/data/*.cpp"
   "src/gameplay/*.cpp"
   "src/managers/*.cpp"
   "src/states/*.cpp"
@@ -33,6 +34,8 @@ file(GLOB PTD_SOURCES
 )
 
 add_executable(ptd ${PTD_SOURCES})
+
+raylib_imgui_setup_dependencies(ptd)
 
 set_target_properties(ptd PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 target_link_libraries(
@@ -46,4 +49,4 @@ target_link_libraries(
             raylib_imgui_compiler_flags)
 target_compile_definitions(
     ptd PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-target_include_directories(ptd PUBLIC "${PROJECT_SOURCE_DIR}/src")
+target_include_directories(ptd PUBLIC ${PROJECT_SOURCE_DIR}/src)
