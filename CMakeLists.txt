@@ -19,22 +19,17 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 include(Dependencies.cmake)
 raylib_imgui_setup_dependencies()
 
-add_executable(ptd
-  src/main.cpp
-  src/core/Game.cpp
-  src/loaders/PMDLoader.cpp
-  src/loaders/PokemonDataLoader.cpp
-  src/components/AnimationComponent.cpp
-  src/components/SpriteComponent.cpp
-  src/components/SpeciesComponent.cpp
-  src/components/StatComponent.cpp
-  src/components/TransformComponent.cpp
-  src/components/PathComponent.cpp
-  src/components/PathFollowerComponent.cpp
-  src/components/PersonalityComponent.cpp
-  src/factories/PokemonFactory.cpp
-  src/utils/Debugger.cpp
+file(GLOB PTD_SOURCES
+  "src/main.cpp"
+  "src/core/*.cpp"
+  "src/loaders/*.cpp"
+  "src/components/*.cpp"
+  "src/factories/*.cpp"
+  "src/utils/*.cpp"
 )
+
+add_executable(ptd ${PTD_SOURCES})
+
 set_target_properties(ptd PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 target_link_libraries(
     ptd
