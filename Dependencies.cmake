@@ -8,18 +8,18 @@ function(raylib_imgui_setup_dependencies target)
     GIT_TAG        v1.92.1
   )
 
-  message(STATUS "Adding raylib v5.5")
+  message(STATUS "Adding raylib")
   CPMAddPackage(
     NAME raylib
     GIT_REPOSITORY https://github.com/raysan5/raylib
-    GIT_TAG        5.5
+    GIT_TAG        bbf884d7b3068089d007ccc9a9eac0e7ea59af2b
   )
 
   message(STATUS "Adding raygui")
   CPMAddPackage(
     NAME raygui
     GIT_REPOSITORY https://github.com/raysan5/raygui
-    GIT_TAG        master
+    GIT_TAG        9193f38424f75290eb3b53db6a940606daa14af9
   )
 
   message(STATUS "Adding spdlog v1.15.3")
@@ -40,7 +40,7 @@ function(raylib_imgui_setup_dependencies target)
   CPMAddPackage(
     NAME glaze
     GIT_REPOSITORY https://github.com/stephenberry/glaze
-    GIT_TAG        main
+    GIT_TAG        v5.6.1
     GIT_SHALLOW    TRUE
   )
 
@@ -48,7 +48,7 @@ function(raylib_imgui_setup_dependencies target)
   CPMAddPackage(
     NAME rlImGui
     GIT_REPOSITORY https://github.com/raylib-extras/rlImGui
-    GIT_TAG        main
+    GIT_TAG        4d8a61842903978bc42adf3347cd34f4e6524efc
   )
 
   add_library(imgui STATIC

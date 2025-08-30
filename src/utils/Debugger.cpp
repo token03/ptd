@@ -1,6 +1,4 @@
 #include "utils/Debugger.h"
-#include "components/AnimationComponent.h"
-#include "components/TransformComponent.h"
 #include "imgui.h"
 #include "rlImGui.h"
 #include "spdlog/spdlog.h"
@@ -40,9 +38,7 @@ void Debugger::Draw(const std::vector<std::shared_ptr<GameObject>> &gameObjects,
 }
 
 void Debugger::DrawMainWindow() {
-  if (ImGui::Begin("Master Debug Window", &m_showMainWindow)) {
-    ImGui::Text("Welcome to the PTD Debugger!");
-    ImGui::Separator();
+  if (ImGui::Begin("Debug", &m_showMainWindow)) {
     ImGui::Checkbox("Show Performance Stats", &m_showPerformanceWindow);
     ImGui::Checkbox("Show GameObject Inspector", &m_showGameObjectInspector);
     ImGui::Separator();
@@ -84,25 +80,6 @@ void Debugger::DrawGameObjectInspector(
 
       ImGui::Text("Inspecting GameObject %d", m_selectedGameObjectIndex);
       ImGui::Separator();
-
-      // if (auto transform =
-      // selectedObject->GetComponent<TransformComponent>()) {
-      //   if (ImGui::CollapsingHeader("Transform Component",
-      //                               ImGuiTreeNodeFlags_DefaultOpen)) {
-      //     ImGui::DragFloat2("Position", &transform.position.x);
-      //     ImGui::DragFloat2("Scale", &transform.scale.x);
-      //   }
-      // }
-      //
-      // if (auto anim = selectedObject->GetComponent<AnimationComponent>()) {
-      //   if (ImGui::CollapsingHeader("Animation Component",
-      //                               ImGuiTreeNodeFlags_DefaultOpen)) {
-      //     ImGui::Text("Current Animation: %s",
-      //                 anim.GetCurrentAnimationName().c_str());
-      //     ImGui::Text("Current Frame: %d", anim.GetCurrentFrame());
-      //     ImGui::Text("Direction: %d", (int)anim.GetDirection());
-      //   }
-      // }
 
     } else {
       ImGui::Text("Select a GameObject to inspect.");

@@ -1,0 +1,32 @@
+{
+  "Hardy": { "increased": "Attack", "decreased": "Attack" },
+  "Docile": { "increased": "Defense", "decreased": "Defense" },
+  "Serious": { "increased": "Speed", "decreased": "Speed" },
+  "Bashful": { "increased": "SpAttack", "decreased": "SpAttack" },
+  "Quirky": { "increased": "SpDefense", "decreased": "SpDefense" },
+
+  "Lonely": { "increased": "Attack", "decreased": "Defense" },
+  "Brave": { "increased": "Attack", "decreased": "Speed" },
+  "Adamant": { "increased": "Attack", "decreased": "SpAttack" },
+  "Naughty": { "increased": "Attack", "decreased": "SpDefense" },
+
+  "Bold": { "increased": "Defense", "decreased": "Attack" },
+  "Relaxed": { "increased": "Defense", "decreased": "Speed" },
+  "Impish": { "increased": "Defense", "decreased": "SpAttack" },
+  "Lax": { "increased": "Defense", "decreased": "SpDefense" },
+
+  "Timid": { "increased": "Speed", "decreased": "Attack" },
+  "Hasty": { "increased": "Speed", "decreased": "Defense" },
+  "Jolly": { "increased": "Speed", "decreased": "SpAttack" },
+  "Naive": { "increased": "Speed", "decreased": "SpDefense" },
+
+  "Modest": { "increased": "SpAttack", "decreased": "Attack" },
+  "Mild": { "increased": "SpAttack", "decreased": "Defense" },
+  "Quiet": { "increased": "SpAttack", "decreased": "Speed" },
+  "Rash": { "increased": "SpAttack", "decreased": "SpDefense" },
+
+  "Calm": { "increased": "SpDefense", "decreased": "Attack" },
+  "Gentle": { "increased": "SpDefense", "decreased": "Defense" },
+  "Sassy": { "increased": "SpDefense", "decreased": "Speed" },
+  "Careful": { "increased": "SpDefense", "decreased": "SpAttack" }
+}
