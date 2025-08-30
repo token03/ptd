@@ -2,7 +2,7 @@
 
 #include "SpriteComponent.h"
 #include "core/Component.h"
-#include "utils/PMDData.h"
+#include "data/PMDData.h"
 #include <memory>
 #include <string>
 

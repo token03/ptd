@@ -4,7 +4,7 @@
 #include "rlImGui.h"
 
 #include "factories/PokemonFactory.h"
-#include "utils/PMDLoader.h"
+#include "loaders/PMDLoader.h"
 
 #include <filesystem>
 
@@ -19,13 +19,13 @@ Game::~Game() {}
 void Game::Load() {
   m_loader->loadPokemon("0199");
 
-  auto slowkingObject = m_pokemonFactory->CreatePokemonObject( // <-- Changed
-      "0199", "Attack", {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f},
+  auto slowkingObject = m_pokemonFactory->CreatePokemonObject(
+      "0199", "Walk", {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f},
       {2.0f, 2.0f});
 
   if (slowkingObject) {
     slowkingObject->GetComponent<AnimationComponent>().SetDirection(
-        Direction::East);
+        Direction::West);
     m_gameObjects.push_back(slowkingObject);
   } else {
     spdlog::error("Failed to create Slowking GameObject!");

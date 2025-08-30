@@ -4,8 +4,8 @@
 #include "components/SpriteComponent.h"
 #include "components/StatComponent.h"
 #include "components/TransformComponent.h"
+#include "loaders/PMDLoader.h"
 #include "spdlog/spdlog.h"
-#include "utils/PMDLoader.h"
 
 PokemonFactory::PokemonFactory(std::shared_ptr<PMDLoader> loader)
     : m_loader(std::move(loader)) {}

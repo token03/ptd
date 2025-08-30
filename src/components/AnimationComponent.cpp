@@ -1,7 +1,7 @@
 #include "components/AnimationComponent.h"
 #include "core/GameObject.h"
+#include "loaders/PMDLoader.h"
 #include "spdlog/spdlog.h"
-#include "utils/PMDLoader.h"
 #include <memory>
 
 AnimationComponent::AnimationComponent(std::shared_ptr<PMDLoader> loader,
