@@ -2,12 +2,13 @@
 #include "spdlog/spdlog.h"
 #include <glaze/glaze.hpp>
 
-PokemonDataLoader::PokemonDataLoader(const std::string &pokedexPath) {
+PokemonDataLoader::PokemonDataLoader(const std::string &pokedexPath,
+                                     const std::string &typeChartPath) {
   loadPokedex(pokedexPath);
+  loadTypeChart(typeChartPath);
 }
 
 void PokemonDataLoader::loadPokedex(const std::string &path) {
-  glz::opts options{.error_on_unknown_keys = false};
   std::string buffer;
   auto error = glz::read_file_json(m_dexMap, path, buffer);
   if (error) {
@@ -16,6 +17,21 @@ void PokemonDataLoader::loadPokedex(const std::string &path) {
   } else {
     spdlog::info("Successfully loaded {} entries from pokedex.json",
                  m_dexMap.size());
+  }
+}
+
+void PokemonDataLoader::loadTypeChart(const std::string &path) {
+  std::vector<TypeData> rawTypeData;
+  std::string buffer;
+  auto error = glz::read_file_json(rawTypeData, path, buffer);
+
+  if (error) {
+    spdlog::error("Failed to load or parse type_chart.json from {}: {}", path,
+                  glz::format_error(error, buffer));
+  } else {
+    m_typeChart = std::make_shared<TypeChart>(rawTypeData);
+    spdlog::info("Successfully loaded type chart data for {} types.",
+                 rawTypeData.size());
   }
 }
 
@@ -32,6 +48,12 @@ PokemonDataLoader::getDexNumber(const std::string &speciesName) const {
 std::optional<SpeciesData>
 PokemonDataLoader::getSpeciesData(const std::string &formId) const {
   spdlog::warn("Returning generic sample species data for formId: {}", formId);
-  return SpeciesData{
-      formId, "Unknown", {PokemonType::Normal}, {50, 50, 50, 50, 50, 50}};
+  return SpeciesData{formId,
+                     "Unknown",
+                     {PokemonType::Water, PokemonType::Psychic},
+                     {95, 75, 80, 100, 110, 30}};
+}
+
+std::shared_ptr<TypeChart> PokemonDataLoader::getTypeChart() const {
+  return m_typeChart;
 }

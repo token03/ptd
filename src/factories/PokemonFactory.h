@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/GameObject.h"
-#include "data/PokemonData.h"
+#include "data/PokemonInstance.h"
 #include "raylib.h"
 #include <memory>
 #include <string>
@@ -16,7 +16,7 @@ public:
 
   std::shared_ptr<GameObject>
   CreatePokemonObject(const std::string &speciesName,
-                      const PokemonInstanceConfig &config,
+                      const PokemonInstance &config,
                       const std::string &initialAnimation,
                       Vector2 position = {0, 0}, Vector2 scale = {1, 1});
 

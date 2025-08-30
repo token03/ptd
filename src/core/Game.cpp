@@ -15,39 +15,17 @@ Game::~Game() {}
 
 void Game::Load() {
   std::filesystem::path projectRoot = ".";
-  m_loader = std::make_shared<PMDLoader>(projectRoot / "assets");
-  auto dataLoader = std::make_shared<PokemonDataLoader>(
-      (projectRoot / "data/pokedex.json").string());
+  auto assetsPath = projectRoot / "assets";
+  auto dataPath = projectRoot / "data";
 
-  m_pokemonFactory = std::make_shared<PokemonFactory>(m_loader, dataLoader);
+  m_pmdLoader = std::make_shared<PMDLoader>(assetsPath);
+  m_dataLoader = std::make_shared<PokemonDataLoader>(
+      (dataPath / "pokedex.json").string(), (dataPath / "types.json").string());
+
+  m_pokemonFactory =
+      std::make_shared<PokemonFactory>(m_pmdLoader, m_dataLoader);
 
   LoadTestData();
-}
-
-void Game::LoadTestData() {
-  PokemonInstanceConfig slowkingConfig;
-  slowkingConfig.level = 50;
-  slowkingConfig.nature = Nature::Modest;
-  slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
-  slowkingConfig.gender = Gender::Male;
-
-  auto slowkingObject = m_pokemonFactory->CreatePokemonObject(
-      "slowking", slowkingConfig, "Walk",
-      {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
-
-  if (slowkingObject) {
-    slowkingObject->GetComponent<AnimationComponent>().SetDirection(
-        Direction::West);
-    m_gameObjects.push_back(slowkingObject);
-  } else {
-    spdlog::error("Failed to create Slowking GameObject!");
-  }
-
-  auto randomMon = m_pokemonFactory->CreateRandomPokemonObject(
-      "bulbasaur", 5, 10, "Walk", {100.0f, 100.0f}, {2.0f, 2.0f});
-  if (randomMon) {
-    m_gameObjects.push_back(randomMon);
-  }
 }
 
 void Game::Update(float deltaTime) {
@@ -88,4 +66,45 @@ int Game::Run() {
   CloseWindow();
 
   return 0;
+}
+
+void Game::LoadTestData() {
+  PokemonInstance slowkingConfig;
+  slowkingConfig.level = 50;
+  slowkingConfig.nature = Nature::Modest;
+  slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
+  slowkingConfig.gender = Gender::Male;
+
+  auto slowkingObject = m_pokemonFactory->CreatePokemonObject(
+      "slowking", slowkingConfig, "Walk",
+      {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
+
+  if (slowkingObject) {
+    slowkingObject->GetComponent<AnimationComponent>().SetDirection(
+        Direction::West);
+    m_gameObjects.push_back(slowkingObject);
+  } else {
+    spdlog::error("Failed to create Slowking GameObject!");
+  }
+
+  auto randomMon = m_pokemonFactory->CreateRandomPokemonObject(
+      "bulbasaur", 5, 10, "Walk", {100.0f, 100.0f}, {2.0f, 2.0f});
+  if (randomMon) {
+    m_gameObjects.push_back(randomMon);
+  }
+
+  auto typeChart = m_dataLoader->getTypeChart();
+  if (typeChart) {
+    float effectiveness =
+        typeChart->getEffectiveness(PokemonType::Fire, PokemonType::Grass);
+    spdlog::info("Fire against Grass effectiveness: {}", effectiveness);
+
+    effectiveness =
+        typeChart->getEffectiveness(PokemonType::Water, PokemonType::Fire);
+    spdlog::info("Water against Fire effectiveness: {}", effectiveness);
+
+    effectiveness =
+        typeChart->getEffectiveness(PokemonType::Electric, PokemonType::Ground);
+    spdlog::info("Electric against Ground effectiveness: {}", effectiveness);
+  }
 }

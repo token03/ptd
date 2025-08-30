@@ -47,8 +47,6 @@ void Debugger::DrawMainWindow() {
     ImGui::Checkbox("Show GameObject Inspector", &m_showGameObjectInspector);
     ImGui::Separator();
     if (ImGui::Button("Spawn Random Bulbasaur")) {
-      // NOTE: This is an example of how to send commands back to the game.
-      // A more robust system would use a command queue or event system.
       spdlog::warn("Spawn button clicked (functionality not implemented yet).");
     }
   }

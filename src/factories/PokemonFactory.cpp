@@ -15,7 +15,7 @@ PokemonFactory::PokemonFactory(std::shared_ptr<PMDLoader> loader,
     : m_loader(std::move(loader)), m_dataLoader(std::move(dataLoader)) {}
 
 std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
-    const std::string &speciesName, const PokemonInstanceConfig &config,
+    const std::string &speciesName, const PokemonInstance &config,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
   if (!m_loader || !m_dataLoader) {
     spdlog::error("PokemonFactory error: A loader is not available.");
@@ -71,7 +71,7 @@ std::shared_ptr<GameObject> PokemonFactory::CreateRandomPokemonObject(
     const std::string &speciesName, int minLevel, int maxLevel,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
 
-  PokemonInstanceConfig config;
+  PokemonInstance config;
   config.level = GetRandomValue(minLevel, maxLevel);
   config.nature = static_cast<Nature>(GetRandomValue(0, 24));
 

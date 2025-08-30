@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/Component.h"
-#include "data/PokemonData.h"
+#include "data/Enums.h"
 
 class PersonalityComponent : public Component {
 public:

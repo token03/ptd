@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/GameObject.h"
+#include "loaders/PokemonDataLoader.h"
 #include <memory>
 #include <vector>
 
@@ -24,6 +25,7 @@ private:
   const int screenHeight = 720;
 
   std::vector<std::shared_ptr<GameObject>> m_gameObjects;
-  std::shared_ptr<PMDLoader> m_loader;
+  std::shared_ptr<PMDLoader> m_pmdLoader;
+  std::shared_ptr<PokemonDataLoader> m_dataLoader;
   std::shared_ptr<PokemonFactory> m_pokemonFactory;
 };

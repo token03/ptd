@@ -1,7 +1,9 @@
 #pragma once
 
 #include "core/Component.h"
-#include "data/PokemonData.h"
+#include "data/Enums.h"
+#include "data/SpeciesData.h"
+#include "data/Stats.h"
 #include <string>
 #include <vector>
 
