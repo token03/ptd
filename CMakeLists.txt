@@ -33,6 +33,7 @@ add_executable(ptd
   src/components/PathFollowerComponent.cpp
   src/components/PersonalityComponent.cpp
   src/factories/PokemonFactory.cpp
+  src/utils/Debugger.cpp
 )
 set_target_properties(ptd PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 target_link_libraries(

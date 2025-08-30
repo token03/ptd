@@ -6,7 +6,9 @@
 #include "raylib.h"
 #include "rlImGui.h"
 #include "spdlog/spdlog.h"
+#include "utils/Debugger.h"
 #include <filesystem>
+#include <imgui.h>
 
 Game::Game() {}
 Game::~Game() {}
@@ -54,13 +56,18 @@ void Game::Update(float deltaTime) {
   }
 }
 
-void Game::Draw() {
+void Game::Draw(float deltaTime) {
+  BeginDrawing();
   ClearBackground(RAYWHITE);
   DrawText("ptd", 20, 20, 20, DARKGRAY);
+
+  Debugger::GetInstance().Draw(m_gameObjects, deltaTime);
 
   for (auto &go : m_gameObjects) {
     go->Draw();
   }
+
+  EndDrawing();
 }
 
 int Game::Run() {
@@ -74,14 +81,7 @@ int Game::Run() {
   while (!WindowShouldClose()) {
     float deltaTime = GetFrameTime();
     Update(deltaTime);
-
-    BeginDrawing();
-    rlImGuiBegin();
-
-    Draw();
-
-    rlImGuiEnd();
-    EndDrawing();
+    Draw(deltaTime);
   }
 
   rlImGuiShutdown();

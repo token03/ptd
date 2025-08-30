@@ -18,7 +18,7 @@ private:
   void Load();
   void LoadTestData();
   void Update(float deltaTime);
-  void Draw();
+  void Draw(float deltaTime);
 
   const int screenWidth = 1280;
   const int screenHeight = 720;
