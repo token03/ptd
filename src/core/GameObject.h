@@ -2,10 +2,11 @@
 
 #include "core/Component.h"
 #include "spdlog/spdlog.h"
-#include <iostream>
 #include <map>
 #include <memory>
 #include <typeindex>
+
+class Component;
 
 class GameObject : public std::enable_shared_from_this<GameObject> {
 public:

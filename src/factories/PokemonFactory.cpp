@@ -5,39 +5,38 @@
 #include "components/SpriteComponent.h"
 #include "components/StatComponent.h"
 #include "components/TransformComponent.h"
-#include "loaders/PMDLoader.h"
-#include "loaders/PokemonDataLoader.h"
 #include "raylib.h"
 #include "spdlog/spdlog.h"
 
-PokemonFactory::PokemonFactory(std::shared_ptr<PMDLoader> loader,
-                               std::shared_ptr<PokemonDataLoader> dataLoader)
-    : m_loader(std::move(loader)), m_dataLoader(std::move(dataLoader)) {}
+PokemonFactory::PokemonFactory(std::shared_ptr<AssetManager> assetManager,
+                               std::shared_ptr<DataManager> dataManager)
+    : m_assetManager(std::move(assetManager)),
+      m_dataManager(std::move(dataManager)) {}
 
 std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
     const std::string &speciesName, const PokemonInstance &config,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
-  if (!m_loader || !m_dataLoader) {
-    spdlog::error("PokemonFactory error: A loader is not available.");
+  if (!m_assetManager || !m_dataManager) {
+    spdlog::error("PokemonFactory error: A manager is not available.");
     return nullptr;
   }
 
-  auto dexNumOpt = m_dataLoader->getDexNumber(speciesName);
+  auto dexNumOpt = m_dataManager->getDexNumber(speciesName);
   if (!dexNumOpt) {
     spdlog::error("Could not find dex number for species '{}'.", speciesName);
     return nullptr;
   }
   const std::string &dexNumber = *dexNumOpt;
 
-  auto speciesDataOpt = m_dataLoader->getSpeciesData(dexNumber);
+  auto speciesDataOpt = m_dataManager->getSpeciesData(dexNumber);
   if (!speciesDataOpt) {
     spdlog::error("Could not find species data for dex number: {}", dexNumber);
     return nullptr;
   }
   const SpeciesData &speciesData = *speciesDataOpt;
 
-  m_loader->loadPokemon(dexNumber);
-  const PMDData *form = m_loader->getForm(dexNumber);
+  m_assetManager->loadPokemonSpriteData(dexNumber);
+  const PMDData *form = m_assetManager->getForm(dexNumber);
   if (!form || !form->animData) {
     spdlog::error("Could not create GameObject for dex number: {}. PMD form "
                   "data not loaded or has no animations.",
@@ -46,7 +45,7 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
   }
 
   Texture2D texture =
-      m_loader->getAnimationTexture(dexNumber, initialAnimation);
+      m_assetManager->getAnimationTexture(dexNumber, initialAnimation);
   if (texture.id <= 0) {
     spdlog::error("Could not load initial texture for animation: {}",
                   initialAnimation);
@@ -57,7 +56,7 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
 
   gameObject->AddComponent<TransformComponent>(position, scale);
   gameObject->AddComponent<SpriteComponent>(texture);
-  gameObject->AddComponent<AnimationComponent>(m_loader, dexNumber);
+  gameObject->AddComponent<AnimationComponent>(m_assetManager, dexNumber);
   gameObject->AddComponent<SpeciesComponent>(speciesData);
   gameObject->AddComponent<PersonalityComponent>(config.nature, config.gender,
                                                  config.isShiny);

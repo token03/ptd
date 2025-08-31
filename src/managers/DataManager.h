@@ -7,10 +7,9 @@
 #include <string>
 #include <unordered_map>
 
-class PokemonDataLoader {
+class DataManager {
 public:
-  PokemonDataLoader(const std::string &pokedexPath,
-                    const std::string &typeChartPath);
+  DataManager(const std::string &pokedexPath, const std::string &typeChartPath);
 
   std::optional<std::string> getDexNumber(const std::string &speciesName) const;
   std::optional<SpeciesData> getSpeciesData(const std::string &formId) const;

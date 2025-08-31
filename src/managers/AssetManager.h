@@ -7,12 +7,12 @@
 #include <map>
 #include <string>
 
-class PMDLoader {
+class AssetManager {
 public:
-  PMDLoader(const std::filesystem::path &assetRoot);
-  ~PMDLoader();
+  AssetManager(const std::filesystem::path &assetRoot);
+  ~AssetManager();
 
-  bool loadPokemon(const std::string &dexNumber);
+  bool loadPokemonSpriteData(const std::string &dexNumber);
   const PMDData *getForm(const std::string &fullId) const;
   const std::map<std::string, PMDData> &getAllForms() const {
     return m_loadedForms;

@@ -1,19 +1,19 @@
-#include "PMDLoader.h"
+#include "managers/AssetManager.h"
 #include <algorithm>
 #include <spdlog/spdlog.h>
 
-PMDLoader::PMDLoader(const std::filesystem::path &assetRoot)
+AssetManager::AssetManager(const std::filesystem::path &assetRoot)
     : m_assetRoot(assetRoot), m_pmdCollabPath(assetRoot / "pmdcollab"),
       m_portraitPath(assetRoot / "pmdcollab" / "portrait") {}
 
-PMDLoader::~PMDLoader() {
+AssetManager::~AssetManager() {
   for (auto const &[path, texture] : m_textureCache) {
     UnloadTexture(texture);
   }
   m_textureCache.clear();
 }
 
-bool PMDLoader::loadPokemon(const std::string &dexNumber) {
+bool AssetManager::loadPokemonSpriteData(const std::string &dexNumber) {
   if (!m_trackerLoaded) {
     const auto trackerPath = m_pmdCollabPath / "tracker.json";
     spdlog::debug("Loading tracker file: {}", trackerPath.string());
@@ -40,11 +40,10 @@ bool PMDLoader::loadPokemon(const std::string &dexNumber) {
   return true;
 }
 
-void PMDLoader::processTrackerEntry(const std::string &dex,
-                                    const std::string &subgroupId,
-                                    const TrackerEntry &entry,
-                                    const std::string &parentName,
-                                    const std::filesystem::path &parentPath) {
+void AssetManager::processTrackerEntry(
+    const std::string &dex, const std::string &subgroupId,
+    const TrackerEntry &entry, const std::string &parentName,
+    const std::filesystem::path &parentPath) {
   std::string currentFullName =
       parentName.empty() ? entry.name : parentName + " " + entry.name;
   std::filesystem::path currentRelativePath = parentPath / subgroupId;
@@ -118,7 +117,7 @@ void PMDLoader::processTrackerEntry(const std::string &dex,
 }
 
 std::optional<AnimationData>
-PMDLoader::parseAnimationData(const std::filesystem::path &xmlPath) {
+AssetManager::parseAnimationData(const std::filesystem::path &xmlPath) {
   if (!std::filesystem::exists(xmlPath)) {
     return std::nullopt;
   }
@@ -181,13 +180,14 @@ PMDLoader::parseAnimationData(const std::filesystem::path &xmlPath) {
   return data;
 }
 
-const PMDData *PMDLoader::getForm(const std::string &fullId) const {
+const PMDData *AssetManager::getForm(const std::string &fullId) const {
   auto it = m_loadedForms.find(fullId);
   return (it != m_loadedForms.end()) ? &it->second : nullptr;
 }
 
-std::string PMDLoader::findAnimationBaseName(const PMDData &form,
-                                             const std::string &animationName) {
+std::string
+AssetManager::findAnimationBaseName(const PMDData &form,
+                                    const std::string &animationName) {
   std::string baseName;
   size_t longestMatch = 0;
   for (const auto &potentialBase : form.animFileBases) {
@@ -200,8 +200,8 @@ std::string PMDLoader::findAnimationBaseName(const PMDData &form,
   return baseName;
 }
 
-Texture2D PMDLoader::getAnimationTexture(const std::string &formId,
-                                         const std::string &animationName) {
+Texture2D AssetManager::getAnimationTexture(const std::string &formId,
+                                            const std::string &animationName) {
   const PMDData *form = getForm(formId);
   if (!form) {
     spdlog::error("Form not found: {}", formId);

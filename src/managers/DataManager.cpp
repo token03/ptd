@@ -1,14 +1,14 @@
-#include "loaders/PokemonDataLoader.h"
+#include "managers/DataManager.h"
 #include "spdlog/spdlog.h"
 #include <glaze/glaze.hpp>
 
-PokemonDataLoader::PokemonDataLoader(const std::string &pokedexPath,
-                                     const std::string &typeChartPath) {
+DataManager::DataManager(const std::string &pokedexPath,
+                         const std::string &typeChartPath) {
   loadPokedex(pokedexPath);
   loadTypeChart(typeChartPath);
 }
 
-void PokemonDataLoader::loadPokedex(const std::string &path) {
+void DataManager::loadPokedex(const std::string &path) {
   std::string buffer;
   auto error = glz::read_file_json(m_dexMap, path, buffer);
   if (error) {
@@ -20,7 +20,7 @@ void PokemonDataLoader::loadPokedex(const std::string &path) {
   }
 }
 
-void PokemonDataLoader::loadTypeChart(const std::string &path) {
+void DataManager::loadTypeChart(const std::string &path) {
   std::vector<TypeData> rawTypeData;
   std::string buffer;
   auto error = glz::read_file_json(rawTypeData, path, buffer);
@@ -36,7 +36,7 @@ void PokemonDataLoader::loadTypeChart(const std::string &path) {
 }
 
 std::optional<std::string>
-PokemonDataLoader::getDexNumber(const std::string &speciesName) const {
+DataManager::getDexNumber(const std::string &speciesName) const {
   auto it = m_dexMap.find(speciesName);
   if (it != m_dexMap.end()) {
     return it->second;
@@ -46,7 +46,7 @@ PokemonDataLoader::getDexNumber(const std::string &speciesName) const {
 }
 
 std::optional<SpeciesData>
-PokemonDataLoader::getSpeciesData(const std::string &formId) const {
+DataManager::getSpeciesData(const std::string &formId) const {
   spdlog::warn("Returning generic sample species data for formId: {}", formId);
   return SpeciesData{formId,
                      "Unknown",
@@ -54,6 +54,6 @@ PokemonDataLoader::getSpeciesData(const std::string &formId) const {
                      {95, 75, 80, 100, 110, 30}};
 }
 
-std::shared_ptr<TypeChart> PokemonDataLoader::getTypeChart() const {
+std::shared_ptr<TypeChart> DataManager::getTypeChart() const {
   return m_typeChart;
 }

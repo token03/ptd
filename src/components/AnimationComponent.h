@@ -17,11 +17,12 @@ enum class Direction {
   SouthWest,
 };
 
-class PMDLoader;
+class AssetManager;
 
 class AnimationComponent : public Component {
 public:
-  AnimationComponent(std::shared_ptr<PMDLoader> loader, std::string formId);
+  AnimationComponent(std::shared_ptr<AssetManager> assetManager,
+                     std::string formId);
   void Init() override;
   void Update(float deltaTime) override;
   void Play(const std::string &animationName, bool reset = false);
@@ -32,7 +33,7 @@ public:
 private:
   void UpdateSpriteRect();
 
-  std::weak_ptr<PMDLoader> m_loader;
+  std::weak_ptr<AssetManager> m_assetManager;
   std::string m_formId;
   const AnimationData *m_animData = nullptr;
   std::weak_ptr<SpriteComponent> m_sprite;

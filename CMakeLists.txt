@@ -22,7 +22,6 @@ file(GLOB PTD_SOURCES
   "src/main.cpp"
   "src/impl.cpp"
   "src/core/*.cpp"
-  "src/loaders/*.cpp"
   "src/components/*.cpp"
   "src/factories/*.cpp"
   "src/utils/*.cpp"
@@ -31,6 +30,7 @@ file(GLOB PTD_SOURCES
   "src/managers/*.cpp"
   "src/states/*.cpp"
   "src/ui/*.cpp"
+  "src/tools/*.cpp"
 )
 
 add_executable(ptd ${PTD_SOURCES})

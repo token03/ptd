@@ -1,12 +1,12 @@
 #include "components/AnimationComponent.h"
 #include "core/GameObject.h"
-#include "loaders/PMDLoader.h"
+#include "managers/AssetManager.h"
 #include "spdlog/spdlog.h"
 #include <memory>
 
-AnimationComponent::AnimationComponent(std::shared_ptr<PMDLoader> loader,
-                                       std::string formId)
-    : m_loader(std::move(loader)), m_formId(std::move(formId)) {}
+AnimationComponent::AnimationComponent(
+    std::shared_ptr<AssetManager> assetManager, std::string formId)
+    : m_assetManager(std::move(assetManager)), m_formId(std::move(formId)) {}
 
 void AnimationComponent::Init() {
   if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
@@ -17,15 +17,15 @@ void AnimationComponent::Init() {
     m_sprite = ownerPtr->GetComponentShared<SpriteComponent>();
   }
 
-  if (auto loader = m_loader.lock()) {
-    const auto *form = loader->getForm(m_formId);
+  if (auto assetManager = m_assetManager.lock()) {
+    const auto *form = assetManager->getForm(m_formId);
     if (!form || !form->animData) {
       throw std::runtime_error(
           "AnimationComponent could not find form data for " + m_formId);
     }
     m_animData = &form->animData.value();
   } else {
-    throw std::runtime_error("PMDLoader is not available for "
+    throw std::runtime_error("AssetManager is not available for "
                              "AnimationComponent initialization.");
   }
 }
@@ -66,14 +66,14 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
     return;
   }
 
-  if (auto loader = m_loader.lock()) {
-    const PMDData *form = loader->getForm(m_formId);
+  if (auto assetManager = m_assetManager.lock()) {
+    const PMDData *form = assetManager->getForm(m_formId);
     if (form) {
       std::string newTextureBase =
-          loader->findAnimationBaseName(*form, animationName);
+          assetManager->findAnimationBaseName(*form, animationName);
       if (newTextureBase != m_currentTextureBase) {
         Texture2D newTexture =
-            loader->getAnimationTexture(m_formId, animationName);
+            assetManager->getAnimationTexture(m_formId, animationName);
         if (newTexture.id > 0) {
           if (auto sprite = m_sprite.lock()) {
             sprite->texture = newTexture;
@@ -83,7 +83,7 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
       }
     }
   } else {
-    spdlog::error("Cannot play animation, PMDLoader is not available.");
+    spdlog::error("Cannot play animation, AssetManager is not available.");
     return;
   }
 

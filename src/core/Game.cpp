@@ -1,12 +1,12 @@
 #include "core/Game.h"
 #include "components/AnimationComponent.h"
 #include "factories/PokemonFactory.h"
-#include "loaders/PMDLoader.h"
-#include "loaders/PokemonDataLoader.h"
+#include "managers/AssetManager.h"
+#include "managers/DataManager.h"
 #include "raylib.h"
 #include "rlImGui.h"
 #include "spdlog/spdlog.h"
-#include "utils/Debugger.h"
+#include "tools/Debugger.h"
 #include <filesystem>
 #include <imgui.h>
 
@@ -18,12 +18,12 @@ void Game::Load() {
   auto assetsPath = projectRoot / "assets";
   auto dataPath = projectRoot / "data";
 
-  m_pmdLoader = std::make_shared<PMDLoader>(assetsPath);
-  m_dataLoader = std::make_shared<PokemonDataLoader>(
+  m_assetManager = std::make_shared<AssetManager>(assetsPath);
+  m_dataManager = std::make_shared<DataManager>(
       (dataPath / "pokedex.json").string(), (dataPath / "types.json").string());
 
   m_pokemonFactory =
-      std::make_shared<PokemonFactory>(m_pmdLoader, m_dataLoader);
+      std::make_shared<PokemonFactory>(m_assetManager, m_dataManager);
 
   LoadTestData();
 }
@@ -93,7 +93,7 @@ void Game::LoadTestData() {
     m_gameObjects.push_back(randomMon);
   }
 
-  auto typeChart = m_dataLoader->getTypeChart();
+  auto typeChart = m_dataManager->getTypeChart();
   if (typeChart) {
     float effectiveness =
         typeChart->getEffectiveness(PokemonType::Fire, PokemonType::Grass);

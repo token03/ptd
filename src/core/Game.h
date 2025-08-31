@@ -1,11 +1,11 @@
 #pragma once
 
 #include "core/GameObject.h"
-#include "loaders/PokemonDataLoader.h"
 #include <memory>
 #include <vector>
 
-class PMDLoader;
+class AssetManager;
+class DataManager;
 class PokemonFactory;
 
 class Game {
@@ -25,7 +25,7 @@ private:
   const int screenHeight = 720;
 
   std::vector<std::shared_ptr<GameObject>> m_gameObjects;
-  std::shared_ptr<PMDLoader> m_pmdLoader;
-  std::shared_ptr<PokemonDataLoader> m_dataLoader;
+  std::shared_ptr<AssetManager> m_assetManager;
+  std::shared_ptr<DataManager> m_dataManager;
   std::shared_ptr<PokemonFactory> m_pokemonFactory;
 };
