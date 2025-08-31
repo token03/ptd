@@ -1,7 +1,6 @@
 #pragma once
 
 #include "data/PMDData.h"
-#include "pugixml.hpp"
 #include "raylib.h"
 #include <filesystem>
 #include <map>
@@ -21,8 +20,6 @@ public:
 
   Texture2D getAnimationTexture(const std::string &formId,
                                 const std::string &animationName);
-  std::string findAnimationBaseName(const PMDData &form,
-                                    const std::string &animationName);
 
 private:
   void processTrackerEntry(const std::string &dex,
@@ -30,9 +27,6 @@ private:
                            const TrackerEntry &entry,
                            const std::string &parentName,
                            const std::filesystem::path &parentPath);
-
-  std::optional<AnimationData>
-  parseAnimationData(const std::filesystem::path &xmlPath);
 
 private:
   std::filesystem::path m_assetRoot;

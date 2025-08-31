@@ -2,6 +2,7 @@
 #include "core/GameObject.h"
 #include "managers/AssetManager.h"
 #include "spdlog/spdlog.h"
+#include "utils/PMDUtils.h"
 #include <memory>
 
 AnimationComponent::AnimationComponent(
@@ -67,7 +68,7 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
 
   if (auto assetManager = m_assetManager.lock()) {
     std::string newTextureBase =
-        assetManager->findAnimationBaseName(*pmdData, animationName);
+        PMDUtils::findAnimationBaseName(*pmdData, animationName);
     if (newTextureBase != m_currentTextureBase) {
       Texture2D newTexture =
           assetManager->getAnimationTexture(m_formId, animationName);
