@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "core/Game.h"
 
 #include <imgui.h>
 
@@ -28,7 +28,7 @@ void Game::Load() {
   font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 
   m_assetManager = std::make_shared<AssetManager>(assetsPath);
-  m_dataManager = std::make_shared<DataManager>((dataPath / "pokedex.json").string(),
+  m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
                                                 (dataPath / "types.json").string());
 
   m_pokemonFactory = std::make_shared<PokemonFactory>(m_assetManager, m_dataManager);

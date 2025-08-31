@@ -4,20 +4,20 @@
 
 #include "spdlog/spdlog.h"
 
-DataManager::DataManager(const std::string &pokedexPath,
+DataManager::DataManager(const std::string &speciesPath,
                          const std::string &typeChartPath) {
-  loadPokedex(pokedexPath);
+  loadSpecies(speciesPath);
   loadTypeChart(typeChartPath);
 }
 
-void DataManager::loadPokedex(const std::string &path) {
+void DataManager::loadSpecies(const std::string &path) {
   std::string buffer;
   auto error = glz::read_file_json(m_dexMap, path, buffer);
   if (error) {
-    spdlog::error("Failed to load or parse pokedex.json from {}: {}", path,
+    spdlog::error("Failed to load or parse species.json from {}: {}", path,
                   glz::format_error(error, buffer));
   } else {
-    spdlog::info("Successfully loaded {} entries from pokedex.json", m_dexMap.size());
+    spdlog::info("Successfully loaded {} entries from species.json", m_dexMap.size());
   }
 }
 
