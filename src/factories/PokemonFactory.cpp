@@ -1,9 +1,9 @@
 #include "PokemonFactory.h"
 #include "components/AnimationComponent.h"
-#include "components/PersonalityComponent.h"
 #include "components/SpeciesComponent.h"
 #include "components/SpriteComponent.h"
 #include "components/StatComponent.h"
+#include "components/TraitsComponent.h"
 #include "components/TransformComponent.h"
 #include "raylib.h"
 #include "spdlog/spdlog.h"
@@ -58,8 +58,8 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
   gameObject->AddComponent<SpriteComponent>(texture);
   gameObject->AddComponent<AnimationComponent>(m_assetManager, dexNumber);
   gameObject->AddComponent<SpeciesComponent>(speciesData);
-  gameObject->AddComponent<PersonalityComponent>(config.nature, config.gender,
-                                                 config.isShiny);
+  gameObject->AddComponent<TraitsComponent>(config.nature, config.gender,
+                                            config.isShiny);
   gameObject->AddComponent<StatComponent>(config.level, config.ivs, config.evs);
   gameObject->GetComponent<AnimationComponent>().Play(initialAnimation);
 

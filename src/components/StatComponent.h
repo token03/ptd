@@ -1,7 +1,7 @@
 #pragma once
 
-#include "components/PersonalityComponent.h"
 #include "components/SpeciesComponent.h"
+#include "components/TraitsComponent.h"
 #include "core/Component.h"
 #include "data/Stats.h"
 #include <memory>
@@ -25,5 +25,5 @@ private:
   Stats m_evs;
 
   std::weak_ptr<SpeciesComponent> m_species;
-  std::weak_ptr<PersonalityComponent> m_personality;
+  std::weak_ptr<TraitsComponent> m_traits;
 };

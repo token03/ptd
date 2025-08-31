@@ -1,5 +1,5 @@
 #include "components/StatComponent.h"
-#include "core/GameObject.h"
+#include "core/GameObject.h" // IWYU pragma: keep - required for assignRequiredComponent
 #include "spdlog/spdlog.h"
 #include <cmath>
 #include <map>
@@ -56,15 +56,15 @@ StatComponent::StatComponent(int initialLevel, Stats initialIVs,
 }
 
 void StatComponent::Init() {
-  assignRequiredComponent(m_species, m_personality);
+  assignRequiredComponent(m_species, m_traits);
   CalculateStats();
 }
 
 void StatComponent::CalculateStats() {
   auto species = m_species.lock();
-  auto personality = m_personality.lock();
+  auto traits = m_traits.lock();
 
-  if (!species || !personality) {
+  if (!species || !traits) {
     spdlog::error("Cannot calculate stats, required components are missing!");
     return;
   }
@@ -75,7 +75,7 @@ void StatComponent::CalculateStats() {
       (((2 * base.hp + m_ivs.hp + (m_evs.hp / 4)) * level) / 100) + level + 10;
 
   auto calculate_stat = [&](int base_val, int iv, int ev, Stat stat_enum) {
-    float natureMod = getNatureModifier(personality->nature, stat_enum);
+    float natureMod = getNatureModifier(traits->nature, stat_enum);
     int stat = (((2 * base_val + iv + (ev / 4)) * level) / 100) + 5;
     return static_cast<int>(std::floor(stat * natureMod));
   };

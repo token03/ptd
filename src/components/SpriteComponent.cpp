@@ -1,5 +1,5 @@
 #include "components/SpriteComponent.h"
-#include "core/GameObject.h"
+#include "core/GameObject.h" // IWYU pragma: keep - required for assignRequiredComponent
 
 SpriteComponent::SpriteComponent(Texture2D tex) : texture(tex) {
   sourceRect = {0.0f, 0.0f, (float)texture.width, (float)texture.height};
