@@ -17,4 +17,8 @@ public:
 protected:
   template <typename... T>
   void assignRequiredComponent(std::weak_ptr<T> &...components);
+  template <typename... T>
+  void assignComponent(std::weak_ptr<T> &...components);
+  template <typename... T>
+  void validateComponents(std::weak_ptr<T> &...components);
 };

@@ -15,6 +15,9 @@ AssetManager::~AssetManager() {
 }
 
 bool AssetManager::loadPokemonSpriteData(const std::string &dexNumber) {
+  if (m_loadedForms.count(dexNumber))
+    return true;
+
   if (!m_trackerLoaded) {
     const auto trackerPath = m_pmdCollabPath / "tracker.json";
     spdlog::debug("Loading tracker file: {}", trackerPath.string());

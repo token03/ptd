@@ -25,6 +25,8 @@ private:
   const int screenHeight = 720;
 
   std::vector<std::shared_ptr<GameObject>> m_gameObjects;
+  std::vector<std::shared_ptr<GameObject>> m_newGameObjects;
+
   std::shared_ptr<AssetManager> m_assetManager;
   std::shared_ptr<DataManager> m_dataManager;
   std::shared_ptr<PokemonFactory> m_pokemonFactory;

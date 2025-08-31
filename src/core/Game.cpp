@@ -1,5 +1,7 @@
 #include "core/Game.h"
 #include "components/AnimationComponent.h"
+#include "components/MobSpawnerComponent.h"
+#include "components/PathComponent.h"
 #include "factories/PokemonFactory.h"
 #include "managers/AssetManager.h"
 #include "managers/DataManager.h"
@@ -31,6 +33,12 @@ void Game::Load() {
 void Game::Update(float deltaTime) {
   for (auto &go : m_gameObjects) {
     go->Update(deltaTime);
+  }
+
+  if (!m_newGameObjects.empty()) {
+    m_gameObjects.insert(m_gameObjects.end(), m_newGameObjects.begin(),
+                         m_newGameObjects.end());
+    m_newGameObjects.clear();
   }
 }
 
@@ -88,7 +96,7 @@ void Game::LoadTestData() {
   }
 
   auto randomMon = m_pokemonFactory->CreateRandomPokemonObject(
-      "raichu", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
+      "clodsire", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
   if (randomMon) {
     m_gameObjects.push_back(randomMon);
   }
@@ -98,13 +106,27 @@ void Game::LoadTestData() {
     float effectiveness =
         typeChart->getEffectiveness(PokemonType::FIRE, PokemonType::GRASS);
     spdlog::info("Fire against Grass effectiveness: {}", effectiveness);
-
-    effectiveness =
-        typeChart->getEffectiveness(PokemonType::WATER, PokemonType::FIRE);
-    spdlog::info("Water against Fire effectiveness: {}", effectiveness);
-
-    effectiveness =
-        typeChart->getEffectiveness(PokemonType::ELECTRIC, PokemonType::GROUND);
-    spdlog::info("Electric against Ground effectiveness: {}", effectiveness);
   }
+
+  auto levelObject = std::make_shared<GameObject>();
+
+  float padding = 200.0f;
+  std::vector<Vector2> pathPoints = {
+      {padding, padding},
+      {padding, (float)screenHeight - padding},
+      {(float)screenWidth - padding, (float)screenHeight - padding},
+      {(float)screenWidth - padding, padding},
+      {padding, padding},
+      {padding, (float)screenHeight - padding},
+      {(float)screenWidth - padding, (float)screenHeight - padding}};
+
+  auto &path = levelObject->AddComponent<PathComponent>(pathPoints,
+                                                        PathType::CATMULL_ROM);
+  path.pathColor = RED;
+
+  levelObject->AddComponent<MobSpawnerComponent>(
+      m_pokemonFactory, levelObject->GetComponentShared<PathComponent>(),
+      m_newGameObjects);
+
+  m_gameObjects.push_back(levelObject);
 }

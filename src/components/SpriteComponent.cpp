@@ -17,18 +17,20 @@ void SpriteComponent::Draw() {
                           sourceRect.width * transform->scale.x,
                           sourceRect.height * transform->scale.y};
 
+    Vector2 scaledOrigin = {origin.x * transform->scale.x,
+                            origin.y * transform->scale.y};
+
     float rotationToApply = 0.0f;
     if (rotationMode == RotationMode::USE_TRANSFORM) {
       rotationToApply = transform->rotation;
     }
 
-    DrawTexturePro(texture, sourceRect, destRect, origin, rotationToApply,
+    DrawTexturePro(texture, sourceRect, destRect, scaledOrigin, rotationToApply,
                    tint);
 
-    Rectangle actualScreenRect = {
-        transform->position.x - (origin.x * transform->scale.x),
-        transform->position.y - (origin.y * transform->scale.y), destRect.width,
-        destRect.height};
+    Rectangle actualScreenRect = {transform->position.x - scaledOrigin.x,
+                                  transform->position.y - scaledOrigin.y,
+                                  destRect.width, destRect.height};
 
     DrawRectangleLinesEx(actualScreenRect, 1.0f, GREEN);
     DrawCircleV(transform->position, 3.0f, RED);

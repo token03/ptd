@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MovableComponent.h"
 #include "components/TransformComponent.h"
 #include "core/Component.h"
 #include <memory>
@@ -16,7 +17,8 @@ public:
 private:
   std::weak_ptr<PathComponent> m_path;
   std::weak_ptr<TransformComponent> m_transform;
+  std::weak_ptr<MovableComponent> m_movable;
 
   float m_speed;
-  float m_progress = 0.0f;
+  float m_distanceTraveled = 0.0f;
 };
