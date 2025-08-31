@@ -1,17 +1,17 @@
 #include "PathFollowerComponent.h"
-#include "components/PathComponent.h"
-#include "core/GameObject.h" // IWYU pragma: keep - required for assignRequiredComponent
-#include "raymath.h"
+
 #include <algorithm>
 #include <memory>
+
+#include "components/PathComponent.h"
+#include "core/GameObject.h"  // IWYU pragma: keep - required for assignRequiredComponent
+#include "raymath.h"
 
 PathFollowerComponent::PathFollowerComponent(std::weak_ptr<PathComponent> path,
                                              float speed)
     : m_path(path), m_speed(speed) {}
 
-void PathFollowerComponent::Init() {
-  assignRequiredComponent(m_transform, m_movable);
-}
+void PathFollowerComponent::Init() { assignRequiredComponent(m_transform, m_movable); }
 
 void PathFollowerComponent::Update(float deltaTime) {
   auto path = m_path.lock();
@@ -37,8 +37,7 @@ void PathFollowerComponent::Update(float deltaTime) {
 
     Vector2 requiredVelocity = {0.0f, 0.0f};
     if (deltaTime > 0.0f) {
-      Vector2 pathMovement =
-          Vector2Subtract(targetPosition, transform->position);
+      Vector2 pathMovement = Vector2Subtract(targetPosition, transform->position);
       requiredVelocity = Vector2Scale(pathMovement, 1.0f / deltaTime);
     }
     movable->SetVelocity(requiredVelocity);

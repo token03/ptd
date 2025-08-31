@@ -1,7 +1,9 @@
 #include "MovableComponent.h"
-#include "core/GameObject.h" // IWYU pragma: keep
-#include "raymath.h"
+
 #include <cmath>
+
+#include "core/GameObject.h"  // IWYU pragma: keep
+#include "raymath.h"
 
 void MovableComponent::Init() {
   assignRequiredComponent(m_transform);

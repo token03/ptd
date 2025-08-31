@@ -1,7 +1,7 @@
 #pragma once
 
 class Spawner {
-public:
+ public:
   Spawner();
   void Draw();
 

@@ -1,28 +1,28 @@
 #include "utils/PMDUtils.h"
-#include "pugixml.hpp"
+
+#include <spdlog/spdlog.h>
+
 #include <algorithm>
 #include <cctype>
-#include <spdlog/spdlog.h>
+
+#include "pugixml.hpp"
 
 namespace PMDUtils {
 
-std::optional<AnimationData>
-parseAnimationData(const std::filesystem::path &xmlPath) {
+std::optional<AnimationData> parseAnimationData(const std::filesystem::path &xmlPath) {
   if (!std::filesystem::exists(xmlPath)) {
     return std::nullopt;
   }
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file(xmlPath.c_str());
   if (!result) {
-    spdlog::warn("Failed to parse XML {}: {}", xmlPath.string(),
-                 result.description());
+    spdlog::warn("Failed to parse XML {}: {}", xmlPath.string(), result.description());
     return std::nullopt;
   }
 
   AnimationData data;
   pugi::xml_node animDataNode = doc.child("AnimData");
-  if (!animDataNode)
-    return std::nullopt;
+  if (!animDataNode) return std::nullopt;
 
   data.shadowSize = animDataNode.child("ShadowSize").text().as_int(1);
 
@@ -36,10 +36,8 @@ parseAnimationData(const std::filesystem::path &xmlPath) {
       anim.index = animNode.child("Index").text().as_int();
       anim.frameWidth = animNode.child("FrameWidth").text().as_int();
       anim.frameHeight = animNode.child("FrameHeight").text().as_int();
-      if (auto node = animNode.child("RushFrame"))
-        anim.rushFrame = node.text().as_int();
-      if (auto node = animNode.child("HitFrame"))
-        anim.hitFrame = node.text().as_int();
+      if (auto node = animNode.child("RushFrame")) anim.rushFrame = node.text().as_int();
+      if (auto node = animNode.child("HitFrame")) anim.hitFrame = node.text().as_int();
       if (auto node = animNode.child("ReturnFrame"))
         anim.returnFrame = node.text().as_int();
       for (pugi::xml_node durationNode :
@@ -52,8 +50,7 @@ parseAnimationData(const std::filesystem::path &xmlPath) {
 
   std::vector<std::string> copyKeys;
   for (const auto &[name, anim] : data.animations) {
-    if (anim.copyOf)
-      copyKeys.push_back(name);
+    if (anim.copyOf) copyKeys.push_back(name);
   }
 
   for (const auto &key : copyKeys) {
@@ -70,8 +67,7 @@ parseAnimationData(const std::filesystem::path &xmlPath) {
   return data;
 }
 
-std::string findAnimationBaseName(const PMDData &form,
-                                  const std::string &animationName) {
+std::string findAnimationBaseName(const PMDData &form, const std::string &animationName) {
   std::string baseName;
   size_t longestMatch = 0;
   for (const auto &potentialBase : form.animFileBases) {
@@ -87,14 +83,12 @@ std::string findAnimationBaseName(const PMDData &form,
 namespace {
 std::string formatFormNameComponent(const std::string &s) {
   size_t start = s.find_first_not_of(" \t\r\n");
-  if (start == std::string::npos)
-    return std::string{};
+  if (start == std::string::npos) return std::string{};
   size_t end = s.find_last_not_of(" \t\r\n");
   std::string sub = s.substr(start, end - start + 1);
   std::string lower;
   lower.reserve(sub.size());
-  for (unsigned char c : sub)
-    lower.push_back(static_cast<char>(std::tolower(c)));
+  for (unsigned char c : sub) lower.push_back(static_cast<char>(std::tolower(c)));
   std::string res;
   bool lastHyphen = false;
   for (unsigned char c : lower) {
@@ -108,21 +102,17 @@ std::string formatFormNameComponent(const std::string &s) {
       lastHyphen = false;
     }
   }
-  if (!res.empty() && res.front() == '-')
-    res.erase(res.begin());
-  if (!res.empty() && res.back() == '-')
-    res.pop_back();
+  if (!res.empty() && res.front() == '-') res.erase(res.begin());
+  if (!res.empty() && res.back() == '-') res.pop_back();
   return res;
 }
-} // namespace
+}  // namespace
 
 std::string generateFullName(const std::string &formattedParentName,
                              const std::string &unformattedEntryName) {
   std::string ecomp = formatFormNameComponent(unformattedEntryName);
-  if (formattedParentName.empty())
-    return ecomp;
-  if (ecomp.empty())
-    return formattedParentName;
+  if (formattedParentName.empty()) return ecomp;
+  if (ecomp.empty()) return formattedParentName;
   return formattedParentName + "-" + ecomp;
 }
 
@@ -144,4 +134,4 @@ std::string generateFullId(const std::string &dex,
   return dex + "-" + path_str;
 }
 
-} // namespace PMDUtils
+}  // namespace PMDUtils

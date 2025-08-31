@@ -1,9 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "components/TransformComponent.h"
 #include "core/Component.h"
 #include "raylib.h"
-#include <memory>
 
 enum class RotationMode {
   IGNORE,
@@ -11,7 +12,7 @@ enum class RotationMode {
 };
 
 class SpriteComponent : public Component {
-public:
+ public:
   Texture2D texture;
   Rectangle sourceRect;
   Vector2 origin = {0.0f, 0.0f};
@@ -24,6 +25,6 @@ public:
   void Init() override;
   void Draw() override;
 
-private:
+ private:
   std::weak_ptr<TransformComponent> m_transform;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 class Performance {
-public:
+ public:
   Performance();
   void Draw(float deltaTime);
 

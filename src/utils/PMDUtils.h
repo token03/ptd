@@ -1,17 +1,16 @@
 #pragma once
 
-#include "data/PMDData.h"
 #include <filesystem>
 #include <optional>
 #include <string>
 
+#include "data/PMDData.h"
+
 namespace PMDUtils {
 
-std::optional<AnimationData>
-parseAnimationData(const std::filesystem::path &xmlPath);
+std::optional<AnimationData> parseAnimationData(const std::filesystem::path &xmlPath);
 
-std::string findAnimationBaseName(const PMDData &form,
-                                  const std::string &animationName);
+std::string findAnimationBaseName(const PMDData &form, const std::string &animationName);
 
 std::string generateFullName(const std::string &formattedParentName,
                              const std::string &unformattedEntryName);
@@ -19,4 +18,4 @@ std::string generateFullName(const std::string &formattedParentName,
 std::string generateFullId(const std::string &dex,
                            const std::filesystem::path &relativePath);
 
-} // namespace PMDUtils
+}  // namespace PMDUtils

@@ -1,7 +1,7 @@
 #pragma once
 
 class Console {
-public:
+ public:
   Console();
   void Draw();
 

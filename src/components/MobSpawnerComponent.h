@@ -1,22 +1,23 @@
 #pragma once
 
-#include "core/Component.h"
-#include "core/GameObject.h"
 #include <memory>
 #include <vector>
+
+#include "core/Component.h"
+#include "core/GameObject.h"
 
 class PokemonFactory;
 class PathComponent;
 
 class MobSpawnerComponent : public Component {
-public:
+ public:
   MobSpawnerComponent(std::shared_ptr<PokemonFactory> factory,
                       std::weak_ptr<PathComponent> path,
                       std::vector<std::shared_ptr<GameObject>> &spawnQueue);
 
   void Update(float deltaTime) override;
 
-private:
+ private:
   void SpawnMob();
 
   std::shared_ptr<PokemonFactory> m_factory;

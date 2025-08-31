@@ -24,11 +24,12 @@ enum class PokemonType {
   FAIRY
 };
 
-template <> struct glz::meta<PokemonType> {
+template <>
+struct glz::meta<PokemonType> {
   using enum PokemonType;
-  static constexpr auto value = enumerate(
-      NONE, NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND,
-      FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, DARK, STEEL, FAIRY);
+  static constexpr auto value =
+      enumerate(NONE, NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND,
+                FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, DARK, STEEL, FAIRY);
 };
 
 enum class Gender { Male, Female, Genderless };

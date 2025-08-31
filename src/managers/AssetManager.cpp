@@ -46,8 +46,10 @@ bool AssetManager::loadPokemonSpriteData(const std::string& dexNumber) {
   return true;
 }
 
-void AssetManager::processTrackerEntry(const std::string& dex, const std::string& subgroupId,
-                                       const TrackerEntry& entry, const std::string& parentName,
+void AssetManager::processTrackerEntry(const std::string& dex,
+                                       const std::string& subgroupId,
+                                       const TrackerEntry& entry,
+                                       const std::string& parentName,
                                        const std::filesystem::path& parentPath) {
   std::string currentFullName = PMDUtils::generateFullName(parentName, entry.name);
   std::filesystem::path currentRelativePath = parentPath / subgroupId;
@@ -65,14 +67,16 @@ void AssetManager::processTrackerEntry(const std::string& dex, const std::string
       m_pmdCollabPath / "sprite" / dex / currentRelativePath / "AnimData.xml";
   newForm->animData = PMDUtils::parseAnimationData(animDataPath);
 
-  std::filesystem::path spritePath = m_pmdCollabPath / "sprite" / dex / currentRelativePath;
+  std::filesystem::path spritePath =
+      m_pmdCollabPath / "sprite" / dex / currentRelativePath;
   if (std::filesystem::exists(spritePath) && std::filesystem::is_directory(spritePath)) {
     const std::string animSuffix = "-Anim.png";
     for (const auto& dir_entry : std::filesystem::directory_iterator{spritePath}) {
       if (dir_entry.is_regular_file()) {
         std::string filename = dir_entry.path().filename().string();
         if (filename.ends_with(animSuffix)) {
-          std::string baseName = filename.substr(0, filename.length() - animSuffix.length());
+          std::string baseName =
+              filename.substr(0, filename.length() - animSuffix.length());
           newForm->animFileBases.push_back(baseName);
         }
       }
@@ -116,7 +120,8 @@ Texture2D AssetManager::getAnimationTexture(const std::string& formId,
   std::string baseName = PMDUtils::findAnimationBaseName(*form, animationName);
 
   if (baseName.empty()) {
-    spdlog::error("No texture file for animation '{}' in form '{}'", animationName, form->fullName);
+    spdlog::error("No texture file for animation '{}' in form '{}'", animationName,
+                  form->fullName);
     return Texture2D{0};
   }
 

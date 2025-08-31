@@ -1,7 +1,7 @@
 #pragma once
 
 class Visualizer {
-public:
+ public:
   Visualizer();
   void Draw();
 

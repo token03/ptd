@@ -1,20 +1,22 @@
 #include "PathComponent.h"
-#include "raylib.h"
-#include "raymath.h"
+
 #include <algorithm>
 #include <utility>
+
+#include "raylib.h"
+#include "raymath.h"
 
 PathComponent::PathComponent(std::vector<Vector2> points, PathType type)
     : m_points(std::move(points)), pathType(type) {}
 
 void PathComponent::Draw() {
   switch (pathType) {
-  case LINEAR:
-    DrawSplineLinear(m_points.data(), m_points.size(), 5, pathColor);
-    break;
-  case CATMULL_ROM:
-    DrawSplineCatmullRom(m_points.data(), m_points.size(), 5, pathColor);
-    break;
+    case LINEAR:
+      DrawSplineLinear(m_points.data(), m_points.size(), 5, pathColor);
+      break;
+    case CATMULL_ROM:
+      DrawSplineCatmullRom(m_points.data(), m_points.size(), 5, pathColor);
+      break;
   }
 
   for (const auto &point : m_points) {
@@ -23,26 +25,23 @@ void PathComponent::Draw() {
 }
 
 Vector2 PathComponent::GetPointAt(float t) const {
-  if (m_points.empty())
-    return {0, 0};
-  if (m_points.size() == 1)
-    return m_points[0];
+  if (m_points.empty()) return {0, 0};
+  if (m_points.size() == 1) return m_points[0];
 
   t = std::max(0.0f, std::min(1.0f, t));
 
   switch (pathType) {
-  case LINEAR:
-    return GetPointLinear(t);
-  case CATMULL_ROM:
-    return GetPointCatmullRom(t);
-  default:
-    return m_points[0];
+    case LINEAR:
+      return GetPointLinear(t);
+    case CATMULL_ROM:
+      return GetPointCatmullRom(t);
+    default:
+      return m_points[0];
   }
 }
 
 Vector2 PathComponent::GetPointLinear(float t) const {
-  if (m_points.size() < 2)
-    return m_points[0];
+  if (m_points.size() < 2) return m_points[0];
 
   float totalLength = (m_points.size() - 1) * t;
   int segmentIndex = static_cast<int>(totalLength);
@@ -59,8 +58,7 @@ Vector2 PathComponent::GetPointLinear(float t) const {
 }
 
 Vector2 PathComponent::GetPointCatmullRom(float t) const {
-  if (m_points.size() < 4)
-    return GetPointLinear(t);
+  if (m_points.size() < 4) return GetPointLinear(t);
 
   int numSegments = m_points.size() - 3;
   float segmentT = t * numSegments;
@@ -89,8 +87,7 @@ Vector2 PathComponent::GetPointCatmullRom(float t) const {
 }
 
 void PathComponent::CalculateLengthData() const {
-  if (m_lengthDataCalculated)
-    return;
+  if (m_lengthDataCalculated) return;
 
   m_cumulativeLengths.clear();
   m_totalLength = 0.0f;
@@ -138,12 +135,9 @@ float PathComponent::GetTotalLength() const {
 Vector2 PathComponent::GetPointAtDistance(float distance) const {
   CalculateLengthData();
 
-  if (m_points.empty())
-    return {0, 0};
-  if (distance <= 0)
-    return m_points.front();
-  if (distance >= m_totalLength)
-    return m_points.back();
+  if (m_points.empty()) return {0, 0};
+  if (distance <= 0) return m_points.front();
+  if (distance >= m_totalLength) return m_points.back();
 
   if (pathType == LINEAR) {
     for (size_t i = 1; i < m_cumulativeLengths.size(); ++i) {
@@ -151,8 +145,7 @@ Vector2 PathComponent::GetPointAtDistance(float distance) const {
         float segmentStartDistance = m_cumulativeLengths[i - 1];
         float segmentLength = m_cumulativeLengths[i] - segmentStartDistance;
         float distanceIntoSegment = distance - segmentStartDistance;
-        float t =
-            (segmentLength > 0) ? (distanceIntoSegment / segmentLength) : 0.0f;
+        float t = (segmentLength > 0) ? (distanceIntoSegment / segmentLength) : 0.0f;
         return Vector2Lerp(m_points[i - 1], m_points[i], t);
       }
     }

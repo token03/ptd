@@ -10,9 +10,10 @@ struct Stats {
   int speed = 0;
 };
 
-template <> struct glz::meta<Stats> {
+template <>
+struct glz::meta<Stats> {
   using T = Stats;
-  static constexpr auto value = glz::object(
-      "hp", &T::hp, "attack", &T::attack, "defense", &T::defense, "spAttack",
-      &T::spAttack, "spDefense", &T::spDefense, "speed", &T::speed);
+  static constexpr auto value =
+      glz::object("hp", &T::hp, "attack", &T::attack, "defense", &T::defense, "spAttack",
+                  &T::spAttack, "spDefense", &T::spDefense, "speed", &T::speed);
 };

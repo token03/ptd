@@ -5,7 +5,7 @@
 class GameObject;
 
 class Component : public std::enable_shared_from_this<Component> {
-public:
+ public:
   virtual ~Component() = default;
 
   virtual void Init() {}
@@ -15,7 +15,7 @@ public:
 
   std::weak_ptr<GameObject> owner;
 
-protected:
+ protected:
   template <typename... T>
   void assignRequiredComponent(std::weak_ptr<T> &...components);
   template <typename... T>

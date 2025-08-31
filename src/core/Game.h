@@ -1,22 +1,23 @@
 #pragma once
 
-#include "core/GameObject.h"
-#include "raylib.h"
 #include <memory>
 #include <vector>
+
+#include "core/GameObject.h"
+#include "raylib.h"
 
 class AssetManager;
 class DataManager;
 class PokemonFactory;
 
 class Game {
-public:
+ public:
   Game();
   ~Game();
 
   int Run();
 
-private:
+ private:
   void Load();
   void LoadTestData();
   void Update(float deltaTime);

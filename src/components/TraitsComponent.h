@@ -4,7 +4,7 @@
 #include "data/Enums.h"
 
 class TraitsComponent : public Component {
-public:
+ public:
   TraitsComponent(Nature p_nature, Gender p_gender, bool p_isShiny);
 
   Nature nature;

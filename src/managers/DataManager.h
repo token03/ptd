@@ -1,14 +1,15 @@
 #pragma once
 
-#include "data/SpeciesData.h"
-#include "data/TypeChart.h"
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 
+#include "data/SpeciesData.h"
+#include "data/TypeChart.h"
+
 class DataManager {
-public:
+ public:
   DataManager(const std::string &pokedexPath, const std::string &typeChartPath);
 
   std::optional<std::string> getDexNumber(const std::string &speciesName) const;
@@ -16,7 +17,7 @@ public:
 
   std::shared_ptr<TypeChart> getTypeChart() const;
 
-private:
+ private:
   void loadPokedex(const std::string &path);
   void loadTypeChart(const std::string &path);
 

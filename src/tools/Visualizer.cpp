@@ -1,4 +1,5 @@
 #include "tools/Visualizer.h"
+
 #include "imgui.h"
 
 Visualizer::Visualizer() : m_showWindow(false) {}

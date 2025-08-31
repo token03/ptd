@@ -1,10 +1,11 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 #include "SpriteComponent.h"
 #include "core/Component.h"
 #include "data/PMDData.h"
-#include <memory>
-#include <string>
 
 enum class Direction {
   South,
@@ -20,9 +21,8 @@ enum class Direction {
 class AssetManager;
 
 class AnimationComponent : public Component {
-public:
-  AnimationComponent(std::shared_ptr<AssetManager> assetManager,
-                     std::string formId);
+ public:
+  AnimationComponent(std::shared_ptr<AssetManager> assetManager, std::string formId);
   void Init() override;
   void Update(float deltaTime) override;
   void Play(const std::string &animationName, bool reset = false);
@@ -30,7 +30,7 @@ public:
   void SetDirection(Direction direction);
   Direction GetDirection() const { return m_direction; }
 
-private:
+ private:
   void UpdateSpriteRect();
 
   std::weak_ptr<AssetManager> m_assetManager;

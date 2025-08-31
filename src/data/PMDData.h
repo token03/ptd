@@ -29,7 +29,8 @@ struct Credit {
   std::vector<std::string> secondary;
 };
 
-template <> struct glz::meta<Credit> {
+template <>
+struct glz::meta<Credit> {
   using T = Credit;
   static constexpr auto value =
       object("primary", &T::primary, "secondary", &T::secondary);
@@ -46,16 +47,17 @@ struct TrackerEntry {
   SubgroupsMap subgroups;
 };
 
-template <> struct glz::meta<TrackerEntry> {
+template <>
+struct glz::meta<TrackerEntry> {
   using T = TrackerEntry;
   static constexpr auto value =
-      object("name", &T::name, "sprite_credit", &T::sprite_credit,
-             "portrait_credit", &T::portrait_credit, "portrait_files",
-             &T::portrait_files, "subgroups", &T::subgroups);
+      object("name", &T::name, "sprite_credit", &T::sprite_credit, "portrait_credit",
+             &T::portrait_credit, "portrait_files", &T::portrait_files, "subgroups",
+             &T::subgroups);
 };
 
 class PMDData {
-public:
+ public:
   std::string fullId;
   std::string fullName;
   std::string dex;

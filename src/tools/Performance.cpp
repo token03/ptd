@@ -1,9 +1,12 @@
 #include "tools/Performance.h"
-#include "imgui.h"
+
+#include <raylib.h>
+
 #include <cstdio>
 #include <fstream>
-#include <raylib.h>
 #include <string>
+
+#include "imgui.h"
 
 Performance::Performance() : m_showWindow(false) {}
 

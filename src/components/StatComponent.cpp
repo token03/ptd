@@ -1,9 +1,11 @@
 #include "components/StatComponent.h"
-#include "core/GameObject.h" // IWYU pragma: keep - required for assignRequiredComponent
-#include "spdlog/spdlog.h"
+
 #include <cmath>
 #include <map>
 #include <memory>
+
+#include "core/GameObject.h"  // IWYU pragma: keep - required for assignRequiredComponent
+#include "spdlog/spdlog.h"
 
 static std::map<Nature, std::pair<Stat, Stat>> natureStatChanges = {
     {Nature::HARDY, {Stat::ATTACK, Stat::ATTACK}},
@@ -41,19 +43,23 @@ static std::map<Nature, std::pair<Stat, Stat>> natureStatChanges = {
 float getNatureModifier(Nature nature, Stat stat) {
   auto it = natureStatChanges.find(nature);
   if (it != natureStatChanges.end()) {
-    if (it->second.first == stat)
-      return 1.1f;
-    if (it->second.second == stat)
-      return 0.9f;
+    if (it->second.first == stat) return 1.1f;
+    if (it->second.second == stat) return 0.9f;
   }
   return 1.0f;
 }
 
-StatComponent::StatComponent(int initialLevel, Stats initialIVs,
-                             Stats initialEVs)
-    : level(initialLevel), m_ivs(initialIVs), m_evs(initialEVs), maxHp(0),
-      currentHp(0), attack(0), defense(0), spAttack(0), spDefense(0), speed(0) {
-}
+StatComponent::StatComponent(int initialLevel, Stats initialIVs, Stats initialEVs)
+    : level(initialLevel),
+      m_ivs(initialIVs),
+      m_evs(initialEVs),
+      maxHp(0),
+      currentHp(0),
+      attack(0),
+      defense(0),
+      spAttack(0),
+      spDefense(0),
+      speed(0) {}
 
 void StatComponent::Init() {
   assignRequiredComponent(m_species, m_traits);
@@ -71,8 +77,7 @@ void StatComponent::CalculateStats() {
 
   const Stats &base = species->baseStats;
 
-  maxHp =
-      (((2 * base.hp + m_ivs.hp + (m_evs.hp / 4)) * level) / 100) + level + 10;
+  maxHp = (((2 * base.hp + m_ivs.hp + (m_evs.hp / 4)) * level) / 100) + level + 10;
 
   auto calculate_stat = [&](int base_val, int iv, int ev, Stat stat_enum) {
     float natureMod = getNatureModifier(traits->nature, stat_enum);
@@ -80,20 +85,18 @@ void StatComponent::CalculateStats() {
     return static_cast<int>(std::floor(stat * natureMod));
   };
 
-  attack =
-      calculate_stat(base.attack, m_ivs.attack, m_evs.attack, Stat::ATTACK);
-  defense =
-      calculate_stat(base.defense, m_ivs.defense, m_evs.defense, Stat::DEFENSE);
-  spAttack = calculate_stat(base.spAttack, m_ivs.spAttack, m_evs.spAttack,
-                            Stat::SPATTACK);
-  spDefense = calculate_stat(base.spDefense, m_ivs.spDefense, m_evs.spDefense,
-                             Stat::SPDEFENSE);
+  attack = calculate_stat(base.attack, m_ivs.attack, m_evs.attack, Stat::ATTACK);
+  defense = calculate_stat(base.defense, m_ivs.defense, m_evs.defense, Stat::DEFENSE);
+  spAttack =
+      calculate_stat(base.spAttack, m_ivs.spAttack, m_evs.spAttack, Stat::SPATTACK);
+  spDefense =
+      calculate_stat(base.spDefense, m_ivs.spDefense, m_evs.spDefense, Stat::SPDEFENSE);
   speed = calculate_stat(base.speed, m_ivs.speed, m_evs.speed, Stat::SPEED);
 
   currentHp = maxHp;
 
-  spdlog::info("{} at level {} has {} HP, {} ATK.", species->speciesName, level,
-               maxHp, attack);
+  spdlog::info("{} at level {} has {} HP, {} ATK.", species->speciesName, level, maxHp,
+               attack);
 }
 
 void StatComponent::SetLevel(int newLevel) {
@@ -103,8 +106,7 @@ void StatComponent::SetLevel(int newLevel) {
 
 void StatComponent::TakeDamage(int damage) {
   int damageTaken = damage - (defense / 2);
-  if (damageTaken < 1)
-    damageTaken = 1;
+  if (damageTaken < 1) damageTaken = 1;
 
   currentHp -= damageTaken;
   if (currentHp < 0) {

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Enums.h"
 #include <glaze/glaze.hpp>
 #include <vector>
+
+#include "Enums.h"
 
 struct EffectivenessData {
   PokemonType against;
@@ -14,13 +15,14 @@ struct TypeData {
   std::vector<EffectivenessData> effectiveness;
 };
 
-template <> struct glz::meta<EffectivenessData> {
+template <>
+struct glz::meta<EffectivenessData> {
   using T = EffectivenessData;
-  static constexpr auto value =
-      glz::object("against", &T::against, "value", &T::value);
+  static constexpr auto value = glz::object("against", &T::against, "value", &T::value);
 };
 
-template <> struct glz::meta<TypeData> {
+template <>
+struct glz::meta<TypeData> {
   using T = TypeData;
   static constexpr auto value =
       glz::object("type", &T::type, "effectiveness", &T::effectiveness);

@@ -1,4 +1,5 @@
 #include "PokemonFactory.h"
+
 #include "components/AnimationComponent.h"
 #include "components/SpeciesComponent.h"
 #include "components/SpriteComponent.h"
@@ -10,8 +11,7 @@
 
 PokemonFactory::PokemonFactory(std::shared_ptr<AssetManager> assetManager,
                                std::shared_ptr<DataManager> dataManager)
-    : m_assetManager(std::move(assetManager)),
-      m_dataManager(std::move(dataManager)) {}
+    : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
 
 std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
     const std::string &speciesName, const PokemonInstance &config,
@@ -38,17 +38,16 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
   m_assetManager->loadPokemonSpriteData(dexNumber);
   const auto form = m_assetManager->getForm(dexNumber);
   if (!form || !form->animData) {
-    spdlog::error("Could not create GameObject for dex number: {}. PMD form "
-                  "data not loaded or has no animations.",
-                  dexNumber);
+    spdlog::error(
+        "Could not create GameObject for dex number: {}. PMD form "
+        "data not loaded or has no animations.",
+        dexNumber);
     return nullptr;
   }
 
-  Texture2D texture =
-      m_assetManager->getAnimationTexture(dexNumber, initialAnimation);
+  Texture2D texture = m_assetManager->getAnimationTexture(dexNumber, initialAnimation);
   if (texture.id <= 0) {
-    spdlog::error("Could not load initial texture for animation: {}",
-                  initialAnimation);
+    spdlog::error("Could not load initial texture for animation: {}", initialAnimation);
     return nullptr;
   }
 
@@ -58,8 +57,7 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
   gameObject->AddComponent<SpriteComponent>(texture);
   gameObject->AddComponent<AnimationComponent>(m_assetManager, dexNumber);
   gameObject->AddComponent<SpeciesComponent>(speciesData);
-  gameObject->AddComponent<TraitsComponent>(config.nature, config.gender,
-                                            config.isShiny);
+  gameObject->AddComponent<TraitsComponent>(config.nature, config.gender, config.isShiny);
   gameObject->AddComponent<StatComponent>(config.level, config.ivs, config.evs);
   gameObject->GetComponent<AnimationComponent>().Play(initialAnimation);
 
@@ -69,7 +67,6 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
 std::shared_ptr<GameObject> PokemonFactory::CreateRandomPokemonObject(
     const std::string &speciesName, int minLevel, int maxLevel,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
-
   PokemonInstance config;
   config.level = GetRandomValue(minLevel, maxLevel);
   config.nature = static_cast<Nature>(GetRandomValue(0, 24));
@@ -89,6 +86,5 @@ std::shared_ptr<GameObject> PokemonFactory::CreateRandomPokemonObject(
   // TODO: Remove this hardcoded shiny rate (1 in 4096)
   config.isShiny = (GetRandomValue(0, 4095) == 0);
 
-  return CreatePokemonObject(speciesName, config, initialAnimation, position,
-                             scale);
+  return CreatePokemonObject(speciesName, config, initialAnimation, position, scale);
 }

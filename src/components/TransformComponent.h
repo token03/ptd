@@ -4,7 +4,7 @@
 #include "raylib.h"
 
 class TransformComponent : public Component {
-public:
+ public:
   TransformComponent(Vector2 pos = {0.0f, 0.0f}, Vector2 scl = {1.0f, 1.0f})
       : position(pos), scale(scl), rotation(0.0f) {}
 

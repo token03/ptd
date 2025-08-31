@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Enums.h"
-#include "Stats.h"
 #include <glaze/glaze.hpp>
 #include <string>
 #include <vector>
+
+#include "Enums.h"
+#include "Stats.h"
 
 struct SpeciesData {
   std::string dexNumber;
@@ -13,9 +14,10 @@ struct SpeciesData {
   Stats baseStats;
 };
 
-template <> struct glz::meta<SpeciesData> {
+template <>
+struct glz::meta<SpeciesData> {
   using T = SpeciesData;
   static constexpr auto value =
-      glz::object("dexNumber", &T::dexNumber, "speciesName", &T::speciesName,
-                  "types", &T::types, "baseStats", &T::baseStats);
+      glz::object("dexNumber", &T::dexNumber, "speciesName", &T::speciesName, "types",
+                  &T::types, "baseStats", &T::baseStats);
 };

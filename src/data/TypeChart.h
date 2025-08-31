@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Enums.h"
-#include "TypeData.h"
 #include <unordered_map>
 #include <vector>
 
+#include "Enums.h"
+#include "TypeData.h"
+
 class TypeChart {
-public:
+ public:
   TypeChart(const std::vector<TypeData> &allTypeData) {
     for (const auto &typeData : allTypeData) {
       for (const auto &eff : typeData.effectiveness) {
@@ -24,7 +25,6 @@ public:
     return 1.0f;
   }
 
-private:
-  std::unordered_map<PokemonType, std::unordered_map<PokemonType, float>>
-      m_chart;
+ private:
+  std::unordered_map<PokemonType, std::unordered_map<PokemonType, float>> m_chart;
 };

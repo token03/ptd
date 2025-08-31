@@ -1,4 +1,5 @@
 #include "MobSpawnerComponent.h"
+
 #include "PathComponent.h"
 #include "PathFollowerComponent.h"
 #include "factories/PokemonFactory.h"
@@ -28,8 +29,8 @@ void MobSpawnerComponent::SpawnMob() {
 
   Vector2 startPosition = path->GetPointAt(0.0f);
 
-  auto newMob = m_factory->CreateRandomPokemonObject(
-      "raichu", 5, 5, "Walk", startPosition, {2.5f, 2.5f});
+  auto newMob = m_factory->CreateRandomPokemonObject("raichu", 5, 5, "Walk",
+                                                     startPosition, {2.5f, 2.5f});
 
   if (newMob) {
     newMob->AddComponent<MovableComponent>();

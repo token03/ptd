@@ -1,13 +1,14 @@
 #pragma once
 
+#include <memory>
+
 #include "components/SpeciesComponent.h"
 #include "components/TraitsComponent.h"
 #include "core/Component.h"
 #include "data/Stats.h"
-#include <memory>
 
 class StatComponent : public Component {
-public:
+ public:
   StatComponent(int initialLevel, Stats initialIVs, Stats initialEVs);
   void Init() override;
 
@@ -20,7 +21,7 @@ public:
   int maxHp, currentHp;
   int attack, defense, spAttack, spDefense, speed;
 
-private:
+ private:
   Stats m_ivs;
   Stats m_evs;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 class Editor {
-public:
+ public:
   Editor();
   void Draw();
 

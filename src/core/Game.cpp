@@ -1,4 +1,10 @@
-#include "core/Game.h"
+#include "Game.h"
+
+#include <imgui.h>
+
+#include <algorithm>
+#include <filesystem>
+
 #include "components/AnimationComponent.h"
 #include "components/MobSpawnerComponent.h"
 #include "components/PathComponent.h"
@@ -9,9 +15,6 @@
 #include "rlImGui.h"
 #include "spdlog/spdlog.h"
 #include "tools/Debugger.h"
-#include <algorithm>
-#include <filesystem>
-#include <imgui.h>
 
 Game::Game() {}
 Game::~Game() {}
@@ -25,11 +28,10 @@ void Game::Load() {
   font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 
   m_assetManager = std::make_shared<AssetManager>(assetsPath);
-  m_dataManager = std::make_shared<DataManager>(
-      (dataPath / "pokedex.json").string(), (dataPath / "types.json").string());
+  m_dataManager = std::make_shared<DataManager>((dataPath / "pokedex.json").string(),
+                                                (dataPath / "types.json").string());
 
-  m_pokemonFactory =
-      std::make_shared<PokemonFactory>(m_assetManager, m_dataManager);
+  m_pokemonFactory = std::make_shared<PokemonFactory>(m_assetManager, m_dataManager);
 
   LoadTestData();
 }
@@ -40,8 +42,7 @@ void Game::Update(float deltaTime) {
   }
 
   if (!m_spawnQueue.empty()) {
-    m_gameObjects.insert(m_gameObjects.end(), m_spawnQueue.begin(),
-                         m_spawnQueue.end());
+    m_gameObjects.insert(m_gameObjects.end(), m_spawnQueue.begin(), m_spawnQueue.end());
     m_spawnQueue.clear();
   }
 
@@ -55,8 +56,7 @@ void Game::Update(float deltaTime) {
 void Game::Draw(float deltaTime) {
   BeginDrawing();
   ClearBackground(RAYWHITE);
-  DrawTextEx(font,
-             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ",
+  DrawTextEx(font, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ",
              {20, 20}, 32, 1, DARKGRAY);
 
   for (auto &go : m_gameObjects) {
@@ -127,13 +127,12 @@ void Game::LoadTestData() {
       {padding, (float)screenHeight - padding},
       {(float)screenWidth - padding, (float)screenHeight - padding}};
 
-  auto &path = levelObject->AddComponent<PathComponent>(pathPoints,
-                                                        PathType::CATMULL_ROM);
+  auto &path =
+      levelObject->AddComponent<PathComponent>(pathPoints, PathType::CATMULL_ROM);
   path.pathColor = RED;
 
   levelObject->AddComponent<MobSpawnerComponent>(
-      m_pokemonFactory, levelObject->GetComponentShared<PathComponent>(),
-      m_spawnQueue);
+      m_pokemonFactory, levelObject->GetComponentShared<PathComponent>(), m_spawnQueue);
 
   m_gameObjects.push_back(levelObject);
 }

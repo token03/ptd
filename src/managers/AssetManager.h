@@ -1,14 +1,15 @@
 #pragma once
 
-#include "data/PMDData.h"
-#include "raylib.h"
 #include <filesystem>
 #include <map>
 #include <memory>
 #include <string>
 
+#include "data/PMDData.h"
+#include "raylib.h"
+
 class AssetManager {
-public:
+ public:
   AssetManager(const std::filesystem::path &assetRoot);
   ~AssetManager();
 
@@ -21,14 +22,12 @@ public:
   Texture2D getAnimationTexture(const std::string &formId,
                                 const std::string &animationName);
 
-private:
-  void processTrackerEntry(const std::string &dex,
-                           const std::string &subgroupId,
-                           const TrackerEntry &entry,
-                           const std::string &parentName,
+ private:
+  void processTrackerEntry(const std::string &dex, const std::string &subgroupId,
+                           const TrackerEntry &entry, const std::string &parentName,
                            const std::filesystem::path &parentPath);
 
-private:
+ private:
   std::filesystem::path m_assetRoot;
   std::filesystem::path m_pmdCollabPath;
   std::filesystem::path m_portraitPath;

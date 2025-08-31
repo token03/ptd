@@ -1,6 +1,8 @@
 #include "TransformComponent.h"
-#include "raymath.h"
+
 #include <cmath>
+
+#include "raymath.h"
 
 Vector2 TransformComponent::GetForward() const {
   float radians = rotation * (PI / 180.0f);

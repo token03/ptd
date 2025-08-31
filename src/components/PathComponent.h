@@ -1,13 +1,14 @@
 #pragma once
 
+#include <vector>
+
 #include "core/Component.h"
 #include "raylib.h"
-#include <vector>
 
 enum PathType { LINEAR, CATMULL_ROM };
 
 class PathComponent : public Component {
-public:
+ public:
   PathComponent(std::vector<Vector2> points, PathType type);
 
   void Draw() override;
@@ -18,7 +19,7 @@ public:
   Color pathColor = LIGHTGRAY;
   PathType pathType = LINEAR;
 
-private:
+ private:
   std::vector<Vector2> m_points;
   mutable std::vector<float> m_cumulativeLengths;
   mutable float m_totalLength = 0.0f;

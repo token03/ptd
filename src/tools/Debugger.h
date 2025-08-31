@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "core/GameObject.h"
 #include "tools/Console.h"
 #include "tools/Editor.h"
@@ -7,11 +10,9 @@
 #include "tools/Performance.h"
 #include "tools/Spawner.h"
 #include "tools/Visualizer.h"
-#include <memory>
-#include <vector>
 
 class Debugger {
-public:
+ public:
   static Debugger &GetInstance();
 
   Debugger(const Debugger &) = delete;
@@ -20,10 +21,9 @@ public:
   void Initialize();
   void Shutdown();
 
-  void Draw(const std::vector<std::shared_ptr<GameObject>> &gameObjects,
-            float deltaTime);
+  void Draw(const std::vector<std::shared_ptr<GameObject>> &gameObjects, float deltaTime);
 
-private:
+ private:
   Debugger();
   ~Debugger();
 
