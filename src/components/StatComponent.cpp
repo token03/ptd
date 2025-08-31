@@ -51,6 +51,7 @@ float getNatureModifier(Nature nature, Stat stat) {
   }
   return 1.0f;
 }
+// ...end of unchanged code
 
 StatComponent::StatComponent(int initialLevel, Stats initialIVs,
                              Stats initialEVs)
@@ -60,33 +61,36 @@ StatComponent::StatComponent(int initialLevel, Stats initialIVs,
 
 void StatComponent::Init() {
   if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
-    if (!ownerPtr->HasComponent<SpeciesComponent>() ||
-        !ownerPtr->HasComponent<PersonalityComponent>()) {
-      throw std::runtime_error("StatComponent requires SpeciesComponent and "
-                               "PersonalityComponent.");
-    }
-    m_species = &ownerPtr->GetComponent<SpeciesComponent>();
-    m_personality = &ownerPtr->GetComponent<PersonalityComponent>();
-  } else {
-    throw std::runtime_error("StatComponent has no owner during Init.");
-  }
+    m_species = ownerPtr->GetComponentShared<SpeciesComponent>();
+    m_personality = ownerPtr->GetComponentShared<PersonalityComponent>();
 
+    if (m_species.expired() || m_personality.expired()) {
+      throw std::runtime_error("StatComponent is missing required components "
+                               "(Species or Personality).");
+    }
+  } else {
+    throw std::runtime_error(
+        "StatComponent has no owner during initialization.");
+  }
   CalculateStats();
 }
 
 void StatComponent::CalculateStats() {
-  if (!m_species || !m_personality) {
+  auto species = m_species.lock();
+  auto personality = m_personality.lock();
+
+  if (!species || !personality) {
     spdlog::error("Cannot calculate stats, required components are missing!");
     return;
   }
 
-  const Stats &base = m_species->baseStats;
+  const Stats &base = species->baseStats;
 
   maxHp =
       (((2 * base.hp + m_ivs.hp + (m_evs.hp / 4)) * level) / 100) + level + 10;
 
   auto calculate_stat = [&](int base_val, int iv, int ev, Stat stat_enum) {
-    float natureMod = getNatureModifier(m_personality->nature, stat_enum);
+    float natureMod = getNatureModifier(personality->nature, stat_enum);
     int stat = (((2 * base_val + iv + (ev / 4)) * level) / 100) + 5;
     return static_cast<int>(std::floor(stat * natureMod));
   };
@@ -103,8 +107,8 @@ void StatComponent::CalculateStats() {
 
   currentHp = maxHp;
 
-  spdlog::info("{} at level {} has {} HP, {} ATK.", m_species->speciesName,
-               level, maxHp, attack);
+  spdlog::info("{} at level {} has {} HP, {} ATK.", species->speciesName, level,
+               maxHp, attack);
 }
 
 void StatComponent::SetLevel(int newLevel) {

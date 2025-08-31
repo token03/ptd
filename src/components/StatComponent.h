@@ -2,6 +2,7 @@
 
 #include "core/Component.h"
 #include "data/Stats.h"
+#include <memory>
 
 class SpeciesComponent;
 class PersonalityComponent;
@@ -24,6 +25,6 @@ private:
   Stats m_ivs;
   Stats m_evs;
 
-  SpeciesComponent *m_species = nullptr;
-  PersonalityComponent *m_personality = nullptr;
+  std::weak_ptr<SpeciesComponent> m_species;
+  std::weak_ptr<PersonalityComponent> m_personality;
 };

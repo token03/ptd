@@ -6,23 +6,12 @@
 #include <memory>
 #include <typeindex>
 
-class Component;
-
 class GameObject : public std::enable_shared_from_this<GameObject> {
 public:
   ~GameObject() = default;
 
-  void Update(float deltaTime) {
-    for (auto const &[key, val] : m_components) {
-      val->Update(deltaTime);
-    }
-  }
-
-  void Draw() {
-    for (auto const &[key, val] : m_components) {
-      val->Draw();
-    }
-  }
+  void Update(float deltaTime);
+  void Draw();
 
   template <typename T, typename... TArgs> T &AddComponent(TArgs &&...args) {
     if (HasComponent<T>()) {
