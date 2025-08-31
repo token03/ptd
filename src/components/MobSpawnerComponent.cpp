@@ -33,7 +33,7 @@ void MobSpawnerComponent::SpawnMob() {
 
   if (newMob) {
     newMob->AddComponent<MovableComponent>();
-    newMob->AddComponent<PathFollowerComponent>(m_path, 100.0f);
+    newMob->AddComponent<PathFollowerComponent>(m_path, 500.0f);
     m_spawnQueue.push_back(newMob);
   }
 }

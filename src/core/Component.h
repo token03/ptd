@@ -9,6 +9,7 @@ public:
   virtual ~Component() = default;
 
   virtual void Init() {}
+  virtual void OnDestroy() {}
   virtual void Update(float deltaTime) {}
   virtual void Draw() {}
 

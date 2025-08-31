@@ -13,6 +13,9 @@ public:
   void Update(float deltaTime);
   void Draw();
 
+  void Destroy();
+  bool IsDestroyed() const { return m_isDestroyed; }
+
   template <typename T, typename... TArgs> T &AddComponent(TArgs &&...args) {
     if (HasComponent<T>()) {
       return GetComponent<T>();
@@ -51,6 +54,7 @@ public:
   }
 
 private:
+  bool m_isDestroyed = false;
   std::map<std::type_index, std::shared_ptr<Component>> m_components;
 };
 

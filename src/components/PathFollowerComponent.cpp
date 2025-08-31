@@ -17,12 +17,14 @@ void PathFollowerComponent::Update(float deltaTime) {
   auto path = m_path.lock();
   auto transform = m_transform.lock();
   auto movable = m_movable.lock();
+  auto ownerGameObject = owner.lock();
 
-  if (path && transform && movable) {
+  if (path && transform && movable && ownerGameObject) {
     float totalLength = path->GetTotalLength();
 
     if (m_distanceTraveled >= totalLength) {
       movable->SetVelocity({0.0f, 0.0f});
+      ownerGameObject->Destroy();
       return;
     }
 

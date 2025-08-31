@@ -9,6 +9,7 @@
 #include "rlImGui.h"
 #include "spdlog/spdlog.h"
 #include "tools/Debugger.h"
+#include <algorithm>
 #include <filesystem>
 #include <imgui.h>
 
@@ -35,11 +36,17 @@ void Game::Update(float deltaTime) {
     go->Update(deltaTime);
   }
 
-  if (!m_newGameObjects.empty()) {
-    m_gameObjects.insert(m_gameObjects.end(), m_newGameObjects.begin(),
-                         m_newGameObjects.end());
-    m_newGameObjects.clear();
+  if (!m_spawnQueue.empty()) {
+    m_gameObjects.insert(m_gameObjects.end(), m_spawnQueue.begin(),
+                         m_spawnQueue.end());
+    m_spawnQueue.clear();
   }
+
+  m_gameObjects.erase(std::remove_if(m_gameObjects.begin(), m_gameObjects.end(),
+                                     [](const std::shared_ptr<GameObject> &go) {
+                                       return go->IsDestroyed();
+                                     }),
+                      m_gameObjects.end());
 }
 
 void Game::Draw(float deltaTime) {
@@ -126,7 +133,7 @@ void Game::LoadTestData() {
 
   levelObject->AddComponent<MobSpawnerComponent>(
       m_pokemonFactory, levelObject->GetComponentShared<PathComponent>(),
-      m_newGameObjects);
+      m_spawnQueue);
 
   m_gameObjects.push_back(levelObject);
 }

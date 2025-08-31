@@ -25,7 +25,7 @@ private:
   const int screenHeight = 720;
 
   std::vector<std::shared_ptr<GameObject>> m_gameObjects;
-  std::vector<std::shared_ptr<GameObject>> m_newGameObjects;
+  std::vector<std::shared_ptr<GameObject>> m_spawnQueue;
 
   std::shared_ptr<AssetManager> m_assetManager;
   std::shared_ptr<DataManager> m_dataManager;
