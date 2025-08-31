@@ -8,11 +8,7 @@ PathFollowerComponent::PathFollowerComponent(std::weak_ptr<PathComponent> path,
                                              float speed)
     : m_path(path), m_speed(speed) {}
 
-void PathFollowerComponent::Init() {
-  if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
-    m_transform = ownerPtr->GetComponentShared<TransformComponent>();
-  }
-}
+void PathFollowerComponent::Init() { assignRequiredComponent(m_transform); }
 
 void PathFollowerComponent::Update(float deltaTime) {
   auto path = m_path.lock();

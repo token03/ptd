@@ -13,4 +13,8 @@ public:
   virtual void Draw() {}
 
   std::weak_ptr<GameObject> owner;
+
+protected:
+  template <typename... T>
+  void assignRequiredComponent(std::weak_ptr<T> &...components);
 };

@@ -6,14 +6,7 @@ SpriteComponent::SpriteComponent(Texture2D tex) : texture(tex) {
   origin = {(float)texture.width / 2.0f, (float)texture.height / 2.0f};
 }
 
-void SpriteComponent::Init() {
-  if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
-    if (!ownerPtr->HasComponent<TransformComponent>()) {
-      ownerPtr->AddComponent<TransformComponent>();
-    }
-    m_transform = ownerPtr->GetComponentShared<TransformComponent>();
-  }
-}
+void SpriteComponent::Init() { assignRequiredComponent(m_transform); }
 
 void SpriteComponent::Draw() {
   if (!isVisible)

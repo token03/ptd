@@ -1,12 +1,9 @@
 #include "components/StatComponent.h"
-#include "components/PersonalityComponent.h"
-#include "components/SpeciesComponent.h"
 #include "core/GameObject.h"
 #include "spdlog/spdlog.h"
 #include <cmath>
 #include <map>
 #include <memory>
-#include <stdexcept>
 
 static std::map<Nature, std::pair<Stat, Stat>> natureStatChanges = {
     {Nature::Hardy, {Stat::Attack, Stat::Attack}},
@@ -59,18 +56,7 @@ StatComponent::StatComponent(int initialLevel, Stats initialIVs,
 }
 
 void StatComponent::Init() {
-  if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
-    m_species = ownerPtr->GetComponentShared<SpeciesComponent>();
-    m_personality = ownerPtr->GetComponentShared<PersonalityComponent>();
-
-    if (m_species.expired() || m_personality.expired()) {
-      throw std::runtime_error("StatComponent is missing required components "
-                               "(Species or Personality).");
-    }
-  } else {
-    throw std::runtime_error(
-        "StatComponent has no owner during initialization.");
-  }
+  assignRequiredComponent(m_species, m_personality);
   CalculateStats();
 }
 

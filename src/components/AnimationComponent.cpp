@@ -9,15 +9,7 @@ AnimationComponent::AnimationComponent(
     : m_assetManager(std::move(assetManager)), m_formId(std::move(formId)) {}
 
 void AnimationComponent::Init() {
-  if (auto ownerPtr = owner.lock()) {
-    if (!ownerPtr->HasComponent<SpriteComponent>()) {
-      throw std::runtime_error("AnimationComponent requires a SpriteComponent "
-                               "on the same GameObject.");
-    }
-    m_sprite = ownerPtr->GetComponentShared<SpriteComponent>();
-  } else {
-    throw std::runtime_error("AnimationComponent has no owner.");
-  }
+  assignRequiredComponent(m_sprite);
 
   if (auto assetManager = m_assetManager.lock()) {
     m_pmdData = assetManager->getForm(m_formId);

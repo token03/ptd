@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/Component.h"
+#include "Component.h"
 #include "spdlog/spdlog.h"
 #include <map>
 #include <memory>
@@ -53,3 +53,5 @@ public:
 private:
   std::map<std::type_index, std::shared_ptr<Component>> m_components;
 };
+
+#include "Component.inl" // IWYU pragma: keep

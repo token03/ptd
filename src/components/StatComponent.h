@@ -1,11 +1,10 @@
 #pragma once
 
+#include "components/PersonalityComponent.h"
+#include "components/SpeciesComponent.h"
 #include "core/Component.h"
 #include "data/Stats.h"
 #include <memory>
-
-class SpeciesComponent;
-class PersonalityComponent;
 
 class StatComponent : public Component {
 public:

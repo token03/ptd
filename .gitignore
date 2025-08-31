@@ -3,6 +3,7 @@ build/
 compile_commands.json
 imgui.ini
 z.cpp
+.clangd
 
 # Prerequisites
 *.d
