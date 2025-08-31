@@ -35,7 +35,7 @@ private:
 
   std::weak_ptr<AssetManager> m_assetManager;
   std::string m_formId;
-  const AnimationData *m_animData = nullptr;
+  std::weak_ptr<const PMDData> m_pmdData;
   std::weak_ptr<SpriteComponent> m_sprite;
 
   std::string m_currentAnimation;

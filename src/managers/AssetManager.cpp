@@ -1,5 +1,6 @@
 #include "managers/AssetManager.h"
 #include <algorithm>
+#include <memory>
 #include <spdlog/spdlog.h>
 
 AssetManager::AssetManager(const std::filesystem::path &assetRoot)
@@ -61,17 +62,17 @@ void AssetManager::processTrackerEntry(
     currentFullId += "-" + path_str;
   }
 
-  PMDData newForm;
-  newForm.dex = dex;
-  newForm.fullId = currentFullId;
-  newForm.fullName = currentFullName;
-  newForm.formPath = currentRelativePath.string();
-  newForm.spriteCredit = entry.sprite_credit;
-  newForm.portraitCredit = entry.portrait_credit;
+  auto newForm = std::make_shared<PMDData>();
+  newForm->dex = dex;
+  newForm->fullId = currentFullId;
+  newForm->fullName = currentFullName;
+  newForm->formPath = currentRelativePath.string();
+  newForm->spriteCredit = entry.sprite_credit;
+  newForm->portraitCredit = entry.portrait_credit;
 
   std::filesystem::path animDataPath =
       m_pmdCollabPath / "sprite" / dex / currentRelativePath / "AnimData.xml";
-  newForm.animData = parseAnimationData(animDataPath);
+  newForm->animData = parseAnimationData(animDataPath);
 
   std::filesystem::path spritePath =
       m_pmdCollabPath / "sprite" / dex / currentRelativePath;
@@ -85,7 +86,7 @@ void AssetManager::processTrackerEntry(
         if (filename.ends_with(animSuffix)) {
           std::string baseName =
               filename.substr(0, filename.length() - animSuffix.length());
-          newForm.animFileBases.push_back(baseName);
+          newForm->animFileBases.push_back(baseName);
         }
       }
     }
@@ -100,14 +101,14 @@ void AssetManager::processTrackerEntry(
          std::filesystem::directory_iterator{portraitFormPath}) {
       if (dir_entry.is_regular_file() &&
           dir_entry.path().extension() == ".png") {
-        newForm.availablePortraits.insert(dir_entry.path().stem().string());
+        newForm->availablePortraits.insert(dir_entry.path().stem().string());
       }
     }
   }
 
-  if (newForm.animData || !newForm.availablePortraits.empty()) {
+  if (newForm->animData || !newForm->availablePortraits.empty()) {
     m_loadedForms[currentFullId] = newForm;
-    spdlog::info("Loaded form: {} ({})", newForm.fullName, newForm.fullId);
+    spdlog::info("Loaded form: {} ({})", newForm->fullName, newForm->fullId);
   }
 
   for (const auto &[id, subEntry] : entry.subgroups) {
@@ -180,9 +181,10 @@ AssetManager::parseAnimationData(const std::filesystem::path &xmlPath) {
   return data;
 }
 
-const PMDData *AssetManager::getForm(const std::string &fullId) const {
+std::shared_ptr<const PMDData>
+AssetManager::getForm(const std::string &fullId) const {
   auto it = m_loadedForms.find(fullId);
-  return (it != m_loadedForms.end()) ? &it->second : nullptr;
+  return (it != m_loadedForms.end()) ? it->second : nullptr;
 }
 
 std::string
@@ -202,7 +204,7 @@ AssetManager::findAnimationBaseName(const PMDData &form,
 
 Texture2D AssetManager::getAnimationTexture(const std::string &formId,
                                             const std::string &animationName) {
-  const PMDData *form = getForm(formId);
+  auto form = getForm(formId);
   if (!form) {
     spdlog::error("Form not found: {}", formId);
     return Texture2D{0};

@@ -5,6 +5,7 @@
 #include "raylib.h"
 #include <filesystem>
 #include <map>
+#include <memory>
 #include <string>
 
 class AssetManager {
@@ -13,8 +14,8 @@ public:
   ~AssetManager();
 
   bool loadPokemonSpriteData(const std::string &dexNumber);
-  const PMDData *getForm(const std::string &fullId) const;
-  const std::map<std::string, PMDData> &getAllForms() const {
+  std::shared_ptr<const PMDData> getForm(const std::string &fullId) const;
+  const std::map<std::string, std::shared_ptr<PMDData>> &getAllForms() const {
     return m_loadedForms;
   }
 
@@ -37,7 +38,7 @@ private:
   std::filesystem::path m_assetRoot;
   std::filesystem::path m_pmdCollabPath;
   std::filesystem::path m_portraitPath;
-  std::map<std::string, PMDData> m_loadedForms;
+  std::map<std::string, std::shared_ptr<PMDData>> m_loadedForms;
 
   std::map<std::string, TrackerEntry> m_trackerData;
   bool m_trackerLoaded = false;

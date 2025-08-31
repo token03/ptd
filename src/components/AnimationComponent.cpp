@@ -9,21 +9,22 @@ AnimationComponent::AnimationComponent(
     : m_assetManager(std::move(assetManager)), m_formId(std::move(formId)) {}
 
 void AnimationComponent::Init() {
-  if (std::shared_ptr<GameObject> ownerPtr = owner.lock()) {
+  if (auto ownerPtr = owner.lock()) {
     if (!ownerPtr->HasComponent<SpriteComponent>()) {
       throw std::runtime_error("AnimationComponent requires a SpriteComponent "
                                "on the same GameObject.");
     }
     m_sprite = ownerPtr->GetComponentShared<SpriteComponent>();
+  } else {
+    throw std::runtime_error("AnimationComponent has no owner.");
   }
 
   if (auto assetManager = m_assetManager.lock()) {
-    const auto *form = assetManager->getForm(m_formId);
-    if (!form || !form->animData) {
+    m_pmdData = assetManager->getForm(m_formId);
+    if (m_pmdData.expired()) {
       throw std::runtime_error(
           "AnimationComponent could not find form data for " + m_formId);
     }
-    m_animData = &form->animData.value();
   } else {
     throw std::runtime_error("AssetManager is not available for "
                              "AnimationComponent initialization.");
@@ -31,12 +32,17 @@ void AnimationComponent::Init() {
 }
 
 void AnimationComponent::Update(float deltaTime) {
+  // Lock the weak_ptrs to safely access the data for this frame
   auto sprite = m_sprite.lock();
-  if (!sprite || m_currentAnimation.empty() || !m_isPlaying || !m_animData)
+  auto pmdData = m_pmdData.lock();
+
+  if (!sprite || !pmdData || m_currentAnimation.empty() || !m_isPlaying ||
+      !pmdData->animData)
     return;
 
-  auto it = m_animData->animations.find(m_currentAnimation);
-  if (it == m_animData->animations.end())
+  const auto &animData = pmdData->animData.value();
+  auto it = animData.animations.find(m_currentAnimation);
+  if (it == animData.animations.end())
     return;
 
   const Animation &anim = it->second;
@@ -57,28 +63,28 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
   if (m_currentAnimation == animationName && !reset)
     return;
 
-  if (!m_animData)
+  // Lock weak_ptr to get temporary shared_ptr for safe access
+  auto pmdData = m_pmdData.lock();
+  if (!pmdData || !pmdData->animData)
     return;
 
-  auto it = m_animData->animations.find(animationName);
-  if (it == m_animData->animations.end()) {
+  const auto &animData = pmdData->animData.value();
+  auto it = animData.animations.find(animationName);
+  if (it == animData.animations.end()) {
     spdlog::error("Animation not found: {}", animationName);
     return;
   }
 
   if (auto assetManager = m_assetManager.lock()) {
-    const PMDData *form = assetManager->getForm(m_formId);
-    if (form) {
-      std::string newTextureBase =
-          assetManager->findAnimationBaseName(*form, animationName);
-      if (newTextureBase != m_currentTextureBase) {
-        Texture2D newTexture =
-            assetManager->getAnimationTexture(m_formId, animationName);
-        if (newTexture.id > 0) {
-          if (auto sprite = m_sprite.lock()) {
-            sprite->texture = newTexture;
-            m_currentTextureBase = newTextureBase;
-          }
+    std::string newTextureBase =
+        assetManager->findAnimationBaseName(*pmdData, animationName);
+    if (newTextureBase != m_currentTextureBase) {
+      Texture2D newTexture =
+          assetManager->getAnimationTexture(m_formId, animationName);
+      if (newTexture.id > 0) {
+        if (auto sprite = m_sprite.lock()) {
+          sprite->texture = newTexture;
+          m_currentTextureBase = newTextureBase;
         }
       }
     }
@@ -106,13 +112,17 @@ void AnimationComponent::SetDirection(Direction direction) {
 }
 
 void AnimationComponent::UpdateSpriteRect() {
+  // Lock weak_ptrs for safe access
   auto sprite = m_sprite.lock();
-  if (!sprite || m_currentAnimation.empty() || !m_animData) {
+  auto pmdData = m_pmdData.lock();
+
+  if (!sprite || !pmdData || m_currentAnimation.empty() || !pmdData->animData) {
     return;
   }
 
-  auto it = m_animData->animations.find(m_currentAnimation);
-  if (it == m_animData->animations.end()) {
+  const auto &animData = pmdData->animData.value();
+  auto it = animData.animations.find(m_currentAnimation);
+  if (it == animData.animations.end()) {
     return;
   }
   const Animation &anim = it->second;

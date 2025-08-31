@@ -51,7 +51,6 @@ float getNatureModifier(Nature nature, Stat stat) {
   }
   return 1.0f;
 }
-// ...end of unchanged code
 
 StatComponent::StatComponent(int initialLevel, Stats initialIVs,
                              Stats initialEVs)

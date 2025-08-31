@@ -36,7 +36,7 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
   const SpeciesData &speciesData = *speciesDataOpt;
 
   m_assetManager->loadPokemonSpriteData(dexNumber);
-  const PMDData *form = m_assetManager->getForm(dexNumber);
+  const auto form = m_assetManager->getForm(dexNumber);
   if (!form || !form->animData) {
     spdlog::error("Could not create GameObject for dex number: {}. PMD form "
                   "data not loaded or has no animations.",
