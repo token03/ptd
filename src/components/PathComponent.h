@@ -1,22 +1,25 @@
 #pragma once
 
 #include "core/Component.h"
-#include "gameplay/PathStrategy.h"
 #include "raylib.h"
-#include <memory>
 #include <vector>
+
+enum PathType { LINEAR, BEZIER, CATMULL_ROM };
 
 class PathComponent : public Component {
 public:
-  PathComponent(std::vector<Vector2> points,
-                std::unique_ptr<IPathStrategy> strategy);
+  PathComponent(std::vector<Vector2> points, PathType type);
 
   void Draw() override;
   Vector2 GetPointAt(float t) const;
 
   Color pathColor = LIGHTGRAY;
+  PathType pathType = LINEAR;
 
 private:
   std::vector<Vector2> m_points;
-  std::unique_ptr<IPathStrategy> m_strategy;
+
+  Vector2 GetPointLinear(float t) const;
+  Vector2 GetPointBezier(float t) const;
+  Vector2 GetPointCatmullRom(float t) const;
 };

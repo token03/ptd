@@ -50,7 +50,7 @@ DataManager::getSpeciesData(const std::string &formId) const {
   spdlog::warn("Returning generic sample species data for formId: {}", formId);
   return SpeciesData{formId,
                      "Unknown",
-                     {PokemonType::Water, PokemonType::Psychic},
+                     {PokemonType::WATER, PokemonType::PSYCHIC},
                      {95, 75, 80, 100, 110, 30}};
 }
 

@@ -71,7 +71,7 @@ int Game::Run() {
 void Game::LoadTestData() {
   PokemonInstance slowkingConfig;
   slowkingConfig.level = 50;
-  slowkingConfig.nature = Nature::Modest;
+  slowkingConfig.nature = Nature::MODEST;
   slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
   slowkingConfig.gender = Gender::Male;
 
@@ -96,15 +96,15 @@ void Game::LoadTestData() {
   auto typeChart = m_dataManager->getTypeChart();
   if (typeChart) {
     float effectiveness =
-        typeChart->getEffectiveness(PokemonType::Fire, PokemonType::Grass);
+        typeChart->getEffectiveness(PokemonType::FIRE, PokemonType::GRASS);
     spdlog::info("Fire against Grass effectiveness: {}", effectiveness);
 
     effectiveness =
-        typeChart->getEffectiveness(PokemonType::Water, PokemonType::Fire);
+        typeChart->getEffectiveness(PokemonType::WATER, PokemonType::FIRE);
     spdlog::info("Water against Fire effectiveness: {}", effectiveness);
 
     effectiveness =
-        typeChart->getEffectiveness(PokemonType::Electric, PokemonType::Ground);
+        typeChart->getEffectiveness(PokemonType::ELECTRIC, PokemonType::GROUND);
     spdlog::info("Electric against Ground effectiveness: {}", effectiveness);
   }
 }

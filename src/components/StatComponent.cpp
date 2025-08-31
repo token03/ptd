@@ -6,36 +6,36 @@
 #include <memory>
 
 static std::map<Nature, std::pair<Stat, Stat>> natureStatChanges = {
-    {Nature::Hardy, {Stat::Attack, Stat::Attack}},
-    {Nature::Docile, {Stat::Defense, Stat::Defense}},
-    {Nature::Serious, {Stat::Speed, Stat::Speed}},
-    {Nature::Bashful, {Stat::SpAttack, Stat::SpAttack}},
-    {Nature::Quirky, {Stat::SpDefense, Stat::SpDefense}},
+    {Nature::HARDY, {Stat::ATTACK, Stat::ATTACK}},
+    {Nature::DOCILE, {Stat::DEFENSE, Stat::DEFENSE}},
+    {Nature::SERIOUS, {Stat::SPEED, Stat::SPEED}},
+    {Nature::BASHFUL, {Stat::SPATTACK, Stat::SPATTACK}},
+    {Nature::QUIRKY, {Stat::SPDEFENSE, Stat::SPDEFENSE}},
 
-    {Nature::Lonely, {Stat::Attack, Stat::Defense}},
-    {Nature::Brave, {Stat::Attack, Stat::Speed}},
-    {Nature::Adamant, {Stat::Attack, Stat::SpAttack}},
-    {Nature::Naughty, {Stat::Attack, Stat::SpDefense}},
+    {Nature::LONELY, {Stat::ATTACK, Stat::DEFENSE}},
+    {Nature::BRAVE, {Stat::ATTACK, Stat::SPEED}},
+    {Nature::ADAMANT, {Stat::ATTACK, Stat::SPATTACK}},
+    {Nature::NAUGHTY, {Stat::ATTACK, Stat::SPDEFENSE}},
 
-    {Nature::Bold, {Stat::Defense, Stat::Attack}},
-    {Nature::Relaxed, {Stat::Defense, Stat::Speed}},
-    {Nature::Impish, {Stat::Defense, Stat::SpAttack}},
-    {Nature::Lax, {Stat::Defense, Stat::SpDefense}},
+    {Nature::BOLD, {Stat::DEFENSE, Stat::ATTACK}},
+    {Nature::RELAXED, {Stat::DEFENSE, Stat::SPEED}},
+    {Nature::IMPISH, {Stat::DEFENSE, Stat::SPATTACK}},
+    {Nature::LAX, {Stat::DEFENSE, Stat::SPDEFENSE}},
 
-    {Nature::Timid, {Stat::Speed, Stat::Attack}},
-    {Nature::Hasty, {Stat::Speed, Stat::Defense}},
-    {Nature::Jolly, {Stat::Speed, Stat::SpAttack}},
-    {Nature::Naive, {Stat::Speed, Stat::SpDefense}},
+    {Nature::TIMID, {Stat::SPEED, Stat::ATTACK}},
+    {Nature::HASTY, {Stat::SPEED, Stat::DEFENSE}},
+    {Nature::JOLLY, {Stat::SPEED, Stat::SPATTACK}},
+    {Nature::NAIVE, {Stat::SPEED, Stat::SPDEFENSE}},
 
-    {Nature::Modest, {Stat::SpAttack, Stat::Attack}},
-    {Nature::Mild, {Stat::SpAttack, Stat::Defense}},
-    {Nature::Quiet, {Stat::SpAttack, Stat::Speed}},
-    {Nature::Rash, {Stat::SpAttack, Stat::SpDefense}},
+    {Nature::MODEST, {Stat::SPATTACK, Stat::ATTACK}},
+    {Nature::MILD, {Stat::SPATTACK, Stat::DEFENSE}},
+    {Nature::QUIET, {Stat::SPATTACK, Stat::SPEED}},
+    {Nature::RASH, {Stat::SPATTACK, Stat::SPDEFENSE}},
 
-    {Nature::Calm, {Stat::SpDefense, Stat::Attack}},
-    {Nature::Gentle, {Stat::SpDefense, Stat::Defense}},
-    {Nature::Sassy, {Stat::SpDefense, Stat::Speed}},
-    {Nature::Careful, {Stat::SpDefense, Stat::SpAttack}},
+    {Nature::CALM, {Stat::SPDEFENSE, Stat::ATTACK}},
+    {Nature::GENTLE, {Stat::SPDEFENSE, Stat::DEFENSE}},
+    {Nature::SASSY, {Stat::SPDEFENSE, Stat::SPEED}},
+    {Nature::CAREFUL, {Stat::SPDEFENSE, Stat::SPATTACK}},
 };
 
 float getNatureModifier(Nature nature, Stat stat) {
@@ -81,14 +81,14 @@ void StatComponent::CalculateStats() {
   };
 
   attack =
-      calculate_stat(base.attack, m_ivs.attack, m_evs.attack, Stat::Attack);
+      calculate_stat(base.attack, m_ivs.attack, m_evs.attack, Stat::ATTACK);
   defense =
-      calculate_stat(base.defense, m_ivs.defense, m_evs.defense, Stat::Defense);
+      calculate_stat(base.defense, m_ivs.defense, m_evs.defense, Stat::DEFENSE);
   spAttack = calculate_stat(base.spAttack, m_ivs.spAttack, m_evs.spAttack,
-                            Stat::SpAttack);
+                            Stat::SPATTACK);
   spDefense = calculate_stat(base.spDefense, m_ivs.spDefense, m_evs.spDefense,
-                             Stat::SpDefense);
-  speed = calculate_stat(base.speed, m_ivs.speed, m_evs.speed, Stat::Speed);
+                             Stat::SPDEFENSE);
+  speed = calculate_stat(base.speed, m_ivs.speed, m_evs.speed, Stat::SPEED);
 
   currentHp = maxHp;
 

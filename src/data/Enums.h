@@ -1,65 +1,64 @@
 #pragma once
 
 #include <glaze/glaze.hpp>
-#include <string>
 
 enum class PokemonType {
-  None,
-  Normal,
-  Fire,
-  Water,
-  Grass,
-  Electric,
-  Ice,
-  Fighting,
-  Poison,
-  Ground,
-  Flying,
-  Psychic,
-  Bug,
-  Rock,
-  Ghost,
-  Dragon,
-  Dark,
-  Steel,
-  Fairy
+  NONE,
+  NORMAL,
+  FIRE,
+  WATER,
+  GRASS,
+  ELECTRIC,
+  ICE,
+  FIGHTING,
+  POISON,
+  GROUND,
+  FLYING,
+  PSYCHIC,
+  BUG,
+  ROCK,
+  GHOST,
+  DRAGON,
+  DARK,
+  STEEL,
+  FAIRY
 };
 
 template <> struct glz::meta<PokemonType> {
   using enum PokemonType;
   static constexpr auto value = enumerate(
-      None, Normal, Fire, Water, Grass, Electric, Ice, Fighting, Poison, Ground,
-      Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel, Fairy);
+      NONE, NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND,
+      FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, DARK, STEEL, FAIRY);
 };
 
 enum class Gender { Male, Female, Genderless };
 
 enum class Nature {
-  Hardy,
-  Lonely,
-  Brave,
-  Adamant,
-  Naughty,
-  Bold,
-  Docile,
-  Relaxed,
-  Impish,
-  Lax,
-  Timid,
-  Hasty,
-  Serious,
-  Jolly,
-  Naive,
-  Modest,
-  Mild,
-  Quiet,
-  Bashful,
-  Rash,
-  Calm,
-  Gentle,
-  Sassy,
-  Careful,
-  Quirky
+  HARDY,
+  LONELY,
+  BRAVE,
+  ADAMANT,
+  NAUGHTY,
+  BOLD,
+  DOCILE,
+  RELAXED,
+  IMPISH,
+  LAX,
+  TIMID,
+  HASTY,
+  SERIOUS,
+  JOLLY,
+  NAIVE,
+  MODEST,
+  MILD,
+  QUIET,
+  BASHFUL,
+  RASH,
+  CALM,
+  GENTLE,
+  SASSY,
+  CAREFUL,
+  QUIRKY
 };
 
-enum Stat { Attack, Defense, SpAttack, SpDefense, Speed, HP };
+enum Stat { ATTACK, DEFENSE, SPATTACK, SPDEFENSE, SPEED, HP };
