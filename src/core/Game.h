@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/GameObject.h"
+#include "raylib.h"
 #include <memory>
 #include <vector>
 
@@ -23,6 +24,7 @@ private:
 
   const int screenWidth = 1280;
   const int screenHeight = 720;
+  Font font;
 
   std::vector<std::shared_ptr<GameObject>> m_gameObjects;
   std::vector<std::shared_ptr<GameObject>> m_spawnQueue;

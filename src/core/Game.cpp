@@ -21,6 +21,9 @@ void Game::Load() {
   auto assetsPath = projectRoot / "assets";
   auto dataPath = projectRoot / "data";
 
+  // TODO: move this to like the UI manager or something
+  font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
+
   m_assetManager = std::make_shared<AssetManager>(assetsPath);
   m_dataManager = std::make_shared<DataManager>(
       (dataPath / "pokedex.json").string(), (dataPath / "types.json").string());
@@ -52,13 +55,15 @@ void Game::Update(float deltaTime) {
 void Game::Draw(float deltaTime) {
   BeginDrawing();
   ClearBackground(RAYWHITE);
-  DrawText("ptd", 20, 20, 20, DARKGRAY);
-
-  Debugger::GetInstance().Draw(m_gameObjects, deltaTime);
+  DrawTextEx(font,
+             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ",
+             {20, 20}, 32, 1, DARKGRAY);
 
   for (auto &go : m_gameObjects) {
     go->Draw();
   }
+
+  Debugger::GetInstance().Draw(m_gameObjects, deltaTime);
 
   EndDrawing();
 }
@@ -90,20 +95,15 @@ void Game::LoadTestData() {
   slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
   slowkingConfig.gender = Gender::Male;
 
-  auto slowkingObject = m_pokemonFactory->CreatePokemonObject(
-      "slowking", slowkingConfig, "Walk",
+  auto manualMon = m_pokemonFactory->CreatePokemonObject(
+      "clodsire", slowkingConfig, "Walk",
       {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
 
-  if (slowkingObject) {
-    slowkingObject->GetComponent<AnimationComponent>().SetDirection(
-        Direction::West);
-    m_gameObjects.push_back(slowkingObject);
-  } else {
-    spdlog::error("Failed to create Slowking GameObject!");
-  }
+  manualMon->GetComponent<AnimationComponent>().SetDirection(Direction::West);
+  m_gameObjects.push_back(manualMon);
 
   auto randomMon = m_pokemonFactory->CreateRandomPokemonObject(
-      "clodsire", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
+      "slowking", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
   if (randomMon) {
     m_gameObjects.push_back(randomMon);
   }
