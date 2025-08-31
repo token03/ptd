@@ -1,6 +1,12 @@
 #pragma once
 
 #include "core/GameObject.h"
+#include "tools/Console.h"
+#include "tools/Editor.h"
+#include "tools/Inspector.h"
+#include "tools/Performance.h"
+#include "tools/Spawner.h"
+#include "tools/Visualizer.h"
 #include <memory>
 #include <vector>
 
@@ -21,14 +27,10 @@ private:
   Debugger();
   ~Debugger();
 
-  void DrawMainWindow();
-  void DrawPerformanceWindow(float deltaTime);
-  void DrawGameObjectInspector(
-      const std::vector<std::shared_ptr<GameObject>> &gameObjects);
-
-  bool m_showMainWindow;
-  bool m_showPerformanceWindow;
-  bool m_showGameObjectInspector;
-
-  int m_selectedGameObjectIndex;
+  Console m_console;
+  Editor m_editor;
+  Inspector m_inspector;
+  Performance m_performance;
+  Spawner m_spawner;
+  Visualizer m_visualizer;
 };

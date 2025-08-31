@@ -24,7 +24,6 @@ void AnimationComponent::Init() {
 }
 
 void AnimationComponent::Update(float deltaTime) {
-  // Lock the weak_ptrs to safely access the data for this frame
   auto sprite = m_sprite.lock();
   auto pmdData = m_pmdData.lock();
 
@@ -55,7 +54,6 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
   if (m_currentAnimation == animationName && !reset)
     return;
 
-  // Lock weak_ptr to get temporary shared_ptr for safe access
   auto pmdData = m_pmdData.lock();
   if (!pmdData || !pmdData->animData)
     return;
@@ -104,7 +102,6 @@ void AnimationComponent::SetDirection(Direction direction) {
 }
 
 void AnimationComponent::UpdateSpriteRect() {
-  // Lock weak_ptrs for safe access
   auto sprite = m_sprite.lock();
   auto pmdData = m_pmdData.lock();
 

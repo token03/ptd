@@ -17,8 +17,14 @@ void SpriteComponent::Draw() {
                           sourceRect.width * transform->scale.x,
                           sourceRect.height * transform->scale.y};
 
-    DrawTexturePro(texture, sourceRect, destRect, origin, transform->rotation,
+    float rotationToApply = 0.0f;
+    if (rotationMode == RotationMode::USE_TRANSFORM) {
+      rotationToApply = transform->rotation;
+    }
+
+    DrawTexturePro(texture, sourceRect, destRect, origin, rotationToApply,
                    tint);
+
     Rectangle actualScreenRect = {
         transform->position.x - (origin.x * transform->scale.x),
         transform->position.y - (origin.y * transform->scale.y), destRect.width,

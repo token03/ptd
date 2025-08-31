@@ -88,7 +88,7 @@ void Game::LoadTestData() {
   }
 
   auto randomMon = m_pokemonFactory->CreateRandomPokemonObject(
-      "bulbasaur", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
+      "raichu", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
   if (randomMon) {
     m_gameObjects.push_back(randomMon);
   }
