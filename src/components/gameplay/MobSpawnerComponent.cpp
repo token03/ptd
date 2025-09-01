@@ -1,14 +1,16 @@
 #include "MobSpawnerComponent.h"
 
+#include <memory>
+
 #include "components/gameplay/PathComponent.h"
 #include "components/gameplay/PathFollowerComponent.h"
+#include "core/Scene.h"
 #include "factories/MobFactory.h"
 #include "spdlog/spdlog.h"
 
-MobSpawnerComponent::MobSpawnerComponent(
-    std::shared_ptr<MobFactory> factory, std::weak_ptr<PathComponent> path,
-    std::vector<std::shared_ptr<GameObject>> &spawnQueue)
-    : m_factory(factory), m_path(path), m_spawnQueue(spawnQueue) {
+MobSpawnerComponent::MobSpawnerComponent(std::shared_ptr<MobFactory> factory,
+                                         std::weak_ptr<PathComponent> path)
+    : m_factory(factory), m_path(path) {
   m_spawnTimer = m_spawnInterval;
 }
 
@@ -26,6 +28,11 @@ void MobSpawnerComponent::SpawnMob() {
     spdlog::warn("MobSpawnerComponent is missing its factory or path.");
     return;
   }
+  std::shared_ptr<Scene> scene = owner.lock()->GetScene();
+  if (!scene) {
+    spdlog::warn("MobSpawnerComponent's owner is not in a scene.");
+    return;
+  }
 
   Vector2 startPosition = path->GetPointAt(0.0f);
 
@@ -34,6 +41,6 @@ void MobSpawnerComponent::SpawnMob() {
 
   if (newMob) {
     newMob->AddComponent<PathFollowerComponent>(m_path, 500.0f);
-    m_spawnQueue.push_back(newMob);
+    scene->AddGameObject(newMob);
   }
 }

@@ -1,0 +1,78 @@
+#include "scenes/GameplayScene.h"
+
+#include "components/gameplay/MobSpawnerComponent.h"
+#include "components/gameplay/PathComponent.h"
+#include "components/graphics/AnimationComponent.h"
+#include "core/GameObject.h"
+#include "factories/MobFactory.h"
+#include "factories/TowerFactory.h"
+#include "managers/AssetManager.h"
+#include "managers/DataManager.h"
+#include "spdlog/spdlog.h"
+
+GameplayScene::GameplayScene(std::shared_ptr<AssetManager> assetManager,
+                             std::shared_ptr<DataManager> dataManager)
+    : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
+
+GameplayScene::~GameplayScene() {}
+
+void GameplayScene::Load() {
+  m_towerFactory = std::make_shared<TowerFactory>(m_assetManager, m_dataManager);
+  m_mobFactory = std::make_shared<MobFactory>(m_assetManager, m_dataManager);
+
+  LoadTestData();
+  spdlog::info("GameplayScene loaded.");
+}
+
+void GameplayScene::Unload() {
+  m_gameObjects.clear();
+  m_spawnQueue.clear();
+  spdlog::info("GameplayScene unloaded.");
+}
+
+void GameplayScene::LoadTestData() {
+  PokemonInstance slowkingConfig;
+  slowkingConfig.level = 50;
+  slowkingConfig.nature = Nature::MODEST;
+  slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
+  slowkingConfig.gender = Gender::Male;
+
+  auto manualMon = m_towerFactory->CreateTower(
+      "clodsire", slowkingConfig, "Idle",
+      {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
+
+  manualMon->GetComponent<AnimationComponent>().SetDirection(Direction::West);
+  AddGameObject(manualMon);
+
+  auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Idle",
+                                                     {100.0f, 100.0f}, {2.5f, 2.5f});
+  if (randomMon) {
+    AddGameObject(randomMon);
+  }
+
+  auto typeChart = m_dataManager->getTypeChart();
+  if (typeChart) {
+    float effectiveness =
+        typeChart->getEffectiveness(PokemonType::FIRE, PokemonType::GRASS);
+    spdlog::info("Fire against Grass effectiveness: {}", effectiveness);
+  }
+
+  auto levelObject = CreateGameObject();
+
+  float padding = 200.0f;
+  std::vector<Vector2> pathPoints = {
+      {padding, padding},
+      {padding, (float)screenHeight - padding},
+      {(float)screenWidth - padding, (float)screenHeight - padding},
+      {(float)screenWidth - padding, padding},
+      {padding, padding},
+      {padding, (float)screenHeight - padding},
+      {(float)screenWidth - padding, (float)screenHeight - padding}};
+
+  auto& path =
+      levelObject->AddComponent<PathComponent>(pathPoints, PathType::CATMULL_ROM);
+  path.pathColor = RED;
+
+  levelObject->AddComponent<MobSpawnerComponent>(
+      m_mobFactory, levelObject->GetComponentShared<PathComponent>());
+}

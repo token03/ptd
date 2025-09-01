@@ -3,15 +3,13 @@
 #include <cmath>
 
 #include "components/gameplay/PathFollowerComponent.h"
-#include "components/gameplay/TagComponent.h"
 #include "components/graphics/AnimationComponent.h"
 #include "components/physics/TransformComponent.h"
 #include "core/GameObject.h"
+#include "core/Scene.h"
 #include "raymath.h"
 
-TargetingComponent::TargetingComponent(
-    const std::vector<std::shared_ptr<GameObject>> &allGameObjects)
-    : m_allGameObjects(allGameObjects) {}
+TargetingComponent::TargetingComponent() {}
 
 void TargetingComponent::Init() {
   assignRequiredComponent(m_transform);
@@ -52,12 +50,12 @@ void TargetingComponent::FindTarget() {
   if (!selfTransform) return;
   Vector2 selfPos = selfTransform->position;
 
-  for (const auto &potentialTarget : m_allGameObjects) {
-    if (potentialTarget->IsDestroyed()) continue;
+  auto ownerPtr = owner.lock();
+  if (!ownerPtr) return;
+  auto scene = ownerPtr->GetScene();
+  if (!scene) return;
 
-    const auto tagComp = potentialTarget->GetComponentShared<TagComponent>();
-    if (!tagComp || tagComp->tag != "mob") continue;
-
+  for (const auto& potentialTarget : scene->GetGameObjectsWithTag("mob")) {
     const auto targetTransform =
         potentialTarget->GetComponentShared<TransformComponent>();
     if (!targetTransform) continue;

@@ -1,4 +1,4 @@
-#include "TowerFactory.h"
+#include "factories/TowerFactory.h"
 
 #include "components/gameplay/AttackComponent.h"
 #include "components/gameplay/TagComponent.h"
@@ -6,21 +6,19 @@
 #include "spdlog/spdlog.h"
 
 TowerFactory::TowerFactory(std::shared_ptr<AssetManager> assetManager,
-                           std::shared_ptr<DataManager> dataManager,
-                           const std::vector<std::shared_ptr<GameObject>> &gameObjects)
-    : BasePokemonFactory(std::move(assetManager), std::move(dataManager)),
-      m_gameObjects(gameObjects) {}
+                           std::shared_ptr<DataManager> dataManager)
+    : BasePokemonFactory(std::move(assetManager), std::move(dataManager)) {}
 
-std::shared_ptr<GameObject> TowerFactory::CreateTower(const std::string &speciesName,
-                                                      const PokemonInstance &config,
-                                                      const std::string &initialAnimation,
+std::shared_ptr<GameObject> TowerFactory::CreateTower(const std::string& speciesName,
+                                                      const PokemonInstance& config,
+                                                      const std::string& initialAnimation,
                                                       Vector2 position, Vector2 scale) {
   auto tower =
       CreatePokemonObject(speciesName, config, initialAnimation, position, scale);
 
   if (tower) {
     tower->AddComponent<AttackComponent>();
-    tower->AddComponent<TargetingComponent>(m_gameObjects);
+    tower->AddComponent<TargetingComponent>();
     tower->AddComponent<TagComponent>("tower");
     spdlog::debug("Created tower: {}", speciesName);
   }
@@ -29,14 +27,14 @@ std::shared_ptr<GameObject> TowerFactory::CreateTower(const std::string &species
 }
 
 std::shared_ptr<GameObject> TowerFactory::CreateRandomTower(
-    const std::string &speciesName, int minLevel, int maxLevel,
-    const std::string &initialAnimation, Vector2 position, Vector2 scale) {
+    const std::string& speciesName, int minLevel, int maxLevel,
+    const std::string& initialAnimation, Vector2 position, Vector2 scale) {
   auto tower = CreateRandomPokemonObject(speciesName, minLevel, maxLevel,
                                          initialAnimation, position, scale);
 
   if (tower) {
     tower->AddComponent<AttackComponent>();
-    tower->AddComponent<TargetingComponent>(m_gameObjects);
+    tower->AddComponent<TargetingComponent>();
     tower->AddComponent<TagComponent>("tower");
     spdlog::debug("Created random tower: {}", speciesName);
   }

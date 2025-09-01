@@ -4,8 +4,10 @@
 #include <memory>
 #include <typeindex>
 
-#include "Component.h"
+#include "core/Component.h"
 #include "spdlog/spdlog.h"
+
+class Scene;
 
 class GameObject : public std::enable_shared_from_this<GameObject> {
  public:
@@ -17,14 +19,17 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
   void Destroy();
   bool IsDestroyed() const { return m_isDestroyed; }
 
+  void SetScene(std::weak_ptr<Scene> scene);
+  std::shared_ptr<Scene> GetScene() const;
+
   template <typename T, typename... TArgs>
-  T &AddComponent(TArgs &&...args) {
+  T& AddComponent(TArgs&&... args) {
     if (HasComponent<T>()) {
       return GetComponent<T>();
     }
 
     std::shared_ptr<T> newComponent = std::make_shared<T>(std::forward<TArgs>(args)...);
-    newComponent->owner = shared_from_this();
+    newComponent->owner = weak_from_this();
 
     m_components[typeid(T)] = newComponent;
 
@@ -33,7 +38,7 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
   }
 
   template <typename T>
-  T &GetComponent() {
+  T& GetComponent() {
     auto it = m_components.find(typeid(T));
     if (it == m_components.end()) {
       spdlog::error("Attempted to get non-existent component: {}", typeid(T).name());
@@ -59,6 +64,7 @@ class GameObject : public std::enable_shared_from_this<GameObject> {
  private:
   bool m_isDestroyed = false;
   std::map<std::type_index, std::shared_ptr<Component>> m_components;
+  std::weak_ptr<Scene> m_scene;
 };
 
-#include "Component.inl"  // IWYU pragma: keep
+#include "core/Component.inl"  // IWYU pragma: keep

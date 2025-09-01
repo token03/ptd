@@ -2,17 +2,13 @@
 
 #include <imgui.h>
 
-#include <algorithm>
 #include <filesystem>
 
-#include "components/gameplay/MobSpawnerComponent.h"
-#include "components/gameplay/PathComponent.h"
-#include "components/graphics/AnimationComponent.h"
 #include "managers/AssetManager.h"
 #include "managers/DataManager.h"
 #include "raylib.h"
 #include "rlImGui.h"
-#include "spdlog/spdlog.h"
+#include "scenes/GameplayScene.h"
 #include "tools/Debugger.h"
 
 Game::Game() {}
@@ -30,29 +26,12 @@ void Game::Load() {
   m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
                                                 (dataPath / "types.json").string());
 
-  m_towerFactory =
-      std::make_shared<TowerFactory>(m_assetManager, m_dataManager, m_gameObjects);
-  m_mobFactory = std::make_shared<MobFactory>(m_assetManager, m_dataManager);
-
-  LoadTestData();
+  m_sceneManager = std::make_unique<SceneManager>();
+  m_sceneManager->PushScene(
+      std::make_shared<GameplayScene>(m_assetManager, m_dataManager));
 }
 
-void Game::Update(float deltaTime) {
-  for (auto &go : m_gameObjects) {
-    go->Update(deltaTime);
-  }
-
-  if (!m_spawnQueue.empty()) {
-    m_gameObjects.insert(m_gameObjects.end(), m_spawnQueue.begin(), m_spawnQueue.end());
-    m_spawnQueue.clear();
-  }
-
-  m_gameObjects.erase(std::remove_if(m_gameObjects.begin(), m_gameObjects.end(),
-                                     [](const std::shared_ptr<GameObject> &go) {
-                                       return go->IsDestroyed();
-                                     }),
-                      m_gameObjects.end());
-}
+void Game::Update(float deltaTime) { m_sceneManager->Update(deltaTime); }
 
 void Game::Draw(float deltaTime) {
   BeginDrawing();
@@ -60,11 +39,12 @@ void Game::Draw(float deltaTime) {
   DrawTextEx(font, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ",
              {20, 20}, 32, 1, DARKGRAY);
 
-  for (auto &go : m_gameObjects) {
-    go->Draw();
-  }
+  m_sceneManager->Draw(deltaTime);
 
-  Debugger::GetInstance().Draw(m_gameObjects, deltaTime);
+  auto currentScene = m_sceneManager->GetCurrentScene();
+  if (currentScene) {
+    Debugger::GetInstance().Draw(currentScene->GetGameObjects(), deltaTime);
+  }
 
   EndDrawing();
 }
@@ -87,53 +67,4 @@ int Game::Run() {
   CloseWindow();
 
   return 0;
-}
-
-void Game::LoadTestData() {
-  PokemonInstance slowkingConfig;
-  slowkingConfig.level = 50;
-  slowkingConfig.nature = Nature::MODEST;
-  slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
-  slowkingConfig.gender = Gender::Male;
-
-  auto manualMon = m_towerFactory->CreateTower(
-      "clodsire", slowkingConfig, "Idle",
-      {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
-
-  manualMon->GetComponent<AnimationComponent>().SetDirection(Direction::West);
-  m_gameObjects.push_back(manualMon);
-
-  auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Idle",
-                                                     {100.0f, 100.0f}, {2.5f, 2.5f});
-  if (randomMon) {
-    m_gameObjects.push_back(randomMon);
-  }
-
-  auto typeChart = m_dataManager->getTypeChart();
-  if (typeChart) {
-    float effectiveness =
-        typeChart->getEffectiveness(PokemonType::FIRE, PokemonType::GRASS);
-    spdlog::info("Fire against Grass effectiveness: {}", effectiveness);
-  }
-
-  auto levelObject = std::make_shared<GameObject>();
-
-  float padding = 200.0f;
-  std::vector<Vector2> pathPoints = {
-      {padding, padding},
-      {padding, (float)screenHeight - padding},
-      {(float)screenWidth - padding, (float)screenHeight - padding},
-      {(float)screenWidth - padding, padding},
-      {padding, padding},
-      {padding, (float)screenHeight - padding},
-      {(float)screenWidth - padding, (float)screenHeight - padding}};
-
-  auto &path =
-      levelObject->AddComponent<PathComponent>(pathPoints, PathType::CATMULL_ROM);
-  path.pathColor = RED;
-
-  levelObject->AddComponent<MobSpawnerComponent>(
-      m_mobFactory, levelObject->GetComponentShared<PathComponent>(), m_spawnQueue);
-
-  m_gameObjects.push_back(levelObject);
 }
