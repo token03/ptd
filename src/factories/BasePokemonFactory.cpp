@@ -1,4 +1,4 @@
-#include "PokemonFactory.h"
+#include "BasePokemonFactory.h"
 
 #include "components/graphics/AnimationComponent.h"
 #include "components/graphics/SpriteComponent.h"
@@ -9,15 +9,15 @@
 #include "raylib.h"
 #include "spdlog/spdlog.h"
 
-PokemonFactory::PokemonFactory(std::shared_ptr<AssetManager> assetManager,
-                               std::shared_ptr<DataManager> dataManager)
+BasePokemonFactory::BasePokemonFactory(std::shared_ptr<AssetManager> assetManager,
+                                       std::shared_ptr<DataManager> dataManager)
     : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
 
-std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
+std::shared_ptr<GameObject> BasePokemonFactory::CreatePokemonObject(
     const std::string &speciesName, const PokemonInstance &config,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
   if (!m_assetManager || !m_dataManager) {
-    spdlog::error("PokemonFactory error: A manager is not available.");
+    spdlog::error("BasePokemonFactory error: A manager is not available.");
     return nullptr;
   }
 
@@ -64,7 +64,7 @@ std::shared_ptr<GameObject> PokemonFactory::CreatePokemonObject(
   return gameObject;
 }
 
-std::shared_ptr<GameObject> PokemonFactory::CreateRandomPokemonObject(
+std::shared_ptr<GameObject> BasePokemonFactory::CreateRandomPokemonObject(
     const std::string &speciesName, int minLevel, int maxLevel,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
   PokemonInstance config;

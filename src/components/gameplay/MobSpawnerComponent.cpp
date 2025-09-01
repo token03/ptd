@@ -2,11 +2,11 @@
 
 #include "components/gameplay/PathComponent.h"
 #include "components/gameplay/PathFollowerComponent.h"
-#include "entities/PokemonFactory.h"
+#include "factories/MobFactory.h"
 #include "spdlog/spdlog.h"
 
 MobSpawnerComponent::MobSpawnerComponent(
-    std::shared_ptr<PokemonFactory> factory, std::weak_ptr<PathComponent> path,
+    std::shared_ptr<MobFactory> factory, std::weak_ptr<PathComponent> path,
     std::vector<std::shared_ptr<GameObject>> &spawnQueue)
     : m_factory(factory), m_path(path), m_spawnQueue(spawnQueue) {
   m_spawnTimer = m_spawnInterval;
@@ -29,11 +29,10 @@ void MobSpawnerComponent::SpawnMob() {
 
   Vector2 startPosition = path->GetPointAt(0.0f);
 
-  auto newMob = m_factory->CreateRandomPokemonObject("raichu", 5, 5, "Walk",
-                                                     startPosition, {2.5f, 2.5f});
+  auto newMob =
+      m_factory->CreateRandomMob("raichu", 5, 5, "Walk", startPosition, {2.5f, 2.5f});
 
   if (newMob) {
-    newMob->AddComponent<MovableComponent>();
     newMob->AddComponent<PathFollowerComponent>(m_path, 500.0f);
     m_spawnQueue.push_back(newMob);
   }

@@ -8,7 +8,6 @@
 #include "components/gameplay/MobSpawnerComponent.h"
 #include "components/gameplay/PathComponent.h"
 #include "components/graphics/AnimationComponent.h"
-#include "entities/PokemonFactory.h"
 #include "managers/AssetManager.h"
 #include "managers/DataManager.h"
 #include "raylib.h"
@@ -31,7 +30,8 @@ void Game::Load() {
   m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
                                                 (dataPath / "types.json").string());
 
-  m_pokemonFactory = std::make_shared<PokemonFactory>(m_assetManager, m_dataManager);
+  m_towerFactory = std::make_shared<TowerFactory>(m_assetManager, m_dataManager);
+  m_mobFactory = std::make_shared<MobFactory>(m_assetManager, m_dataManager);
 
   LoadTestData();
 }
@@ -95,15 +95,15 @@ void Game::LoadTestData() {
   slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
   slowkingConfig.gender = Gender::Male;
 
-  auto manualMon = m_pokemonFactory->CreatePokemonObject(
+  auto manualMon = m_towerFactory->CreateTower(
       "clodsire", slowkingConfig, "Walk",
       {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
 
   manualMon->GetComponent<AnimationComponent>().SetDirection(Direction::West);
   m_gameObjects.push_back(manualMon);
 
-  auto randomMon = m_pokemonFactory->CreateRandomPokemonObject(
-      "slowking", 5, 10, "Walk", {100.0f, 100.0f}, {2.5f, 2.5f});
+  auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Walk",
+                                                     {100.0f, 100.0f}, {2.5f, 2.5f});
   if (randomMon) {
     m_gameObjects.push_back(randomMon);
   }
@@ -132,7 +132,7 @@ void Game::LoadTestData() {
   path.pathColor = RED;
 
   levelObject->AddComponent<MobSpawnerComponent>(
-      m_pokemonFactory, levelObject->GetComponentShared<PathComponent>(), m_spawnQueue);
+      m_mobFactory, levelObject->GetComponentShared<PathComponent>(), m_spawnQueue);
 
   m_gameObjects.push_back(levelObject);
 }

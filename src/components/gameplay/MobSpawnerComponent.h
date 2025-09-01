@@ -6,12 +6,12 @@
 #include "core/Component.h"
 #include "core/GameObject.h"
 
-class PokemonFactory;
+class MobFactory;
 class PathComponent;
 
 class MobSpawnerComponent : public Component {
  public:
-  MobSpawnerComponent(std::shared_ptr<PokemonFactory> factory,
+  MobSpawnerComponent(std::shared_ptr<MobFactory> factory,
                       std::weak_ptr<PathComponent> path,
                       std::vector<std::shared_ptr<GameObject>> &spawnQueue);
 
@@ -20,7 +20,7 @@ class MobSpawnerComponent : public Component {
  private:
   void SpawnMob();
 
-  std::shared_ptr<PokemonFactory> m_factory;
+  std::shared_ptr<MobFactory> m_factory;
   std::weak_ptr<PathComponent> m_path;
   std::vector<std::shared_ptr<GameObject>> &m_spawnQueue;
 

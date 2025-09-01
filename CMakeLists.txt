@@ -23,7 +23,7 @@ file(GLOB_RECURSE PTD_SOURCES
   "src/impl.cpp"
   "src/core/*.cpp"
   "src/components/*.cpp"
-  "src/entities/*.cpp"
+  "src/factories/*.cpp"
   "src/utils/*.cpp"
   "src/data/*.cpp"
   "src/managers/*.cpp"

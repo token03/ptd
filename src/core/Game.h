@@ -4,11 +4,12 @@
 #include <vector>
 
 #include "core/GameObject.h"
+#include "factories/MobFactory.h"
+#include "factories/TowerFactory.h"
 #include "raylib.h"
 
 class AssetManager;
 class DataManager;
-class PokemonFactory;
 
 class Game {
  public:
@@ -32,5 +33,6 @@ class Game {
 
   std::shared_ptr<AssetManager> m_assetManager;
   std::shared_ptr<DataManager> m_dataManager;
-  std::shared_ptr<PokemonFactory> m_pokemonFactory;
+  std::shared_ptr<TowerFactory> m_towerFactory;
+  std::shared_ptr<MobFactory> m_mobFactory;
 };
