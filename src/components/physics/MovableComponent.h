@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "components/AnimationComponent.h"
-#include "components/TransformComponent.h"
+#include "components/graphics/AnimationComponent.h"
+#include "components/physics/TransformComponent.h"
 #include "core/Component.h"
 #include "raylib.h"
 

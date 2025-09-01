@@ -1,8 +1,8 @@
-#include "components/AnimationComponent.h"
+#include "components/graphics/AnimationComponent.h"
 
 #include <memory>
 
-#include "core/GameObject.h"
+#include "core/GameObject.h"  // IWYU pragma: keep - required for assignRequiredComponent
 #include "managers/AssetManager.h"
 #include "spdlog/spdlog.h"
 #include "utils/PMDUtils.h"

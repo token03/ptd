@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "components/SpeciesComponent.h"
-#include "components/TraitsComponent.h"
+#include "components/pokemon/SpeciesComponent.h"
+#include "components/pokemon/TraitsComponent.h"
 #include "core/Component.h"
 #include "data/Stats.h"
 

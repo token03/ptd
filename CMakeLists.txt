@@ -18,7 +18,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 include(Dependencies.cmake)
 
-file(GLOB PTD_SOURCES
+file(GLOB_RECURSE PTD_SOURCES
   "src/main.cpp"
   "src/impl.cpp"
   "src/core/*.cpp"

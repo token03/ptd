@@ -1,4 +1,4 @@
-#include "components/SpriteComponent.h"
+#include "components/graphics/SpriteComponent.h"
 
 #include "core/GameObject.h"  // IWYU pragma: keep - required for assignRequiredComponent
 

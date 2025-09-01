@@ -1,4 +1,4 @@
-#include "components/StatComponent.h"
+#include "components/pokemon/StatComponent.h"
 
 #include <cmath>
 #include <map>

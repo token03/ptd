@@ -1,4 +1,4 @@
-#include "components/SpeciesComponent.h"
+#include "components/pokemon/SpeciesComponent.h"
 
 SpeciesComponent::SpeciesComponent(const SpeciesData &data)
     : dexNumber(data.dexNumber),

@@ -1,7 +1,7 @@
 #include "MobSpawnerComponent.h"
 
-#include "PathComponent.h"
-#include "PathFollowerComponent.h"
+#include "components/level/PathComponent.h"
+#include "components/mob/PathFollowerComponent.h"
 #include "factories/PokemonFactory.h"
 #include "spdlog/spdlog.h"
 

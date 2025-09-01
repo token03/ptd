@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include "MovableComponent.h"
-#include "components/TransformComponent.h"
+#include "components//physics/MovableComponent.h"
+#include "components/physics/TransformComponent.h"
 #include "core/Component.h"
 
 class PathComponent;

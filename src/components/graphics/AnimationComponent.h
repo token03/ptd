@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-#include "SpriteComponent.h"
+#include "components/graphics/SpriteComponent.h"
 #include "core/Component.h"
 #include "data/PMDData.h"
 

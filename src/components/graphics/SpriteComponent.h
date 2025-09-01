@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "components/TransformComponent.h"
+#include "components/physics/TransformComponent.h"
 #include "core/Component.h"
 #include "raylib.h"
 

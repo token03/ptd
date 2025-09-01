@@ -5,9 +5,9 @@
 #include <algorithm>
 #include <filesystem>
 
-#include "components/AnimationComponent.h"
-#include "components/MobSpawnerComponent.h"
-#include "components/PathComponent.h"
+#include "components/graphics/AnimationComponent.h"
+#include "components/level/MobSpawnerComponent.h"
+#include "components/level/PathComponent.h"
 #include "factories/PokemonFactory.h"
 #include "managers/AssetManager.h"
 #include "managers/DataManager.h"
