@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <memory>
 
-#include "components/level/PathComponent.h"
+#include "components/gameplay/PathComponent.h"
 #include "core/GameObject.h"  // IWYU pragma: keep - required for assignRequiredComponent
 #include "raymath.h"
 

@@ -1,11 +1,11 @@
 #include "PokemonFactory.h"
 
 #include "components/graphics/AnimationComponent.h"
-#include "components/pokemon/SpeciesComponent.h"
 #include "components/graphics/SpriteComponent.h"
+#include "components/physics/TransformComponent.h"
+#include "components/pokemon/SpeciesComponent.h"
 #include "components/pokemon/StatComponent.h"
 #include "components/pokemon/TraitsComponent.h"
-#include "components/physics/TransformComponent.h"
 #include "raylib.h"
 #include "spdlog/spdlog.h"
 

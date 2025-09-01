@@ -5,10 +5,10 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "components/gameplay/MobSpawnerComponent.h"
+#include "components/gameplay/PathComponent.h"
 #include "components/graphics/AnimationComponent.h"
-#include "components/level/MobSpawnerComponent.h"
-#include "components/level/PathComponent.h"
-#include "factories/PokemonFactory.h"
+#include "entities/PokemonFactory.h"
 #include "managers/AssetManager.h"
 #include "managers/DataManager.h"
 #include "raylib.h"

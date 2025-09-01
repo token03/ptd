@@ -1,8 +1,8 @@
 #include "MobSpawnerComponent.h"
 
-#include "components/level/PathComponent.h"
-#include "components/mob/PathFollowerComponent.h"
-#include "factories/PokemonFactory.h"
+#include "components/gameplay/PathComponent.h"
+#include "components/gameplay/PathFollowerComponent.h"
+#include "entities/PokemonFactory.h"
 #include "spdlog/spdlog.h"
 
 MobSpawnerComponent::MobSpawnerComponent(
