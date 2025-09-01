@@ -1,9 +1,15 @@
 #include "TowerFactory.h"
 
 #include "components/gameplay/AttackComponent.h"
+#include "components/gameplay/TagComponent.h"
 #include "components/gameplay/TargetingComponent.h"
-#include "components/physics/ColliderComponent.h"
 #include "spdlog/spdlog.h"
+
+TowerFactory::TowerFactory(std::shared_ptr<AssetManager> assetManager,
+                           std::shared_ptr<DataManager> dataManager,
+                           const std::vector<std::shared_ptr<GameObject>> &gameObjects)
+    : BasePokemonFactory(std::move(assetManager), std::move(dataManager)),
+      m_gameObjects(gameObjects) {}
 
 std::shared_ptr<GameObject> TowerFactory::CreateTower(const std::string &speciesName,
                                                       const PokemonInstance &config,
@@ -14,8 +20,8 @@ std::shared_ptr<GameObject> TowerFactory::CreateTower(const std::string &species
 
   if (tower) {
     tower->AddComponent<AttackComponent>();
-    tower->AddComponent<TargetingComponent>();
-    tower->AddComponent<ColliderComponent>();
+    tower->AddComponent<TargetingComponent>(m_gameObjects);
+    tower->AddComponent<TagComponent>("tower");
     spdlog::debug("Created tower: {}", speciesName);
   }
 
@@ -30,8 +36,8 @@ std::shared_ptr<GameObject> TowerFactory::CreateRandomTower(
 
   if (tower) {
     tower->AddComponent<AttackComponent>();
-    tower->AddComponent<TargetingComponent>();
-    tower->AddComponent<ColliderComponent>();
+    tower->AddComponent<TargetingComponent>(m_gameObjects);
+    tower->AddComponent<TagComponent>("tower");
     spdlog::debug("Created random tower: {}", speciesName);
   }
 

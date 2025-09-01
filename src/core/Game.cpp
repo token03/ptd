@@ -30,7 +30,8 @@ void Game::Load() {
   m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
                                                 (dataPath / "types.json").string());
 
-  m_towerFactory = std::make_shared<TowerFactory>(m_assetManager, m_dataManager);
+  m_towerFactory =
+      std::make_shared<TowerFactory>(m_assetManager, m_dataManager, m_gameObjects);
   m_mobFactory = std::make_shared<MobFactory>(m_assetManager, m_dataManager);
 
   LoadTestData();
@@ -96,13 +97,13 @@ void Game::LoadTestData() {
   slowkingConfig.gender = Gender::Male;
 
   auto manualMon = m_towerFactory->CreateTower(
-      "clodsire", slowkingConfig, "Walk",
+      "clodsire", slowkingConfig, "Idle",
       {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
 
   manualMon->GetComponent<AnimationComponent>().SetDirection(Direction::West);
   m_gameObjects.push_back(manualMon);
 
-  auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Walk",
+  auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Idle",
                                                      {100.0f, 100.0f}, {2.5f, 2.5f});
   if (randomMon) {
     m_gameObjects.push_back(randomMon);

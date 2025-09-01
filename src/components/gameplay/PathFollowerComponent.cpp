@@ -13,6 +13,16 @@ PathFollowerComponent::PathFollowerComponent(std::weak_ptr<PathComponent> path,
 
 void PathFollowerComponent::Init() { assignRequiredComponent(m_transform, m_movable); }
 
+float PathFollowerComponent::GetProgress() const {
+  auto path = m_path.lock();
+  if (!path) return 0.0f;
+
+  float totalLength = path->GetTotalLength();
+  if (totalLength <= 0.0f) return 0.0f;
+
+  return std::clamp(m_distanceTraveled / totalLength, 0.0f, 1.0f);
+}
+
 void PathFollowerComponent::Update(float deltaTime) {
   auto path = m_path.lock();
   auto transform = m_transform.lock();

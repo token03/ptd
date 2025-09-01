@@ -1,16 +1,16 @@
-#include "MovableComponent.h"
+#include "MovementComponent.h"
 
 #include <cmath>
 
 #include "core/GameObject.h"  // IWYU pragma: keep
 #include "raymath.h"
 
-void MovableComponent::Init() {
+void MovementComponent::Init() {
   assignRequiredComponent(m_transform);
   assignComponent(m_animation);
 }
 
-void MovableComponent::Update(float deltaTime) {
+void MovementComponent::Update(float deltaTime) {
   auto transform = m_transform.lock();
   if (!transform) {
     return;

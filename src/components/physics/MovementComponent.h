@@ -7,7 +7,7 @@
 #include "core/Component.h"
 #include "raylib.h"
 
-class MovableComponent : public Component {
+class MovementComponent : public Component {
  public:
   Vector2 velocity = {0.0f, 0.0f};
 

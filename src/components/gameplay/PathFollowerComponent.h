@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "components//physics/MovableComponent.h"
+#include "components//physics/MovementComponent.h"
 #include "components/physics/TransformComponent.h"
 #include "core/Component.h"
 
@@ -14,11 +14,12 @@ class PathFollowerComponent : public Component {
 
   void Init() override;
   void Update(float deltaTime) override;
+  float GetProgress() const;
 
  private:
   std::weak_ptr<PathComponent> m_path;
   std::weak_ptr<TransformComponent> m_transform;
-  std::weak_ptr<MovableComponent> m_movable;
+  std::weak_ptr<MovementComponent> m_movable;
 
   float m_speed;
   float m_distanceTraveled = 0.0f;

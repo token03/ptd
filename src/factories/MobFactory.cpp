@@ -1,7 +1,8 @@
 #include "MobFactory.h"
 
+#include "components/gameplay/TagComponent.h"
 #include "components/physics/ColliderComponent.h"
-#include "components/physics/MovableComponent.h"
+#include "components/physics/MovementComponent.h"
 #include "spdlog/spdlog.h"
 
 std::shared_ptr<GameObject> MobFactory::CreateMob(const std::string &speciesName,
@@ -11,8 +12,9 @@ std::shared_ptr<GameObject> MobFactory::CreateMob(const std::string &speciesName
   auto mob = CreatePokemonObject(speciesName, config, initialAnimation, position, scale);
 
   if (mob) {
-    mob->AddComponent<MovableComponent>();
+    mob->AddComponent<MovementComponent>();
     mob->AddComponent<ColliderComponent>();
+    mob->AddComponent<TagComponent>("mob");
     spdlog::debug("Created mob: {}", speciesName);
   }
 
@@ -26,8 +28,9 @@ std::shared_ptr<GameObject> MobFactory::CreateRandomMob(
                                        position, scale);
 
   if (mob) {
-    mob->AddComponent<MovableComponent>();
+    mob->AddComponent<MovementComponent>();
     mob->AddComponent<ColliderComponent>();
+    mob->AddComponent<TagComponent>("mob");
     spdlog::debug("Created random mob: {}", speciesName);
   }
 
