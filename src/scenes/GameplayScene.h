@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/Scene.h"
+#include "raylib.h"
 
 class AssetManager;
 class DataManager;
@@ -16,9 +17,11 @@ class GameplayScene : public Scene {
   void Load() override;
   void Unload() override;
   void Update(float deltaTime) override;
+  void Draw(float deltaTime) override;
 
  private:
   void LoadTestData();
+  void DrawBackground() const;
 
   const int screenWidth = 1280;
   const int screenHeight = 720;
@@ -28,4 +31,8 @@ class GameplayScene : public Scene {
 
   std::shared_ptr<TowerFactory> m_towerFactory;
   std::shared_ptr<MobFactory> m_mobFactory;
+
+  // NEW: Background texture member
+  Texture2D m_backgroundTexture;
+  bool m_backgroundLoaded = false;
 };

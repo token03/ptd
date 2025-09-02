@@ -9,7 +9,8 @@
 AssetManager::AssetManager(const std::filesystem::path& assetRoot)
     : m_assetRoot(assetRoot),
       m_pmdCollabPath(assetRoot / "pmdcollab"),
-      m_portraitPath(assetRoot / "pmdcollab" / "portrait") {}
+      m_portraitPath(assetRoot / "pmdcollab" / "portrait"),
+      m_backgroudPath(assetRoot / "backgrounds") {}
 
 AssetManager::~AssetManager() {
   for (auto const& [path, texture] : m_textureCache) {
@@ -145,6 +146,29 @@ Texture2D AssetManager::getAnimationTexture(const std::string& formId,
     m_textureCache[pathString] = texture;
   } else {
     spdlog::error("Failed to load texture: {}", pathString);
+  }
+  return texture;
+}
+
+Texture2D AssetManager::getBackgroundTexture(const std::string& bgName) {
+  std::filesystem::path texturePath = m_backgroudPath / (bgName + ".png");
+  std::string pathString = texturePath.string();
+
+  if (m_textureCache.count(pathString)) {
+    return m_textureCache.at(pathString);
+  }
+
+  if (!std::filesystem::exists(texturePath)) {
+    spdlog::error("Background texture file not found: {}", pathString);
+    return Texture2D{0};
+  }
+
+  Texture2D texture = LoadTexture(pathString.c_str());
+  if (texture.id > 0) {
+    spdlog::debug("Loaded background texture: {}", pathString);
+    m_textureCache[pathString] = texture;
+  } else {
+    spdlog::error("Failed to load background texture: {}", pathString);
   }
   return texture;
 }

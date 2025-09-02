@@ -22,6 +22,13 @@ void GameplayScene::Load() {
   m_towerFactory = std::make_shared<TowerFactory>(m_assetManager, m_dataManager);
   m_mobFactory = std::make_shared<MobFactory>(m_assetManager, m_dataManager);
 
+  m_backgroundTexture = m_assetManager->getBackgroundTexture("bg");
+  if (m_backgroundTexture.id > 0) {
+    m_backgroundLoaded = true;
+  } else {
+    spdlog::warn("Failed to load background texture 'bg.png'.");
+  }
+
   LoadTestData();
   spdlog::info("GameplayScene loaded.");
 }
@@ -29,6 +36,7 @@ void GameplayScene::Load() {
 void GameplayScene::Unload() {
   m_gameObjects.clear();
   m_spawnQueue.clear();
+  m_backgroundLoaded = false;
   spdlog::info("GameplayScene unloaded.");
 }
 
@@ -41,6 +49,33 @@ void GameplayScene::Update(float deltaTime) {
   }
 
   Scene::Update(deltaTime);
+}
+
+void GameplayScene::Draw(float deltaTime) {
+  DrawBackground();
+
+  Scene::Draw(deltaTime);
+}
+
+void GameplayScene::DrawBackground() const {
+  if (!m_backgroundLoaded) return;
+
+  auto tw = static_cast<float>(m_backgroundTexture.width);
+  auto th = static_cast<float>(m_backgroundTexture.height);
+
+  auto screenAspect = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
+  auto texAspect = tw / th;
+
+  auto srcW = (texAspect > screenAspect) ? th * screenAspect : tw;
+  auto srcH = (texAspect > screenAspect) ? th : tw / screenAspect;
+  auto srcX = (tw - srcW) * 0.5f;
+  auto srcY = (th - srcH) * 0.5f;
+
+  Rectangle sourceRec = {srcX, srcY, srcW, srcH};
+  Rectangle destRec = {0.0f, 0.0f, static_cast<float>(screenWidth),
+                       static_cast<float>(screenHeight)};
+
+  DrawTexturePro(m_backgroundTexture, sourceRec, destRec, {0, 0}, 0.0f, WHITE);
 }
 
 void GameplayScene::LoadTestData() {

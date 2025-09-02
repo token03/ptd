@@ -21,6 +21,7 @@ class AssetManager {
 
   Texture2D getAnimationTexture(const std::string &formId,
                                 const std::string &animationName);
+  Texture2D getBackgroundTexture(const std::string &bgName);
 
  private:
   void processTrackerEntry(const std::string &dex, const std::string &subgroupId,
@@ -31,6 +32,7 @@ class AssetManager {
   std::filesystem::path m_assetRoot;
   std::filesystem::path m_pmdCollabPath;
   std::filesystem::path m_portraitPath;
+  std::filesystem::path m_backgroudPath;
   std::map<std::string, std::shared_ptr<PMDData>> m_loadedForms;
 
   std::map<std::string, TrackerEntry> m_trackerData;
