@@ -8,6 +8,8 @@
 #include "factories/TowerFactory.h"
 #include "managers/AssetManager.h"
 #include "managers/DataManager.h"
+#include "managers/SceneManager.h"
+#include "scenes/PauseScene.h"
 #include "spdlog/spdlog.h"
 
 GameplayScene::GameplayScene(std::shared_ptr<AssetManager> assetManager,
@@ -28,6 +30,17 @@ void GameplayScene::Unload() {
   m_gameObjects.clear();
   m_spawnQueue.clear();
   spdlog::info("GameplayScene unloaded.");
+}
+
+void GameplayScene::Update(float deltaTime) {
+  if (IsKeyPressed(KEY_P)) {
+    if (auto sm = m_sceneManager.lock()) {
+      sm->PushScene(std::make_shared<PauseScene>());
+      return;
+    }
+  }
+
+  Scene::Update(deltaTime);
 }
 
 void GameplayScene::LoadTestData() {

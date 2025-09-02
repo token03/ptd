@@ -5,7 +5,7 @@
 
 class Scene;
 
-class SceneManager {
+class SceneManager : public std::enable_shared_from_this<SceneManager> {
  public:
   SceneManager();
   ~SceneManager();

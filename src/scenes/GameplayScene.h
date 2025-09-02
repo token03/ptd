@@ -15,6 +15,7 @@ class GameplayScene : public Scene {
 
   void Load() override;
   void Unload() override;
+  void Update(float deltaTime) override;
 
  private:
   void LoadTestData();

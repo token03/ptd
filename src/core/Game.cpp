@@ -26,7 +26,7 @@ void Game::Load() {
   m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
                                                 (dataPath / "types.json").string());
 
-  m_sceneManager = std::make_unique<SceneManager>();
+  m_sceneManager = std::make_shared<SceneManager>();
   m_sceneManager->PushScene(
       std::make_shared<GameplayScene>(m_assetManager, m_dataManager));
 }

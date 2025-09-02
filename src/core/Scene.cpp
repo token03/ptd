@@ -4,6 +4,7 @@
 
 #include "components/gameplay/TagComponent.h"
 #include "core/GameObject.h"
+#include "managers/SceneManager.h"
 
 Scene::~Scene() = default;
 
@@ -32,6 +33,8 @@ void Scene::Draw(float deltaTime) {
   }
 }
 
+bool Scene::IsOverlay() const { return false; }
+
 std::shared_ptr<GameObject> Scene::AddGameObject(std::shared_ptr<GameObject> go) {
   go->SetScene(weak_from_this());
   m_gameObjects.push_back(go);
@@ -55,9 +58,15 @@ std::vector<std::shared_ptr<GameObject>> Scene::GetGameObjectsWithTag(
     const std::string& tag) {
   std::vector<std::shared_ptr<GameObject>> taggedObjects;
   for (const auto& go : m_gameObjects) {
-    if (go->HasComponent<TagComponent>() && go->GetComponent<TagComponent>().tag == tag) {
-      taggedObjects.push_back(go);
+    if (auto tagComp = go->GetComponentShared<TagComponent>()) {  // One lookup
+      if (tagComp->tag == tag) {
+        taggedObjects.push_back(go);
+      }
     }
   }
   return taggedObjects;
+}
+
+void Scene::SetSceneManager(std::weak_ptr<SceneManager> manager) {
+  m_sceneManager = manager;
 }

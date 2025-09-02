@@ -26,5 +26,5 @@ class Game {
 
   std::shared_ptr<AssetManager> m_assetManager;
   std::shared_ptr<DataManager> m_dataManager;
-  std::unique_ptr<SceneManager> m_sceneManager;
+  std::shared_ptr<SceneManager> m_sceneManager;
 };
