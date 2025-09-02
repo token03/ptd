@@ -3,11 +3,11 @@
 #include <memory>
 
 #include "core/GameObject.h"  // IWYU pragma: keep - required for assignRequiredComponent
-#include "managers/AssetManager.h"
+#include "managers/TextureManager.h"
 #include "spdlog/spdlog.h"
 #include "utils/PMDUtils.h"
 
-AnimationComponent::AnimationComponent(std::shared_ptr<AssetManager> assetManager,
+AnimationComponent::AnimationComponent(std::shared_ptr<TextureManager> assetManager,
                                        std::string formId)
     : m_assetManager(std::move(assetManager)), m_formId(std::move(formId)) {}
 
@@ -22,7 +22,7 @@ void AnimationComponent::Init() {
     }
   } else {
     throw std::runtime_error(
-        "AssetManager is not available for "
+        "TextureManager is not available for "
         "AnimationComponent initialization.");
   }
 }
@@ -77,7 +77,7 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
       }
     }
   } else {
-    spdlog::error("Cannot play animation, AssetManager is not available.");
+    spdlog::error("Cannot play animation, TextureManager is not available.");
     return;
   }
 

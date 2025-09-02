@@ -6,13 +6,13 @@
 #include "core/GameObject.h"
 #include "factories/MobFactory.h"
 #include "factories/TowerFactory.h"
-#include "managers/AssetManager.h"
+#include "managers/TextureManager.h"
 #include "managers/DataManager.h"
 #include "managers/SceneManager.h"
 #include "scenes/PauseScene.h"
 #include "spdlog/spdlog.h"
 
-GameplayScene::GameplayScene(std::shared_ptr<AssetManager> assetManager,
+GameplayScene::GameplayScene(std::shared_ptr<TextureManager> assetManager,
                              std::shared_ptr<DataManager> dataManager)
     : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
 

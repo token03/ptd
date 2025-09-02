@@ -4,7 +4,7 @@
 
 class TowerFactory : public BasePokemonFactory {
  public:
-  TowerFactory(std::shared_ptr<AssetManager> assetManager,
+  TowerFactory(std::shared_ptr<TextureManager> assetManager,
                std::shared_ptr<DataManager> dataManager);
 
   std::shared_ptr<GameObject> CreateTower(const std::string& speciesName,

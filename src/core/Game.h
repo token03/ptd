@@ -5,7 +5,7 @@
 #include "managers/SceneManager.h"
 #include "raylib.h"
 
-class AssetManager;
+class TextureManager;
 class DataManager;
 
 class Game {
@@ -24,7 +24,7 @@ class Game {
   const int screenHeight = 720;
   Font font;
 
-  std::shared_ptr<AssetManager> m_assetManager;
+  std::shared_ptr<TextureManager> m_assetManager;
   std::shared_ptr<DataManager> m_dataManager;
   std::shared_ptr<SceneManager> m_sceneManager;
 };

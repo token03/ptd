@@ -18,11 +18,11 @@ enum class Direction {
   SouthWest,
 };
 
-class AssetManager;
+class TextureManager;
 
 class AnimationComponent : public Component {
  public:
-  AnimationComponent(std::shared_ptr<AssetManager> assetManager, std::string formId);
+  AnimationComponent(std::shared_ptr<TextureManager> assetManager, std::string formId);
   void Init() override;
   void Update(float deltaTime) override;
   void Play(const std::string &animationName, bool reset = false);
@@ -33,7 +33,7 @@ class AnimationComponent : public Component {
  private:
   void UpdateSpriteRect();
 
-  std::weak_ptr<AssetManager> m_assetManager;
+  std::weak_ptr<TextureManager> m_assetManager;
   std::string m_formId;
   std::weak_ptr<const PMDData> m_pmdData;
   std::weak_ptr<SpriteComponent> m_sprite;

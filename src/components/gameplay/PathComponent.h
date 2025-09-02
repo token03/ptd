@@ -12,6 +12,7 @@ class PathComponent : public Component {
   PathComponent(std::vector<Vector2> points, PathType type);
 
   void Draw() override;
+  void DrawDebug();
   Vector2 GetPointAt(float t) const;
   Vector2 GetPointAtDistance(float distance) const;
   float GetTotalLength() const;
@@ -29,4 +30,6 @@ class PathComponent : public Component {
   Vector2 GetPointCatmullRom(float t) const;
 
   void CalculateLengthData() const;
+  void CalculateLengthDataLinear() const;
+  Vector2 GetPointAtDistanceLinear(float distance) const;
 };

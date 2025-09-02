@@ -3,14 +3,14 @@
 #include "core/Scene.h"
 #include "raylib.h"
 
-class AssetManager;
+class TextureManager;
 class DataManager;
 class MobFactory;
 class TowerFactory;
 
 class GameplayScene : public Scene {
  public:
-  GameplayScene(std::shared_ptr<AssetManager> assetManager,
+  GameplayScene(std::shared_ptr<TextureManager> assetManager,
                 std::shared_ptr<DataManager> dataManager);
   ~GameplayScene() override;
 
@@ -26,7 +26,7 @@ class GameplayScene : public Scene {
   const int screenWidth = 1280;
   const int screenHeight = 720;
 
-  std::shared_ptr<AssetManager> m_assetManager;
+  std::shared_ptr<TextureManager> m_assetManager;
   std::shared_ptr<DataManager> m_dataManager;
 
   std::shared_ptr<TowerFactory> m_towerFactory;

@@ -9,7 +9,7 @@
 #include "raylib.h"
 #include "spdlog/spdlog.h"
 
-BasePokemonFactory::BasePokemonFactory(std::shared_ptr<AssetManager> assetManager,
+BasePokemonFactory::BasePokemonFactory(std::shared_ptr<TextureManager> assetManager,
                                        std::shared_ptr<DataManager> dataManager)
     : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
 

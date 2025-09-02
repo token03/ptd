@@ -4,7 +4,7 @@
 
 #include <filesystem>
 
-#include "managers/AssetManager.h"
+#include "managers/TextureManager.h"
 #include "managers/DataManager.h"
 #include "raylib.h"
 #include "rlImGui.h"
@@ -22,7 +22,7 @@ void Game::Load() {
   // TODO: move this to like the UI manager or something
   font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 
-  m_assetManager = std::make_shared<AssetManager>(assetsPath);
+  m_assetManager = std::make_shared<TextureManager>(assetsPath);
   m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
                                                 (dataPath / "types.json").string());
 

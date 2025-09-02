@@ -5,7 +5,7 @@
 #include "components/gameplay/TargetingComponent.h"
 #include "spdlog/spdlog.h"
 
-TowerFactory::TowerFactory(std::shared_ptr<AssetManager> assetManager,
+TowerFactory::TowerFactory(std::shared_ptr<TextureManager> assetManager,
                            std::shared_ptr<DataManager> dataManager)
     : BasePokemonFactory(std::move(assetManager), std::move(dataManager)) {}
 
