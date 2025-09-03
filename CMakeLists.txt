@@ -11,9 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(raylib_imgui_compiler_flags INTERFACE)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-# include(cmake/StaticAnalysers.cmake)
-# enable_clang_tidy()
-
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
 
 include(Dependencies.cmake)

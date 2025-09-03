@@ -13,6 +13,7 @@ Game::Game() {}
 Game::~Game() {}
 
 void Game::Load() {
+  SetTraceLogLevel(LOG_ERROR);
   // TODO: move this to like the UI manager or something
   font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 
