@@ -15,7 +15,7 @@ TextureManager::TextureManager(std::shared_ptr<DataManager> dataManager)
       m_portraitPath(m_pmdCollabPath / "portrait"),
       m_backgroudPath(m_assetRoot / "backgrounds"),
       m_smogonPath(m_assetRoot / "smogon") {
-  loadTracker();
+  processTrackerData();
 }
 
 TextureManager::~TextureManager() {
@@ -28,19 +28,10 @@ TextureManager::~TextureManager() {
   }
 }
 
-void TextureManager::loadTracker() {
-  const auto trackerPath = m_pmdCollabPath / "tracker.json";
-  spdlog::debug("Loading tracker file: {}", trackerPath.string());
-  std::string buffer;
-  auto error = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
-      m_trackerData, trackerPath.string(), buffer);
-  if (error) {
-    spdlog::error("Failed to parse tracker.json: {}", glz::format_error(error, buffer));
-    return;
-  }
-  spdlog::info("Tracker.json loaded successfully, processing entries...");
-
-  for (const auto &[dex, entry] : m_trackerData) {
+void TextureManager::processTrackerData() {
+  spdlog::info("Processing tracker entries...");
+  const auto &trackerData = m_dataManager->getTrackerData();
+  for (const auto &[dex, entry] : trackerData) {
     processTrackerEntry(dex, "", entry, "", std::filesystem::path());
   }
   spdlog::info("Finished processing tracker entries. Loaded {} forms.",

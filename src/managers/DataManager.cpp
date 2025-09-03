@@ -7,10 +7,12 @@
 
 DataManager::DataManager() {
   const std::filesystem::path dataRoot = "data";
+  const std::filesystem::path assetRoot = "assets";
   loadSpecies((dataRoot / "species.json").string());
   loadSpeciesAlt((dataRoot / "speciesAlt.json").string());
   loadPokedex((dataRoot / "pokedex.json").string());
   loadTypeChart((dataRoot / "types.json").string());
+  loadTracker((assetRoot / "pmdcollab" / "tracker.json").string());
 }
 
 void DataManager::loadSpecies(const std::string &path) {
@@ -61,6 +63,19 @@ void DataManager::loadTypeChart(const std::string &path) {
   }
 }
 
+void DataManager::loadTracker(const std::string &path) {
+  spdlog::debug("Loading tracker file: {}", path);
+  std::string buffer;
+  auto error = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
+      m_trackerData, path, buffer);
+  if (error) {
+    spdlog::error("Failed to parse tracker.json: {}", glz::format_error(error, buffer));
+    return;
+  }
+  spdlog::info("Tracker.json loaded successfully with {} root entries.",
+               m_trackerData.size());
+}
+
 std::optional<std::string> DataManager::getDexNumber(
     const std::string &speciesName) const {
   auto it = m_dexMap.find(speciesName);
@@ -102,3 +117,7 @@ std::optional<int> DataManager::getIconIndex(const std::string &speciesName) con
 }
 
 std::shared_ptr<TypeChart> DataManager::getTypeChart() const { return m_typeChart; }
+
+const std::map<std::string, TrackerEntry> &DataManager::getTrackerData() const {
+  return m_trackerData;
+}

@@ -27,7 +27,7 @@ class TextureManager {
   Rectangle getIconSourceRect(int iconIndex) const;
 
  private:
-  void loadTracker();
+  void processTrackerData();
   void processTrackerEntry(const std::string &dex, const std::string &subgroupId,
                            const TrackerEntry &entry, const std::string &parentName,
                            const std::filesystem::path &parentPath);
@@ -42,8 +42,6 @@ class TextureManager {
   std::filesystem::path m_backgroudPath;
   std::filesystem::path m_smogonPath;
   std::map<std::string, std::shared_ptr<PMDData>> m_loadedForms;
-
-  std::map<std::string, TrackerEntry> m_trackerData;
 
   std::map<std::string, Texture2D> m_textureCache;
 
