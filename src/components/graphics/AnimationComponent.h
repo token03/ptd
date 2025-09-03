@@ -33,7 +33,7 @@ class AnimationComponent : public Component {
  private:
   void UpdateSpriteRect();
 
-  std::weak_ptr<TextureManager> m_assetManager;
+  std::weak_ptr<TextureManager> m_textureManager;
   std::string m_formId;
   std::weak_ptr<const PMDData> m_pmdData;
   std::weak_ptr<SpriteComponent> m_sprite;

@@ -26,7 +26,7 @@ class GameplayScene : public Scene {
   const int screenWidth = 1280;
   const int screenHeight = 720;
 
-  std::shared_ptr<TextureManager> m_assetManager;
+  std::shared_ptr<TextureManager> m_textureManager;
   std::shared_ptr<DataManager> m_dataManager;
 
   std::shared_ptr<TowerFactory> m_towerFactory;

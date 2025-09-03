@@ -1,3 +1,4 @@
+// TextureManager.cpp
 #include "managers/TextureManager.h"
 
 #include <spdlog/spdlog.h>
@@ -41,12 +42,28 @@ std::set<std::string> findAvailablePortraits(const std::filesystem::path &portra
 }
 }  // namespace
 
-TextureManager::TextureManager()
-    : m_assetRoot("assets"),
+TextureManager::TextureManager(std::shared_ptr<DataManager> dataManager)
+    : m_dataManager(std::move(dataManager)),
+      m_assetRoot("assets"),
       m_pmdCollabPath(m_assetRoot / "pmdcollab"),
       m_portraitPath(m_assetRoot / "pmdcollab" / "portrait"),
       m_backgroudPath(m_assetRoot / "backgrounds"),
-      m_smogonPath(m_assetRoot / "smogon") {}
+      m_smogonPath(m_assetRoot / "smogon") {
+  const auto trackerPath = m_pmdCollabPath / "tracker.json";
+  spdlog::debug("Loading tracker file: {}", trackerPath.string());
+  std::string buffer;
+  auto error = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
+      m_trackerData, trackerPath.string(), buffer);
+  if (error) {
+    spdlog::error("Failed to parse tracker.json: {}", glz::format_error(error, buffer));
+    return;
+  }
+  spdlog::info("Tracker.json loaded successfully, processing entries...");
+
+  for (const auto &[dex, entry] : m_trackerData) {
+    processTrackerEntry(dex, "", entry, dex, "", std::filesystem::path());
+  }
+}
 
 TextureManager::~TextureManager() {
   for (auto const &[path, texture] : m_textureCache) {
@@ -58,71 +75,56 @@ TextureManager::~TextureManager() {
   }
 }
 
-bool TextureManager::loadPokemonSpriteData(const std::string &dexNumber) {
-  if (m_loadedForms.count(dexNumber)) {
-    return true;
-  }
-
-  if (!ensureTrackerLoaded()) {
-    return false;
-  }
-
-  auto it = m_trackerData.find(dexNumber);
-  if (it == m_trackerData.end()) {
-    spdlog::error("Pokémon #{} not found in tracker.json", dexNumber);
-    return false;
-  }
-
-  const TrackerEntry &baseEntry = it->second;
-  processTrackerEntry(dexNumber, "", baseEntry, "", std::filesystem::path());
-  return true;
-}
-
 void TextureManager::processTrackerEntry(const std::string &dex,
                                          const std::string &subgroupId,
                                          const TrackerEntry &entry,
+                                         const std::string &currentDexStr,
                                          const std::string &parentName,
                                          const std::filesystem::path &parentPath) {
   std::string currentFullName = PMDUtils::generateFullName(parentName, entry.name);
   std::filesystem::path currentRelativePath = parentPath / subgroupId;
-  std::string currentFullId = PMDUtils::generateFullId(dex, currentRelativePath);
 
-  auto newForm = std::make_shared<PMDData>();
-  newForm->dex = dex;
-  newForm->fullId = currentFullId;
-  newForm->fullName = currentFullName;
-  newForm->formPath = currentRelativePath.string();
-  newForm->spriteCredit = entry.sprite_credit;
-  newForm->portraitCredit = entry.portrait_credit;
+  auto speciesNameOpt = m_dataManager->getSpeciesName(currentDexStr);
+  if (speciesNameOpt) {
+    const std::string &speciesName = *speciesNameOpt;
+    auto newForm = std::make_shared<PMDData>();
+    newForm->dex = dex;
+    newForm->fullId = speciesName;
+    newForm->fullName = currentFullName;
+    newForm->formPath = currentRelativePath.string();
+    newForm->spriteCredit = entry.sprite_credit;
+    newForm->portraitCredit = entry.portrait_credit;
 
-  std::filesystem::path baseSpritePath =
-      m_pmdCollabPath / "sprite" / dex / currentRelativePath;
-  newForm->animData = PMDUtils::parseAnimationData(baseSpritePath / "AnimData.xml");
-  newForm->animFileBases = findAnimationBases(baseSpritePath);
+    std::filesystem::path baseSpritePath =
+        m_pmdCollabPath / "sprite" / dex / currentRelativePath;
+    newForm->animData = PMDUtils::parseAnimationData(baseSpritePath / "AnimData.xml");
+    newForm->animFileBases = findAnimationBases(baseSpritePath);
 
-  std::filesystem::path portraitFormPath = m_portraitPath / dex / currentRelativePath;
-  newForm->availablePortraits = findAvailablePortraits(portraitFormPath);
+    std::filesystem::path portraitFormPath = m_portraitPath / dex / currentRelativePath;
+    newForm->availablePortraits = findAvailablePortraits(portraitFormPath);
 
-  if (newForm->animData || !newForm->availablePortraits.empty()) {
-    m_loadedForms[currentFullId] = newForm;
-    spdlog::info("Loaded form: {} ({})", newForm->fullName, newForm->fullId);
+    if (newForm->animData || !newForm->availablePortraits.empty()) {
+      m_loadedForms[speciesName] = newForm;
+    }
   }
 
   for (const auto &[id, subEntry] : entry.subgroups) {
-    processTrackerEntry(dex, id, subEntry, currentFullName, currentRelativePath);
+    processTrackerEntry(dex, id, subEntry, currentDexStr + "-" + id, currentFullName,
+                        currentRelativePath);
   }
 }
 
-std::shared_ptr<const PMDData> TextureManager::getForm(const std::string &fullId) const {
-  auto it = m_loadedForms.find(fullId);
+std::shared_ptr<const PMDData> TextureManager::getForm(
+    const std::string &speciesName) const {
+  auto it = m_loadedForms.find(speciesName);
   return (it != m_loadedForms.end()) ? it->second : nullptr;
 }
 
-Texture2D TextureManager::getAnimationTexture(const std::string &formId,
+Texture2D TextureManager::getAnimationTexture(const std::string &speciesName,
                                               const std::string &animationName) {
-  auto form = getForm(formId);
+  auto form = getForm(speciesName);
   if (!form) {
-    spdlog::error("Form not found: {}", formId);
+    spdlog::error("Form not found for species: {}", speciesName);
     return Texture2D{0};
   }
 
@@ -145,11 +147,11 @@ Texture2D TextureManager::getBackgroundTexture(const std::string &bgName) {
   return getOrLoadTexture(texturePath);
 }
 
-Texture2D TextureManager::getPortraitTexture(const std::string &formId,
+Texture2D TextureManager::getPortraitTexture(const std::string &speciesName,
                                              const std::string &portraitName) {
-  auto form = getForm(formId);
+  auto form = getForm(speciesName);
   if (!form) {
-    spdlog::error("Form not found for portrait: {}", formId);
+    spdlog::error("Form not found for portrait: {}", speciesName);
     return Texture2D{0};
   }
 
@@ -195,25 +197,6 @@ Rectangle TextureManager::getIconSourceRect(int iconIndex) const {
 
   return {(float)(col * ICON_WIDTH), (float)(row * ICON_HEIGHT), (float)ICON_WIDTH,
           (float)ICON_HEIGHT};
-}
-
-bool TextureManager::ensureTrackerLoaded() {
-  if (m_trackerLoaded) {
-    return true;
-  }
-
-  const auto trackerPath = m_pmdCollabPath / "tracker.json";
-  spdlog::debug("Loading tracker file: {}", trackerPath.string());
-  std::string buffer;
-  auto error = glz::read_file_json<glz::opts{.error_on_unknown_keys = false}>(
-      m_trackerData, trackerPath.string(), buffer);
-  if (error) {
-    spdlog::error("Failed to parse tracker.json: {}", glz::format_error(error, buffer));
-    return false;
-  }
-  m_trackerLoaded = true;
-  spdlog::info("Tracker.json loaded successfully");
-  return true;
 }
 
 Texture2D TextureManager::getOrLoadTexture(const std::filesystem::path &texturePath) {

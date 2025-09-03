@@ -21,15 +21,15 @@ bool testIconLoaded = false;
 
 GameplayScene::GameplayScene(std::shared_ptr<TextureManager> assetManager,
                              std::shared_ptr<DataManager> dataManager)
-    : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
+    : m_textureManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
 
 GameplayScene::~GameplayScene() {}
 
 void GameplayScene::Load() {
-  m_towerFactory = std::make_shared<TowerFactory>(m_assetManager, m_dataManager);
-  m_mobFactory = std::make_shared<MobFactory>(m_assetManager, m_dataManager);
+  m_towerFactory = std::make_shared<TowerFactory>(m_textureManager, m_dataManager);
+  m_mobFactory = std::make_shared<MobFactory>(m_textureManager, m_dataManager);
 
-  m_backgroundTexture = m_assetManager->getBackgroundTexture("bg");
+  m_backgroundTexture = m_textureManager->getBackgroundTexture("bg");
   if (m_backgroundTexture.id > 0) {
     m_backgroundLoaded = true;
   } else {
@@ -78,9 +78,9 @@ void GameplayScene::Draw(float deltaTime) {
     DrawTextureV(testPortrait, position, WHITE);
 
     if (testIconLoaded) {
-      Texture2D iconSheet = m_assetManager->getIconSheetTexture();
+      Texture2D iconSheet = m_textureManager->getIconSheetTexture();
       if (iconSheet.id > 0) {
-        Rectangle sourceRect = m_assetManager->getIconSourceRect(testIconIndex);
+        Rectangle sourceRect = m_textureManager->getIconSourceRect(testIconIndex);
         Vector2 iconPosition = {position.x, position.y + texH + 10.0f};
         DrawTextureRec(iconSheet, sourceRect, iconPosition, WHITE);
       }
@@ -117,19 +117,17 @@ void GameplayScene::LoadTestData() {
   exampleTower->GetComponent<AnimationComponent>().SetDirection(Direction::West);
   AddGameObject(exampleTower);
 
-  const std::string clodsireDex = m_dataManager->getDexNumber("clodsire").value();
-  m_assetManager->loadPokemonSpriteData(clodsireDex);
-  auto clodsireForm = m_assetManager->getForm(clodsireDex);
+  auto clodsireForm = m_textureManager->getForm("clodsire");
   if (clodsireForm && !clodsireForm->availablePortraits.empty()) {
     std::string portraitName = *clodsireForm->availablePortraits.begin();
-    testPortrait = m_assetManager->getPortraitTexture(clodsireDex, portraitName);
+    testPortrait = m_textureManager->getPortraitTexture("clodsire", portraitName);
     if (testPortrait.id > 0) {
       testPortraitLoaded = true;
     } else {
       spdlog::warn("Failed to load clodsire portrait '{}'", portraitName);
     }
   } else {
-    spdlog::warn("No portraits found for Clodsire ({})", clodsireDex);
+    spdlog::warn("No portraits found for Clodsire");
   }
 
   auto iconIndexOpt = m_dataManager->getIconIndex("clodsire");

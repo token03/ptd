@@ -12,41 +12,33 @@
 
 BasePokemonFactory::BasePokemonFactory(std::shared_ptr<TextureManager> assetManager,
                                        std::shared_ptr<DataManager> dataManager)
-    : m_assetManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
+    : m_textureManager(std::move(assetManager)), m_dataManager(std::move(dataManager)) {}
 
 std::shared_ptr<GameObject> BasePokemonFactory::CreatePokemonObject(
     const std::string &speciesName, const PokemonInstance &config,
     const std::string &initialAnimation, Vector2 position, Vector2 scale) {
-  if (!m_assetManager || !m_dataManager) {
+  if (!m_textureManager || !m_dataManager) {
     spdlog::error("BasePokemonFactory error: A manager is not available.");
     return nullptr;
   }
 
-  auto dexNumOpt = m_dataManager->getDexNumber(speciesName);
-  if (!dexNumOpt) {
-    spdlog::error("Could not find ID for species '{}'.", speciesName);
-    return nullptr;
-  }
-  const std::string &dexNumber = *dexNumOpt;
-
   auto pokedexDataOpt = m_dataManager->getPokedexData(speciesName);
   if (!pokedexDataOpt) {
-    spdlog::error("Could not find species data for ID: {}", speciesName);
+    spdlog::error("Could not find species data for: {}", speciesName);
     return nullptr;
   }
   const PokedexData &pokedexData = *pokedexDataOpt;
 
-  m_assetManager->loadPokemonSpriteData(dexNumber);
-  const auto form = m_assetManager->getForm(dexNumber);
+  const auto form = m_textureManager->getForm(speciesName);
   if (!form || !form->animData) {
     spdlog::error(
-        "Could not create GameObject for ID: {}. PMD form "
+        "Could not create GameObject for species: {}. PMD form "
         "data not loaded or has no animations.",
-        dexNumber);
+        speciesName);
     return nullptr;
   }
 
-  Texture2D texture = m_assetManager->getAnimationTexture(dexNumber, initialAnimation);
+  Texture2D texture = m_textureManager->getAnimationTexture(speciesName, initialAnimation);
   if (texture.id <= 0) {
     spdlog::error("Could not load initial texture for animation: {}", initialAnimation);
     return nullptr;
@@ -56,7 +48,7 @@ std::shared_ptr<GameObject> BasePokemonFactory::CreatePokemonObject(
 
   gameObject->AddComponent<TransformComponent>(position, scale);
   gameObject->AddComponent<SpriteComponent>(texture);
-  gameObject->AddComponent<AnimationComponent>(m_assetManager, dexNumber);
+  gameObject->AddComponent<AnimationComponent>(m_textureManager, speciesName);
   gameObject->AddComponent<PokedexComponent>(pokedexData);
   gameObject->AddComponent<TraitsComponent>(config.nature, config.gender, config.isShiny);
   gameObject->AddComponent<StatComponent>(config.level, config.ivs, config.evs);

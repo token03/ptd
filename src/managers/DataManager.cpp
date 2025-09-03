@@ -21,6 +21,9 @@ void DataManager::loadSpecies(const std::string &path) {
                   glz::format_error(error, buffer));
   } else {
     spdlog::info("Successfully loaded {} entries from species.json", m_dexMap.size());
+    for (const auto &[name, dex] : m_dexMap) {
+      m_revDexMap[dex] = name;
+    }
   }
 }
 
@@ -68,6 +71,14 @@ std::optional<std::string> DataManager::getDexNumber(
     return it->second;
   }
   spdlog::warn("Species '{}' not found in the Pokedex map.", speciesName);
+  return std::nullopt;
+}
+
+std::optional<std::string> DataManager::getSpeciesName(const std::string &dexStr) const {
+  auto it = m_revDexMap.find(dexStr);
+  if (it != m_revDexMap.end()) {
+    return it->second;
+  }
   return std::nullopt;
 }
 

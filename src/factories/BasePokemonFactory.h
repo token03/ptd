@@ -25,6 +25,6 @@ class BasePokemonFactory {
       const std::string &speciesName, int minLevel, int maxLevel,
       const std::string &initialAnimation, Vector2 position, Vector2 scale);
 
-  std::shared_ptr<TextureManager> m_assetManager;
+  std::shared_ptr<TextureManager> m_textureManager;
   std::shared_ptr<DataManager> m_dataManager;
 };

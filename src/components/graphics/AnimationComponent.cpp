@@ -9,12 +9,12 @@
 
 AnimationComponent::AnimationComponent(std::shared_ptr<TextureManager> assetManager,
                                        std::string formId)
-    : m_assetManager(std::move(assetManager)), m_formId(std::move(formId)) {}
+    : m_textureManager(std::move(assetManager)), m_formId(std::move(formId)) {}
 
 void AnimationComponent::Init() {
   assignRequiredComponent(m_sprite);
 
-  if (auto assetManager = m_assetManager.lock()) {
+  if (auto assetManager = m_textureManager.lock()) {
     m_pmdData = assetManager->getForm(m_formId);
     if (m_pmdData.expired()) {
       throw std::runtime_error("AnimationComponent could not find form data for " +
@@ -65,7 +65,7 @@ void AnimationComponent::Play(const std::string &animationName, bool reset) {
     return;
   }
 
-  if (auto assetManager = m_assetManager.lock()) {
+  if (auto assetManager = m_textureManager.lock()) {
     std::string newTextureBase = PMDUtils::findAnimationBaseName(*pmdData, animationName);
     if (newTextureBase != m_currentTextureBase) {
       Texture2D newTexture = assetManager->getAnimationTexture(m_formId, animationName);

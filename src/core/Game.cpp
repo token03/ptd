@@ -2,8 +2,6 @@
 
 #include <imgui.h>
 
-#include <filesystem>
-
 #include "managers/DataManager.h"
 #include "managers/TextureManager.h"
 #include "raylib.h"
@@ -18,12 +16,12 @@ void Game::Load() {
   // TODO: move this to like the UI manager or something
   font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 
-  m_assetManager = std::make_shared<TextureManager>();
   m_dataManager = std::make_shared<DataManager>();
+  m_textureManager = std::make_shared<TextureManager>(m_dataManager);
 
   m_sceneManager = std::make_shared<SceneManager>();
   m_sceneManager->PushScene(
-      std::make_shared<GameplayScene>(m_assetManager, m_dataManager));
+      std::make_shared<GameplayScene>(m_textureManager, m_dataManager));
 }
 
 void Game::Update(float deltaTime) { m_sceneManager->Update(deltaTime); }
