@@ -16,7 +16,7 @@ class TextureManager {
 
   std::shared_ptr<const PMDData> getForm(const std::string &name) const;
   const std::map<std::string, std::shared_ptr<PMDData>> &getAllForms() const {
-    return m_loadedForms;
+    return m_dataManager->getAllForms();
   }
 
   Texture2D getAnimationTexture(const std::string &name,
@@ -27,12 +27,7 @@ class TextureManager {
   Rectangle getIconSourceRect(int iconIndex) const;
 
  private:
-  void processTrackerData();
-  void processTrackerEntry(const std::string &dex, const std::string &subgroupId,
-                           const TrackerEntry &entry, const std::string &parentName,
-                           const std::filesystem::path &parentPath);
   Texture2D getOrLoadTexture(const std::filesystem::path &texturePath);
-  void ensureIconSheetLoaded();
 
  private:
   std::shared_ptr<DataManager> m_dataManager;
@@ -41,7 +36,6 @@ class TextureManager {
   std::filesystem::path m_portraitPath;
   std::filesystem::path m_backgroudPath;
   std::filesystem::path m_smogonPath;
-  std::map<std::string, std::shared_ptr<PMDData>> m_loadedForms;
 
   std::map<std::string, Texture2D> m_textureCache;
 

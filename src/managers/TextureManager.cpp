@@ -3,8 +3,6 @@
 #include <spdlog/spdlog.h>
 
 #include <memory>
-#include <set>
-#include <vector>
 
 #include "utils/PMDUtils.h"
 
@@ -15,7 +13,20 @@ TextureManager::TextureManager(std::shared_ptr<DataManager> dataManager)
       m_portraitPath(m_pmdCollabPath / "portrait"),
       m_backgroudPath(m_assetRoot / "backgrounds"),
       m_smogonPath(m_assetRoot / "smogon") {
-  processTrackerData();
+  const auto iconSheetPath = m_smogonPath / "pokemon-icons.png";
+  if (!std::filesystem::exists(iconSheetPath)) {
+    spdlog::error("Icon sheet texture not found: {}", iconSheetPath.string());
+    m_iconSheetTexture = Texture2D{0};
+    return;
+  }
+
+  m_iconSheetTexture = LoadTexture(iconSheetPath.string().c_str());
+  if (m_iconSheetTexture.id > 0) {
+    spdlog::debug("Loaded icon sheet texture: {}", iconSheetPath.string());
+    m_iconSheetLoaded = true;
+  } else {
+    spdlog::error("Failed to load icon sheet texture: {}", iconSheetPath.string());
+  }
 }
 
 TextureManager::~TextureManager() {
@@ -28,55 +39,10 @@ TextureManager::~TextureManager() {
   }
 }
 
-void TextureManager::processTrackerData() {
-  spdlog::info("Processing tracker entries...");
-  const auto &trackerData = m_dataManager->getTrackerData();
-  for (const auto &[dex, entry] : trackerData) {
-    processTrackerEntry(dex, "", entry, "", std::filesystem::path());
-  }
-  spdlog::info("Finished processing tracker entries. Loaded {} forms.",
-               m_loadedForms.size());
-}
-
-void TextureManager::processTrackerEntry(const std::string &dex,
-                                         const std::string &subgroupId,
-                                         const TrackerEntry &entry,
-                                         const std::string &parentName,
-                                         const std::filesystem::path &parentPath) {
-  std::string currentFullName = PMDUtils::generateFullName(parentName, entry.name);
-  std::filesystem::path currentRelativePath = parentPath / subgroupId;
-
-  auto newForm = std::make_shared<PMDData>();
-  newForm->dex = dex;
-  newForm->fullId = PMDUtils::generateFullId(dex, currentRelativePath);
-  newForm->fullName = currentFullName;
-  newForm->formPath = currentRelativePath.string();
-  newForm->spriteCredit = entry.sprite_credit;
-  newForm->portraitCredit = entry.portrait_credit;
-
-  std::filesystem::path baseSpritePath =
-      m_pmdCollabPath / "sprite" / dex / currentRelativePath;
-  newForm->animData = PMDUtils::parseAnimationData(baseSpritePath / "AnimData.xml");
-  newForm->animFileBases = PMDUtils::findAnimationBases(baseSpritePath);
-
-  std::filesystem::path portraitFormPath = m_portraitPath / dex / currentRelativePath;
-  newForm->availablePortraits = PMDUtils::findAvailablePortraits(portraitFormPath);
-
-  if (newForm->animData || !newForm->availablePortraits.empty()) {
-    if (m_loadedForms.count(currentFullName)) {
-      spdlog::warn("Duplicate form name detected, overwriting: {}", currentFullName);
-    }
-    m_loadedForms[currentFullName] = newForm;
-  }
-
-  for (const auto &[id, subEntry] : entry.subgroups) {
-    processTrackerEntry(dex, id, subEntry, currentFullName, currentRelativePath);
-  }
-}
-
 std::shared_ptr<const PMDData> TextureManager::getForm(const std::string &name) const {
-  auto it = m_loadedForms.find(name);
-  return (it != m_loadedForms.end()) ? it->second : nullptr;
+  const auto &allForms = m_dataManager->getAllForms();
+  auto it = allForms.find(name);
+  return (it != allForms.end()) ? it->second : nullptr;
 }
 
 Texture2D TextureManager::getAnimationTexture(const std::string &name,
@@ -120,31 +86,7 @@ Texture2D TextureManager::getPortraitTexture(const std::string &name,
   return getOrLoadTexture(texturePath);
 }
 
-void TextureManager::ensureIconSheetLoaded() {
-  if (m_iconSheetLoaded) {
-    return;
-  }
-
-  const auto iconSheetPath = m_smogonPath / "pokemon-icons.png";
-  if (!std::filesystem::exists(iconSheetPath)) {
-    spdlog::error("Icon sheet texture not found: {}", iconSheetPath.string());
-    m_iconSheetTexture = Texture2D{0};
-    return;
-  }
-
-  m_iconSheetTexture = LoadTexture(iconSheetPath.string().c_str());
-  if (m_iconSheetTexture.id > 0) {
-    spdlog::debug("Loaded icon sheet texture: {}", iconSheetPath.string());
-    m_iconSheetLoaded = true;
-  } else {
-    spdlog::error("Failed to load icon sheet texture: {}", iconSheetPath.string());
-  }
-}
-
-Texture2D TextureManager::getIconSheetTexture() {
-  ensureIconSheetLoaded();
-  return m_iconSheetTexture;
-}
+Texture2D TextureManager::getIconSheetTexture() { return m_iconSheetTexture; }
 
 Rectangle TextureManager::getIconSourceRect(int iconIndex) const {
   if (iconIndex < 0) {
