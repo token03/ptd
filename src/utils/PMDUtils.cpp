@@ -80,6 +80,37 @@ std::string findAnimationBaseName(const PMDData &form, const std::string &animat
   return baseName;
 }
 
+std::vector<std::string> findAnimationBases(const std::filesystem::path &spriteDir) {
+  std::vector<std::string> bases;
+  if (!std::filesystem::exists(spriteDir) || !std::filesystem::is_directory(spriteDir)) {
+    return bases;
+  }
+  const std::string animSuffix = "-Anim.png";
+  for (const auto &dir_entry : std::filesystem::directory_iterator{spriteDir}) {
+    if (dir_entry.is_regular_file()) {
+      std::string filename = dir_entry.path().filename().string();
+      if (filename.ends_with(animSuffix)) {
+        bases.push_back(filename.substr(0, filename.length() - animSuffix.length()));
+      }
+    }
+  }
+  return bases;
+}
+
+std::set<std::string> findAvailablePortraits(const std::filesystem::path &portraitDir) {
+  std::set<std::string> portraits;
+  if (!std::filesystem::exists(portraitDir) ||
+      !std::filesystem::is_directory(portraitDir)) {
+    return portraits;
+  }
+  for (const auto &dir_entry : std::filesystem::directory_iterator{portraitDir}) {
+    if (dir_entry.is_regular_file() && dir_entry.path().extension() == ".png") {
+      portraits.insert(dir_entry.path().stem().string());
+    }
+  }
+  return portraits;
+}
+
 namespace {
 std::string formatFormNameComponent(const std::string &s) {
   size_t start = s.find_first_not_of(" \t\r\n");
