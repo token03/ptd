@@ -9,13 +9,13 @@
 #include "utils/PMDUtils.h"
 
 namespace {
-std::vector<std::string> findAnimationBases(const std::filesystem::path& spriteDir) {
+std::vector<std::string> findAnimationBases(const std::filesystem::path &spriteDir) {
   std::vector<std::string> bases;
   if (!std::filesystem::exists(spriteDir) || !std::filesystem::is_directory(spriteDir)) {
     return bases;
   }
   const std::string animSuffix = "-Anim.png";
-  for (const auto& dir_entry : std::filesystem::directory_iterator{spriteDir}) {
+  for (const auto &dir_entry : std::filesystem::directory_iterator{spriteDir}) {
     if (dir_entry.is_regular_file()) {
       std::string filename = dir_entry.path().filename().string();
       if (filename.ends_with(animSuffix)) {
@@ -26,13 +26,13 @@ std::vector<std::string> findAnimationBases(const std::filesystem::path& spriteD
   return bases;
 }
 
-std::set<std::string> findAvailablePortraits(const std::filesystem::path& portraitDir) {
+std::set<std::string> findAvailablePortraits(const std::filesystem::path &portraitDir) {
   std::set<std::string> portraits;
   if (!std::filesystem::exists(portraitDir) ||
       !std::filesystem::is_directory(portraitDir)) {
     return portraits;
   }
-  for (const auto& dir_entry : std::filesystem::directory_iterator{portraitDir}) {
+  for (const auto &dir_entry : std::filesystem::directory_iterator{portraitDir}) {
     if (dir_entry.is_regular_file() && dir_entry.path().extension() == ".png") {
       portraits.insert(dir_entry.path().stem().string());
     }
@@ -41,20 +41,24 @@ std::set<std::string> findAvailablePortraits(const std::filesystem::path& portra
 }
 }  // namespace
 
-TextureManager::TextureManager(const std::filesystem::path& assetRoot)
-    : m_assetRoot(assetRoot),
-      m_pmdCollabPath(assetRoot / "pmdcollab"),
-      m_portraitPath(assetRoot / "pmdcollab" / "portrait"),
-      m_backgroudPath(assetRoot / "backgrounds") {}
+TextureManager::TextureManager()
+    : m_assetRoot("assets"),
+      m_pmdCollabPath(m_assetRoot / "pmdcollab"),
+      m_portraitPath(m_assetRoot / "pmdcollab" / "portrait"),
+      m_backgroudPath(m_assetRoot / "backgrounds"),
+      m_smogonPath(m_assetRoot / "smogon") {}
 
 TextureManager::~TextureManager() {
-  for (auto const& [path, texture] : m_textureCache) {
+  for (auto const &[path, texture] : m_textureCache) {
     UnloadTexture(texture);
   }
   m_textureCache.clear();
+  if (m_iconSheetLoaded) {
+    UnloadTexture(m_iconSheetTexture);
+  }
 }
 
-bool TextureManager::loadPokemonSpriteData(const std::string& dexNumber) {
+bool TextureManager::loadPokemonSpriteData(const std::string &dexNumber) {
   if (m_loadedForms.count(dexNumber)) {
     return true;
   }
@@ -69,16 +73,16 @@ bool TextureManager::loadPokemonSpriteData(const std::string& dexNumber) {
     return false;
   }
 
-  const TrackerEntry& baseEntry = it->second;
+  const TrackerEntry &baseEntry = it->second;
   processTrackerEntry(dexNumber, "", baseEntry, "", std::filesystem::path());
   return true;
 }
 
-void TextureManager::processTrackerEntry(const std::string& dex,
-                                         const std::string& subgroupId,
-                                         const TrackerEntry& entry,
-                                         const std::string& parentName,
-                                         const std::filesystem::path& parentPath) {
+void TextureManager::processTrackerEntry(const std::string &dex,
+                                         const std::string &subgroupId,
+                                         const TrackerEntry &entry,
+                                         const std::string &parentName,
+                                         const std::filesystem::path &parentPath) {
   std::string currentFullName = PMDUtils::generateFullName(parentName, entry.name);
   std::filesystem::path currentRelativePath = parentPath / subgroupId;
   std::string currentFullId = PMDUtils::generateFullId(dex, currentRelativePath);
@@ -104,18 +108,18 @@ void TextureManager::processTrackerEntry(const std::string& dex,
     spdlog::info("Loaded form: {} ({})", newForm->fullName, newForm->fullId);
   }
 
-  for (const auto& [id, subEntry] : entry.subgroups) {
+  for (const auto &[id, subEntry] : entry.subgroups) {
     processTrackerEntry(dex, id, subEntry, currentFullName, currentRelativePath);
   }
 }
 
-std::shared_ptr<const PMDData> TextureManager::getForm(const std::string& fullId) const {
+std::shared_ptr<const PMDData> TextureManager::getForm(const std::string &fullId) const {
   auto it = m_loadedForms.find(fullId);
   return (it != m_loadedForms.end()) ? it->second : nullptr;
 }
 
-Texture2D TextureManager::getAnimationTexture(const std::string& formId,
-                                              const std::string& animationName) {
+Texture2D TextureManager::getAnimationTexture(const std::string &formId,
+                                              const std::string &animationName) {
   auto form = getForm(formId);
   if (!form) {
     spdlog::error("Form not found: {}", formId);
@@ -136,13 +140,13 @@ Texture2D TextureManager::getAnimationTexture(const std::string& formId,
   return getOrLoadTexture(texturePath);
 }
 
-Texture2D TextureManager::getBackgroundTexture(const std::string& bgName) {
+Texture2D TextureManager::getBackgroundTexture(const std::string &bgName) {
   std::filesystem::path texturePath = m_backgroudPath / (bgName + ".png");
   return getOrLoadTexture(texturePath);
 }
 
-Texture2D TextureManager::getPortraitTexture(const std::string& formId,
-                                             const std::string& portraitName) {
+Texture2D TextureManager::getPortraitTexture(const std::string &formId,
+                                             const std::string &portraitName) {
   auto form = getForm(formId);
   if (!form) {
     spdlog::error("Form not found for portrait: {}", formId);
@@ -155,9 +159,42 @@ Texture2D TextureManager::getPortraitTexture(const std::string& formId,
   return getOrLoadTexture(texturePath);
 }
 
-Texture2D TextureManager::getIconTexture(const std::string& speciesName) {
-  spdlog::error("getIconTexture not implemented for species: {}", speciesName);
-  return Texture2D{0};
+void TextureManager::ensureIconSheetLoaded() {
+  if (m_iconSheetLoaded) {
+    return;
+  }
+
+  const auto iconSheetPath = m_smogonPath / "pokemon-icons.png";
+  if (!std::filesystem::exists(iconSheetPath)) {
+    spdlog::error("Icon sheet texture not found: {}", iconSheetPath.string());
+    m_iconSheetTexture = Texture2D{0};
+    return;
+  }
+
+  m_iconSheetTexture = LoadTexture(iconSheetPath.string().c_str());
+  if (m_iconSheetTexture.id > 0) {
+    spdlog::debug("Loaded icon sheet texture: {}", iconSheetPath.string());
+    m_iconSheetLoaded = true;
+  } else {
+    spdlog::error("Failed to load icon sheet texture: {}", iconSheetPath.string());
+  }
+}
+
+Texture2D TextureManager::getIconSheetTexture() {
+  ensureIconSheetLoaded();
+  return m_iconSheetTexture;
+}
+
+Rectangle TextureManager::getIconSourceRect(int iconIndex) const {
+  if (iconIndex < 0) {
+    spdlog::warn("Requested negative icon index: {}", iconIndex);
+    return {0, 0, (float)ICON_WIDTH, (float)ICON_HEIGHT};
+  }
+  const int col = iconIndex % ICONS_PER_ROW;
+  const int row = iconIndex / ICONS_PER_ROW;
+
+  return {(float)(col * ICON_WIDTH), (float)(row * ICON_HEIGHT), (float)ICON_WIDTH,
+          (float)ICON_HEIGHT};
 }
 
 bool TextureManager::ensureTrackerLoaded() {
@@ -179,7 +216,7 @@ bool TextureManager::ensureTrackerLoaded() {
   return true;
 }
 
-Texture2D TextureManager::getOrLoadTexture(const std::filesystem::path& texturePath) {
+Texture2D TextureManager::getOrLoadTexture(const std::filesystem::path &texturePath) {
   std::string pathString = texturePath.string();
 
   auto it = m_textureCache.find(pathString);

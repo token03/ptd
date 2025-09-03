@@ -15,6 +15,8 @@
 namespace {
 Texture2D testPortrait;
 bool testPortraitLoaded = false;
+int testIconIndex = -1;
+bool testIconLoaded = false;
 }  // namespace
 
 GameplayScene::GameplayScene(std::shared_ptr<TextureManager> assetManager,
@@ -46,6 +48,8 @@ void GameplayScene::Unload() {
     UnloadTexture(testPortrait);
     testPortraitLoaded = false;
   }
+  testIconIndex = -1;
+  testIconLoaded = false;
   spdlog::info("GameplayScene unloaded.");
 }
 
@@ -72,6 +76,15 @@ void GameplayScene::Draw(float deltaTime) {
     Vector2 position = {static_cast<float>(screenWidth) - texW - padding,
                         (static_cast<float>(screenHeight) - texH) / 2.0f};
     DrawTextureV(testPortrait, position, WHITE);
+
+    if (testIconLoaded) {
+      Texture2D iconSheet = m_assetManager->getIconSheetTexture();
+      if (iconSheet.id > 0) {
+        Rectangle sourceRect = m_assetManager->getIconSourceRect(testIconIndex);
+        Vector2 iconPosition = {position.x, position.y + texH + 10.0f};
+        DrawTextureRec(iconSheet, sourceRect, iconPosition, WHITE);
+      }
+    }
   }
 }
 
@@ -119,6 +132,14 @@ void GameplayScene::LoadTestData() {
     spdlog::warn("No portraits found for Clodsire ({})", clodsireDex);
   }
 
+  auto iconIndexOpt = m_dataManager->getIconIndex("clodsire");
+  if (iconIndexOpt) {
+    testIconIndex = *iconIndexOpt;
+    testIconLoaded = true;
+  } else {
+    spdlog::warn("Could not find icon index for clodsire.");
+  }
+
   auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Idle",
                                                      {100.0f, 100.0f}, {2.5f, 2.5f});
   if (randomMon) {
@@ -144,7 +165,7 @@ void GameplayScene::LoadTestData() {
       {padding, (float)screenHeight - padding},
       {(float)screenWidth - padding, (float)screenHeight - padding}};
 
-  auto& path =
+  auto &path =
       levelObject->AddComponent<PathComponent>(pathPoints, PathType::CATMULL_ROM);
   path.pathColor = RED;
 

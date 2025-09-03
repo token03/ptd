@@ -1,14 +1,16 @@
 #include "managers/DataManager.h"
 
+#include <filesystem>
 #include <glaze/glaze.hpp>
 
 #include "spdlog/spdlog.h"
 
-DataManager::DataManager(const std::string &speciesPath, const std::string &pokedexPath,
-                         const std::string &typeChartPath) {
-  loadSpecies(speciesPath);
-  loadPokedex(pokedexPath);
-  loadTypeChart(typeChartPath);
+DataManager::DataManager() {
+  const std::filesystem::path dataRoot = "data";
+  loadSpecies((dataRoot / "species.json").string());
+  loadSpeciesAlt((dataRoot / "speciesAlt.json").string());
+  loadPokedex((dataRoot / "pokedex.json").string());
+  loadTypeChart((dataRoot / "types.json").string());
 }
 
 void DataManager::loadSpecies(const std::string &path) {
@@ -19,6 +21,18 @@ void DataManager::loadSpecies(const std::string &path) {
                   glz::format_error(error, buffer));
   } else {
     spdlog::info("Successfully loaded {} entries from species.json", m_dexMap.size());
+  }
+}
+
+void DataManager::loadSpeciesAlt(const std::string &path) {
+  std::string buffer;
+  auto error = glz::read_file_json(m_speciesAltMap, path, buffer);
+  if (error) {
+    spdlog::warn("Could not load or parse speciesAlt.json from {}: {}", path,
+                 glz::format_error(error, buffer));
+  } else {
+    spdlog::info("Successfully loaded {} entries from speciesAlt.json",
+                 m_speciesAltMap.size());
   }
 }
 
@@ -63,6 +77,27 @@ std::optional<PokedexData> DataManager::getPokedexData(const std::string &id) co
     return it->second;
   }
   spdlog::warn("Pokedex data for ID '{}' not found.", id);
+  return std::nullopt;
+}
+
+std::optional<int> DataManager::getIconIndex(const std::string &speciesName) const {
+  auto it = m_dexMap.find(speciesName);
+  if (it != m_dexMap.end()) {
+    try {
+      return std::stoi(it->second);
+    } catch (const std::invalid_argument &ia) {
+      spdlog::error("Invalid dex number format for '{}': {}", speciesName, it->second);
+    } catch (const std::out_of_range &oor) {
+      spdlog::error("Dex number out of range for '{}': {}", speciesName, it->second);
+    }
+  }
+
+  auto alt_it = m_speciesAltMap.find(speciesName);
+  if (alt_it != m_speciesAltMap.end()) {
+    return alt_it->second;
+  }
+
+  spdlog::warn("Icon index for species '{}' not found in any source.", speciesName);
   return std::nullopt;
 }
 

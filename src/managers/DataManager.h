@@ -10,11 +10,11 @@
 
 class DataManager {
  public:
-  DataManager(const std::string &speciesPath, const std::string &pokedexPath,
-              const std::string &typeChartPath);
+  DataManager();
 
   std::optional<std::string> getDexNumber(const std::string &speciesName) const;
   std::optional<PokedexData> getPokedexData(const std::string &id) const;
+  std::optional<int> getIconIndex(const std::string &speciesName) const;
 
   std::shared_ptr<TypeChart> getTypeChart() const;
 
@@ -22,8 +22,10 @@ class DataManager {
   void loadSpecies(const std::string &path);
   void loadPokedex(const std::string &path);
   void loadTypeChart(const std::string &path);
+  void loadSpeciesAlt(const std::string &path);
 
   std::unordered_map<std::string, std::string> m_dexMap;
+  std::unordered_map<std::string, int> m_speciesAltMap;
   std::unordered_map<std::string, PokedexData> m_pokedex;
   std::shared_ptr<TypeChart> m_typeChart;
 };

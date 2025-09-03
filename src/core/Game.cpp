@@ -15,17 +15,11 @@ Game::Game() {}
 Game::~Game() {}
 
 void Game::Load() {
-  std::filesystem::path projectRoot = ".";
-  auto assetsPath = projectRoot / "assets";
-  auto dataPath = projectRoot / "data";
-
   // TODO: move this to like the UI manager or something
   font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 
-  m_assetManager = std::make_shared<TextureManager>(assetsPath);
-  m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
-                                                (dataPath / "pokedex.json").string(),
-                                                (dataPath / "types.json").string());
+  m_assetManager = std::make_shared<TextureManager>();
+  m_dataManager = std::make_shared<DataManager>();
 
   m_sceneManager = std::make_shared<SceneManager>();
   m_sceneManager->PushScene(
