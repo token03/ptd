@@ -75,10 +75,10 @@ bool TextureManager::loadPokemonSpriteData(const std::string& dexNumber) {
 }
 
 void TextureManager::processTrackerEntry(const std::string& dex,
-                                       const std::string& subgroupId,
-                                       const TrackerEntry& entry,
-                                       const std::string& parentName,
-                                       const std::filesystem::path& parentPath) {
+                                         const std::string& subgroupId,
+                                         const TrackerEntry& entry,
+                                         const std::string& parentName,
+                                         const std::filesystem::path& parentPath) {
   std::string currentFullName = PMDUtils::generateFullName(parentName, entry.name);
   std::filesystem::path currentRelativePath = parentPath / subgroupId;
   std::string currentFullId = PMDUtils::generateFullId(dex, currentRelativePath);
@@ -115,7 +115,7 @@ std::shared_ptr<const PMDData> TextureManager::getForm(const std::string& fullId
 }
 
 Texture2D TextureManager::getAnimationTexture(const std::string& formId,
-                                            const std::string& animationName) {
+                                              const std::string& animationName) {
   auto form = getForm(formId);
   if (!form) {
     spdlog::error("Form not found: {}", formId);
@@ -139,6 +139,25 @@ Texture2D TextureManager::getAnimationTexture(const std::string& formId,
 Texture2D TextureManager::getBackgroundTexture(const std::string& bgName) {
   std::filesystem::path texturePath = m_backgroudPath / (bgName + ".png");
   return getOrLoadTexture(texturePath);
+}
+
+Texture2D TextureManager::getPortraitTexture(const std::string& formId,
+                                             const std::string& portraitName) {
+  auto form = getForm(formId);
+  if (!form) {
+    spdlog::error("Form not found for portrait: {}", formId);
+    return Texture2D{0};
+  }
+
+  std::filesystem::path texturePath =
+      m_portraitPath / form->dex / form->formPath / (portraitName + ".png");
+
+  return getOrLoadTexture(texturePath);
+}
+
+Texture2D TextureManager::getIconTexture(const std::string& speciesName) {
+  spdlog::error("getIconTexture not implemented for species: {}", speciesName);
+  return Texture2D{0};
 }
 
 bool TextureManager::ensureTrackerLoaded() {

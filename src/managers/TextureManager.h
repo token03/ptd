@@ -22,6 +22,9 @@ class TextureManager {
   Texture2D getAnimationTexture(const std::string& formId,
                                 const std::string& animationName);
   Texture2D getBackgroundTexture(const std::string& bgName);
+  Texture2D getPortraitTexture(const std::string& formId,
+                               const std::string& portraitName);
+  Texture2D getIconTexture(const std::string& speciesName);
 
  private:
   void processTrackerEntry(const std::string& dex, const std::string& subgroupId,

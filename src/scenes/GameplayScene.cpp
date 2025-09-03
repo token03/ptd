@@ -6,11 +6,16 @@
 #include "core/GameObject.h"
 #include "factories/MobFactory.h"
 #include "factories/TowerFactory.h"
-#include "managers/TextureManager.h"
 #include "managers/DataManager.h"
 #include "managers/SceneManager.h"
+#include "managers/TextureManager.h"
 #include "scenes/PauseScene.h"
 #include "spdlog/spdlog.h"
+
+namespace {
+Texture2D testPortrait;
+bool testPortraitLoaded = false;
+}  // namespace
 
 GameplayScene::GameplayScene(std::shared_ptr<TextureManager> assetManager,
                              std::shared_ptr<DataManager> dataManager)
@@ -37,6 +42,10 @@ void GameplayScene::Unload() {
   m_gameObjects.clear();
   m_spawnQueue.clear();
   m_backgroundLoaded = false;
+  if (testPortraitLoaded) {
+    UnloadTexture(testPortrait);
+    testPortraitLoaded = false;
+  }
   spdlog::info("GameplayScene unloaded.");
 }
 
@@ -55,6 +64,15 @@ void GameplayScene::Draw(float deltaTime) {
   DrawBackground();
 
   Scene::Draw(deltaTime);
+
+  if (testPortraitLoaded) {
+    float padding = 20.0f;
+    float texW = static_cast<float>(testPortrait.width);
+    float texH = static_cast<float>(testPortrait.height);
+    Vector2 position = {static_cast<float>(screenWidth) - texW - padding,
+                        (static_cast<float>(screenHeight) - texH) / 2.0f};
+    DrawTextureV(testPortrait, position, WHITE);
+  }
 }
 
 void GameplayScene::DrawBackground() const {
@@ -79,18 +97,27 @@ void GameplayScene::DrawBackground() const {
 }
 
 void GameplayScene::LoadTestData() {
-  PokemonInstance slowkingConfig;
-  slowkingConfig.level = 50;
-  slowkingConfig.nature = Nature::MODEST;
-  slowkingConfig.ivs = {25, 10, 31, 31, 31, 15};
-  slowkingConfig.gender = Gender::Male;
-
-  auto manualMon = m_towerFactory->CreateTower(
-      "clodsire", slowkingConfig, "Idle",
+  auto exampleTower = m_towerFactory->CreateRandomTower(
+      "clodsire", 50, 100, "Idle",
       {(float)screenWidth / 2.0f, (float)screenHeight / 2.0f}, {2.0f, 2.0f});
 
-  manualMon->GetComponent<AnimationComponent>().SetDirection(Direction::West);
-  AddGameObject(manualMon);
+  exampleTower->GetComponent<AnimationComponent>().SetDirection(Direction::West);
+  AddGameObject(exampleTower);
+
+  const std::string clodsireDex = m_dataManager->getDexNumber("clodsire").value();
+  m_assetManager->loadPokemonSpriteData(clodsireDex);
+  auto clodsireForm = m_assetManager->getForm(clodsireDex);
+  if (clodsireForm && !clodsireForm->availablePortraits.empty()) {
+    std::string portraitName = *clodsireForm->availablePortraits.begin();
+    testPortrait = m_assetManager->getPortraitTexture(clodsireDex, portraitName);
+    if (testPortrait.id > 0) {
+      testPortraitLoaded = true;
+    } else {
+      spdlog::warn("Failed to load clodsire portrait '{}'", portraitName);
+    }
+  } else {
+    spdlog::warn("No portraits found for Clodsire ({})", clodsireDex);
+  }
 
   auto randomMon = m_towerFactory->CreateRandomTower("slowking", 5, 10, "Idle",
                                                      {100.0f, 100.0f}, {2.5f, 2.5f});
