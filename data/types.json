@@ -1,204 +1,212 @@
 [
   {
-    "type": "FIRE",
+    "type": "Normal",
     "effectiveness": [
-      { "against": "GRASS", "value": 2.0 },
-      { "against": "WATER", "value": 0.5 },
-      { "against": "FIRE", "value": 0.5 },
-      { "against": "ICE", "value": 2.0 },
-      { "against": "BUG", "value": 2.0 },
-      { "against": "ROCK", "value": 0.5 },
-      { "against": "DRAGON", "value": 0.5 },
-      { "against": "STEEL", "value": 2.0 }
+      { "against": "Rock", "value": 0.5 },
+      { "against": "Ghost", "value": 0.0 },
+      { "against": "Steel", "value": 0.5 }
     ]
   },
   {
-    "type": "WATER",
+    "type": "Fire",
     "effectiveness": [
-      { "against": "FIRE", "value": 2.0 },
-      { "against": "WATER", "value": 0.5 },
-      { "against": "GRASS", "value": 0.5 },
-      { "against": "GROUND", "value": 2.0 },
-      { "against": "ROCK", "value": 2.0 },
-      { "against": "DRAGON", "value": 0.5 }
+      { "against": "Grass", "value": 2.0 },
+      { "against": "Water", "value": 0.5 },
+      { "against": "Fire", "value": 0.5 },
+      { "against": "Ice", "value": 2.0 },
+      { "against": "Bug", "value": 2.0 },
+      { "against": "Rock", "value": 0.5 },
+      { "against": "Dragon", "value": 0.5 },
+      { "against": "Steel", "value": 2.0 }
     ]
   },
   {
-    "type": "GRASS",
+    "type": "Water",
     "effectiveness": [
-      { "against": "FIRE", "value": 0.5 },
-      { "against": "WATER", "value": 2.0 },
-      { "against": "GRASS", "value": 0.5 },
-      { "against": "POISON", "value": 0.5 },
-      { "against": "GROUND", "value": 2.0 },
-      { "against": "FLYING", "value": 0.5 },
-      { "against": "BUG", "value": 0.5 },
-      { "against": "ROCK", "value": 2.0 },
-      { "against": "DRAGON", "value": 0.5 },
-      { "against": "STEEL", "value": 0.5 }
+      { "against": "Fire", "value": 2.0 },
+      { "against": "Water", "value": 0.5 },
+      { "against": "Grass", "value": 0.5 },
+      { "against": "Ground", "value": 2.0 },
+      { "against": "Rock", "value": 2.0 },
+      { "against": "Dragon", "value": 0.5 }
     ]
   },
   {
-    "type": "ELECTRIC",
+    "type": "Grass",
     "effectiveness": [
-      { "against": "WATER", "value": 2.0 },
-      { "against": "ELECTRIC", "value": 0.5 },
-      { "against": "GRASS", "value": 0.5 },
-      { "against": "GROUND", "value": 0.0 },
-      { "against": "FLYING", "value": 2.0 },
-      { "against": "DRAGON", "value": 0.5 }
+      { "against": "Fire", "value": 0.5 },
+      { "against": "Water", "value": 2.0 },
+      { "against": "Grass", "value": 0.5 },
+      { "against": "Poison", "value": 0.5 },
+      { "against": "Ground", "value": 2.0 },
+      { "against": "Flying", "value": 0.5 },
+      { "against": "Bug", "value": 0.5 },
+      { "against": "Rock", "value": 2.0 },
+      { "against": "Dragon", "value": 0.5 },
+      { "against": "Steel", "value": 0.5 }
     ]
   },
   {
-    "type": "ICE",
+    "type": "Electric",
     "effectiveness": [
-      { "against": "FIRE", "value": 0.5 },
-      { "against": "WATER", "value": 0.5 },
-      { "against": "GRASS", "value": 2.0 },
-      { "against": "ICE", "value": 0.5 },
-      { "against": "GROUND", "value": 2.0 },
-      { "against": "FLYING", "value": 2.0 },
-      { "against": "DRAGON", "value": 2.0 },
-      { "against": "STEEL", "value": 0.5 }
+      { "against": "Water", "value": 2.0 },
+      { "against": "Electric", "value": 0.5 },
+      { "against": "Grass", "value": 0.5 },
+      { "against": "Ground", "value": 0.0 },
+      { "against": "Flying", "value": 2.0 },
+      { "against": "Dragon", "value": 0.5 }
     ]
   },
   {
-    "type": "FIGHTING",
+    "type": "Ice",
     "effectiveness": [
-      { "against": "NORMAL", "value": 2.0 },
-      { "against": "ICE", "value": 2.0 },
-      { "against": "POISON", "value": 0.5 },
-      { "against": "FLYING", "value": 0.5 },
-      { "against": "PSYCHIC", "value": 0.5 },
-      { "against": "BUG", "value": 0.5 },
-      { "against": "ROCK", "value": 2.0 },
-      { "against": "GHOST", "value": 0.0 },
-      { "against": "DARK", "value": 2.0 },
-      { "against": "STEEL", "value": 2.0 },
-      { "against": "FAIRY", "value": 0.5 }
+      { "against": "Fire", "value": 0.5 },
+      { "against": "Water", "value": 0.5 },
+      { "against": "Grass", "value": 2.0 },
+      { "against": "Ice", "value": 0.5 },
+      { "against": "Ground", "value": 2.0 },
+      { "against": "Flying", "value": 2.0 },
+      { "against": "Dragon", "value": 2.0 },
+      { "against": "Steel", "value": 0.5 }
     ]
   },
   {
-    "type": "POISON",
+    "type": "Fighting",
     "effectiveness": [
-      { "against": "GRASS", "value": 2.0 },
-      { "against": "POISON", "value": 0.5 },
-      { "against": "GROUND", "value": 0.5 },
-      { "against": "ROCK", "value": 0.5 },
-      { "against": "GHOST", "value": 0.5 },
-      { "against": "STEEL", "value": 0.0 },
-      { "against": "FAIRY", "value": 2.0 }
+      { "against": "Normal", "value": 2.0 },
+      { "against": "Ice", "value": 2.0 },
+      { "against": "Poison", "value": 0.5 },
+      { "against": "Flying", "value": 0.5 },
+      { "against": "Psychic", "value": 0.5 },
+      { "against": "Bug", "value": 0.5 },
+      { "against": "Rock", "value": 2.0 },
+      { "against": "Ghost", "value": 0.0 },
+      { "against": "Dark", "value": 2.0 },
+      { "against": "Steel", "value": 2.0 },
+      { "against": "Fairy", "value": 0.5 }
     ]
   },
   {
-    "type": "GROUND",
+    "type": "Poison",
     "effectiveness": [
-      { "against": "FIRE", "value": 2.0 },
-      { "against": "ELECTRIC", "value": 2.0 },
-      { "against": "GRASS", "value": 0.5 },
-      { "against": "POISON", "value": 2.0 },
-      { "against": "FLYING", "value": 0.0 },
-      { "against": "BUG", "value": 0.5 },
-      { "against": "ROCK", "value": 2.0 },
-      { "against": "STEEL", "value": 2.0 }
+      { "against": "Grass", "value": 2.0 },
+      { "against": "Poison", "value": 0.5 },
+      { "against": "Ground", "value": 0.5 },
+      { "against": "Rock", "value": 0.5 },
+      { "against": "Ghost", "value": 0.5 },
+      { "against": "Steel", "value": 0.0 },
+      { "against": "Fairy", "value": 2.0 }
     ]
   },
   {
-    "type": "FLYING",
+    "type": "Ground",
     "effectiveness": [
-      { "against": "ELECTRIC", "value": 0.5 },
-      { "against": "GRASS", "value": 2.0 },
-      { "against": "FIGHTING", "value": 2.0 },
-      { "against": "BUG", "value": 2.0 },
-      { "against": "ROCK", "value": 0.5 },
-      { "against": "STEEL", "value": 0.5 }
+      { "against": "Fire", "value": 2.0 },
+      { "against": "Electric", "value": 2.0 },
+      { "against": "Grass", "value": 0.5 },
+      { "against": "Poison", "value": 2.0 },
+      { "against": "Flying", "value": 0.0 },
+      { "against": "Bug", "value": 0.5 },
+      { "against": "Rock", "value": 2.0 },
+      { "against": "Steel", "value": 2.0 }
     ]
   },
   {
-    "type": "PSYCHIC",
+    "type": "Flying",
     "effectiveness": [
-      { "against": "FIGHTING", "value": 2.0 },
-      { "against": "POISON", "value": 2.0 },
-      { "against": "PSYCHIC", "value": 0.5 },
-      { "against": "DARK", "value": 0.0 },
-      { "against": "STEEL", "value": 0.5 }
+      { "against": "Electric", "value": 0.5 },
+      { "against": "Grass", "value": 2.0 },
+      { "against": "Fighting", "value": 2.0 },
+      { "against": "Bug", "value": 2.0 },
+      { "against": "Rock", "value": 0.5 },
+      { "against": "Steel", "value": 0.5 }
     ]
   },
   {
-    "type": "BUG",
+    "type": "Psychic",
     "effectiveness": [
-      { "against": "FIRE", "value": 0.5 },
-      { "against": "GRASS", "value": 2.0 },
-      { "against": "FIGHTING", "value": 0.5 },
-      { "against": "POISON", "value": 0.5 },
-      { "against": "FLYING", "value": 0.5 },
-      { "against": "PSYCHIC", "value": 2.0 },
-      { "against": "GHOST", "value": 0.5 },
-      { "against": "DARK", "value": 2.0 },
-      { "against": "STEEL", "value": 0.5 },
-      { "against": "FAIRY", "value": 0.5 }
+      { "against": "Fighting", "value": 2.0 },
+      { "against": "Poison", "value": 2.0 },
+      { "against": "Psychic", "value": 0.5 },
+      { "against": "Dark", "value": 0.0 },
+      { "against": "Steel", "value": 0.5 }
     ]
   },
   {
-    "type": "ROCK",
+    "type": "Bug",
     "effectiveness": [
-      { "against": "FIRE", "value": 2.0 },
-      { "against": "ICE", "value": 2.0 },
-      { "against": "FIGHTING", "value": 0.5 },
-      { "against": "GROUND", "value": 0.5 },
-      { "against": "FLYING", "value": 2.0 },
-      { "against": "BUG", "value": 2.0 },
-      { "against": "STEEL", "value": 0.5 }
+      { "against": "Fire", "value": 0.5 },
+      { "against": "Grass", "value": 2.0 },
+      { "against": "Fighting", "value": 0.5 },
+      { "against": "Poison", "value": 0.5 },
+      { "against": "Flying", "value": 0.5 },
+      { "against": "Psychic", "value": 2.0 },
+      { "against": "Ghost", "value": 0.5 },
+      { "against": "Dark", "value": 2.0 },
+      { "against": "Steel", "value": 0.5 },
+      { "against": "Fairy", "value": 0.5 }
     ]
   },
   {
-    "type": "GHOST",
+    "type": "Rock",
     "effectiveness": [
-      { "against": "NORMAL", "value": 0.0 },
-      { "against": "PSYCHIC", "value": 2.0 },
-      { "against": "GHOST", "value": 2.0 },
-      { "against": "DARK", "value": 0.5 }
+      { "against": "Fire", "value": 2.0 },
+      { "against": "Ice", "value": 2.0 },
+      { "against": "Fighting", "value": 0.5 },
+      { "against": "Ground", "value": 0.5 },
+      { "against": "Flying", "value": 2.0 },
+      { "against": "Bug", "value": 2.0 },
+      { "against": "Steel", "value": 0.5 }
     ]
   },
   {
-    "type": "DRAGON",
+    "type": "Ghost",
     "effectiveness": [
-      { "against": "DRAGON", "value": 2.0 },
-      { "against": "STEEL", "value": 0.5 },
-      { "against": "FAIRY", "value": 0.0 }
+      { "against": "Normal", "value": 0.0 },
+      { "against": "Psychic", "value": 2.0 },
+      { "against": "Ghost", "value": 2.0 },
+      { "against": "Dark", "value": 0.5 }
     ]
   },
   {
-    "type": "DARK",
+    "type": "Dragon",
     "effectiveness": [
-      { "against": "FIGHTING", "value": 0.5 },
-      { "against": "PSYCHIC", "value": 2.0 },
-      { "against": "GHOST", "value": 2.0 },
-      { "against": "DARK", "value": 0.5 },
-      { "against": "FAIRY", "value": 0.5 }
+      { "against": "Dragon", "value": 2.0 },
+      { "against": "Steel", "value": 0.5 },
+      { "against": "Fairy", "value": 0.0 }
     ]
   },
   {
-    "type": "STEEL",
+    "type": "Dark",
     "effectiveness": [
-      { "against": "FIRE", "value": 0.5 },
-      { "against": "WATER", "value": 0.5 },
-      { "against": "ELECTRIC", "value": 0.5 },
-      { "against": "ICE", "value": 2.0 },
-      { "against": "ROCK", "value": 2.0 },
-      { "against": "STEEL", "value": 0.5 },
-      { "against": "FAIRY", "value": 2.0 }
+      { "against": "Fighting", "value": 0.5 },
+      { "against": "Psychic", "value": 2.0 },
+      { "against": "Ghost", "value": 2.0 },
+      { "against": "Dark", "value": 0.5 },
+      { "against": "Fairy", "value": 0.5 }
     ]
   },
   {
-    "type": "FAIRY",
+    "type": "Steel",
     "effectiveness": [
-      { "against": "FIRE", "value": 0.5 },
-      { "against": "FIGHTING", "value": 2.0 },
-      { "against": "POISON", "value": 0.5 },
-      { "against": "DRAGON", "value": 2.0 },
-      { "against": "DARK", "value": 2.0 },
-      { "against": "STEEL", "value": 0.5 }
+      { "against": "Fire", "value": 0.5 },
+      { "against": "Water", "value": 0.5 },
+      { "against": "Electric", "value": 0.5 },
+      { "against": "Ice", "value": 2.0 },
+      { "against": "Rock", "value": 2.0 },
+      { "against": "Steel", "value": 0.5 },
+      { "against": "Fairy", "value": 2.0 }
+    ]
+  },
+  {
+    "type": "Fairy",
+    "effectiveness": [
+      { "against": "Fire", "value": 0.5 },
+      { "against": "Fighting", "value": 2.0 },
+      { "against": "Poison", "value": 0.5 },
+      { "against": "Dragon", "value": 2.0 },
+      { "against": "Dark", "value": 2.0 },
+      { "against": "Steel", "value": 0.5 }
     ]
   }
 ]

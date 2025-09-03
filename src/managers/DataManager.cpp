@@ -4,9 +4,10 @@
 
 #include "spdlog/spdlog.h"
 
-DataManager::DataManager(const std::string &speciesPath,
+DataManager::DataManager(const std::string &speciesPath, const std::string &pokedexPath,
                          const std::string &typeChartPath) {
   loadSpecies(speciesPath);
+  loadPokedex(pokedexPath);
   loadTypeChart(typeChartPath);
 }
 
@@ -21,13 +22,24 @@ void DataManager::loadSpecies(const std::string &path) {
   }
 }
 
+void DataManager::loadPokedex(const std::string &path) {
+  std::string buffer;
+  auto error = glz::read_file_json(m_pokedex, path, buffer);
+  if (error) {
+    spdlog::error("Failed to load or parse pokedex.json from {}: {}", path,
+                  glz::format_error(error, buffer));
+  } else {
+    spdlog::info("Successfully loaded {} entries from pokedex.json", m_pokedex.size());
+  }
+}
+
 void DataManager::loadTypeChart(const std::string &path) {
   std::vector<TypeData> rawTypeData;
   std::string buffer;
   auto error = glz::read_file_json(rawTypeData, path, buffer);
 
   if (error) {
-    spdlog::error("Failed to load or parse type_chart.json from {}: {}", path,
+    spdlog::error("Failed to load or parse types.json from {}: {}", path,
                   glz::format_error(error, buffer));
   } else {
     m_typeChart = std::make_shared<TypeChart>(rawTypeData);
@@ -45,12 +57,13 @@ std::optional<std::string> DataManager::getDexNumber(
   return std::nullopt;
 }
 
-std::optional<SpeciesData> DataManager::getSpeciesData(const std::string &formId) const {
-  spdlog::warn("Returning generic sample species data for formId: {}", formId);
-  return SpeciesData{formId,
-                     "Unknown",
-                     {PokemonType::WATER, PokemonType::PSYCHIC},
-                     {95, 75, 80, 100, 110, 30}};
+std::optional<PokedexData> DataManager::getPokedexData(const std::string &id) const {
+  auto it = m_pokedex.find(id);
+  if (it != m_pokedex.end()) {
+    return it->second;
+  }
+  spdlog::warn("Pokedex data for ID '{}' not found.", id);
+  return std::nullopt;
 }
 
 std::shared_ptr<TypeChart> DataManager::getTypeChart() const { return m_typeChart; }

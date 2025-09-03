@@ -62,20 +62,20 @@ StatComponent::StatComponent(int initialLevel, Stats initialIVs, Stats initialEV
       speed(0) {}
 
 void StatComponent::Init() {
-  assignRequiredComponent(m_species, m_traits);
+  assignRequiredComponent(m_pokedex, m_traits);
   CalculateStats();
 }
 
 void StatComponent::CalculateStats() {
-  auto species = m_species.lock();
+  auto pokedex = m_pokedex.lock();
   auto traits = m_traits.lock();
 
-  if (!species || !traits) {
+  if (!pokedex || !traits) {
     spdlog::error("Cannot calculate stats, required components are missing!");
     return;
   }
 
-  const Stats &base = species->baseStats;
+  const Stats &base = pokedex->data.baseStats;
 
   maxHp = (((2 * base.hp + m_ivs.hp + (m_evs.hp / 4)) * level) / 100) + level + 10;
 
@@ -95,7 +95,7 @@ void StatComponent::CalculateStats() {
 
   currentHp = maxHp;
 
-  spdlog::info("{} at level {} has {} HP, {} ATK.", species->speciesName, level, maxHp,
+  spdlog::info("{} at level {} has {} HP, {} ATK.", pokedex->data.name, level, maxHp,
                attack);
 }
 

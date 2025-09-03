@@ -4,8 +4,8 @@
 
 #include <filesystem>
 
-#include "managers/TextureManager.h"
 #include "managers/DataManager.h"
+#include "managers/TextureManager.h"
 #include "raylib.h"
 #include "rlImGui.h"
 #include "scenes/GameplayScene.h"
@@ -24,6 +24,7 @@ void Game::Load() {
 
   m_assetManager = std::make_shared<TextureManager>(assetsPath);
   m_dataManager = std::make_shared<DataManager>((dataPath / "species.json").string(),
+                                                (dataPath / "pokedex.json").string(),
                                                 (dataPath / "types.json").string());
 
   m_sceneManager = std::make_shared<SceneManager>();

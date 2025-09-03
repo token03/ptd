@@ -14,6 +14,6 @@ template <>
 struct glz::meta<Stats> {
   using T = Stats;
   static constexpr auto value =
-      glz::object("hp", &T::hp, "attack", &T::attack, "defense", &T::defense, "spAttack",
-                  &T::spAttack, "spDefense", &T::spDefense, "speed", &T::speed);
+      glz::object("hp", &T::hp, "atk", &T::attack, "def", &T::defense, "spa",
+                  &T::spAttack, "spd", &T::spDefense, "spe", &T::speed);
 };

@@ -3,9 +3,10 @@
 #include "components/graphics/AnimationComponent.h"
 #include "components/graphics/SpriteComponent.h"
 #include "components/physics/TransformComponent.h"
-#include "components/pokemon/SpeciesComponent.h"
+#include "components/pokemon/PokedexComponent.h"
 #include "components/pokemon/StatComponent.h"
 #include "components/pokemon/TraitsComponent.h"
+#include "data/PokedexData.h"
 #include "raylib.h"
 #include "spdlog/spdlog.h"
 
@@ -23,23 +24,23 @@ std::shared_ptr<GameObject> BasePokemonFactory::CreatePokemonObject(
 
   auto dexNumOpt = m_dataManager->getDexNumber(speciesName);
   if (!dexNumOpt) {
-    spdlog::error("Could not find dex number for species '{}'.", speciesName);
+    spdlog::error("Could not find ID for species '{}'.", speciesName);
     return nullptr;
   }
   const std::string &dexNumber = *dexNumOpt;
 
-  auto speciesDataOpt = m_dataManager->getSpeciesData(dexNumber);
-  if (!speciesDataOpt) {
-    spdlog::error("Could not find species data for dex number: {}", dexNumber);
+  auto pokedexDataOpt = m_dataManager->getPokedexData(speciesName);
+  if (!pokedexDataOpt) {
+    spdlog::error("Could not find species data for ID: {}", speciesName);
     return nullptr;
   }
-  const SpeciesData &speciesData = *speciesDataOpt;
+  const PokedexData &pokedexData = *pokedexDataOpt;
 
   m_assetManager->loadPokemonSpriteData(dexNumber);
   const auto form = m_assetManager->getForm(dexNumber);
   if (!form || !form->animData) {
     spdlog::error(
-        "Could not create GameObject for dex number: {}. PMD form "
+        "Could not create GameObject for ID: {}. PMD form "
         "data not loaded or has no animations.",
         dexNumber);
     return nullptr;
@@ -56,7 +57,7 @@ std::shared_ptr<GameObject> BasePokemonFactory::CreatePokemonObject(
   gameObject->AddComponent<TransformComponent>(position, scale);
   gameObject->AddComponent<SpriteComponent>(texture);
   gameObject->AddComponent<AnimationComponent>(m_assetManager, dexNumber);
-  gameObject->AddComponent<SpeciesComponent>(speciesData);
+  gameObject->AddComponent<PokedexComponent>(pokedexData);
   gameObject->AddComponent<TraitsComponent>(config.nature, config.gender, config.isShiny);
   gameObject->AddComponent<StatComponent>(config.level, config.ivs, config.evs);
   gameObject->GetComponent<AnimationComponent>().Play(initialAnimation);

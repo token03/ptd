@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "components/pokemon/SpeciesComponent.h"
+#include "components/pokemon/PokedexComponent.h"
 #include "components/pokemon/TraitsComponent.h"
 #include "core/Component.h"
 #include "data/Stats.h"
@@ -25,6 +25,6 @@ class StatComponent : public Component {
   Stats m_ivs;
   Stats m_evs;
 
-  std::weak_ptr<SpeciesComponent> m_species;
+  std::weak_ptr<PokedexComponent> m_pokedex;
   std::weak_ptr<TraitsComponent> m_traits;
 };

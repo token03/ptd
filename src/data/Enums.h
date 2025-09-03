@@ -3,7 +3,6 @@
 #include <glaze/glaze.hpp>
 
 enum class PokemonType {
-  NONE,
   NORMAL,
   FIRE,
   WATER,
@@ -21,17 +20,37 @@ enum class PokemonType {
   DRAGON,
   DARK,
   STEEL,
-  FAIRY
+  FAIRY,
+  BIRD,
 };
 
 template <>
 struct glz::meta<PokemonType> {
   using enum PokemonType;
-  static constexpr auto value =
-      enumerate(NONE, NORMAL, FIRE, WATER, GRASS, ELECTRIC, ICE, FIGHTING, POISON, GROUND,
-                FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, DARK, STEEL, FAIRY);
+  static constexpr auto value = enumerate(
+      // clang-format off
+      "Normal", NORMAL, 
+      "Fire", FIRE, 
+      "Water", WATER, 
+      "Grass", GRASS, 
+      "Electric", ELECTRIC, 
+      "Ice", ICE, 
+      "Fighting", FIGHTING, 
+      "Poison", POISON, 
+      "Ground", GROUND,
+      "Flying", FLYING, 
+      "Psychic", PSYCHIC, 
+      "Bug", BUG, 
+      "Rock", ROCK, 
+      "Ghost", GHOST,
+      "Dragon", DRAGON, 
+      "Dark", DARK, 
+      "Steel", STEEL, 
+      "Fairy", FAIRY,
+      "Bird", BIRD
+      // clang-format on
+  );
 };
-
 enum class Gender { Male, Female, Genderless };
 
 enum class Nature {
