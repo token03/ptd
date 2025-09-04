@@ -13,16 +13,24 @@ Game::Game() {}
 Game::~Game() {}
 
 void Game::Load() {
-  SetTraceLogLevel(LOG_ERROR);
-  // TODO: move this to like the UI manager or something
-  font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
+  m_configManager = std::make_shared<ConfigManager>();
+
+  InitWindow(m_configManager->getScreenWidth(), m_configManager->getScreenHeight(),
+             "ptd");
 
   m_dataManager = std::make_shared<DataManager>();
   m_textureManager = std::make_shared<TextureManager>(m_dataManager);
-
   m_sceneManager = std::make_shared<SceneManager>();
+
   m_sceneManager->PushScene(
       std::make_shared<GameplayScene>(m_textureManager, m_dataManager));
+
+  rlImGuiSetup(true);
+  SetTargetFPS(60);
+
+  SetTraceLogLevel(LOG_ERROR);
+
+  font = LoadFontEx("assets/font/Truth And Ideals-Shadow.ttf", 32, 0, 256);
 }
 
 void Game::Update(float deltaTime) { m_sceneManager->Update(deltaTime); }
@@ -44,11 +52,6 @@ void Game::Draw(float deltaTime) {
 }
 
 int Game::Run() {
-  InitWindow(screenWidth, screenHeight, "ptd");
-  rlImGuiSetup(true);
-
-  SetTargetFPS(60);
-
   Load();
 
   while (!WindowShouldClose()) {

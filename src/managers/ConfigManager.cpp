@@ -7,7 +7,8 @@
 
 ConfigManager::ConfigManager() {
   m_config = std::make_unique<ConfigData>();
-  loadConfig("config.json");
+  const std::filesystem::path dataRoot = "data";
+  loadConfig(dataRoot / "config.json");
 }
 
 ConfigManager::~ConfigManager() = default;
@@ -28,11 +29,6 @@ void ConfigManager::loadConfig(const std::string &path) {
   } else {
     spdlog::info("Successfully loaded config from {}", path);
   }
-}
-
-Vector2 ConfigManager::getScreenSize() {
-  return {static_cast<float>(m_config->screenWidth),
-          static_cast<float>(m_config->screenHeight)};
 }
 
 int ConfigManager::getScreenWidth() { return m_config->screenWidth; }

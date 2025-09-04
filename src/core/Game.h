@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "managers/ConfigManager.h"
 #include "managers/SceneManager.h"
 #include "raylib.h"
 
@@ -27,4 +28,5 @@ class Game {
   std::shared_ptr<TextureManager> m_textureManager;
   std::shared_ptr<DataManager> m_dataManager;
   std::shared_ptr<SceneManager> m_sceneManager;
+  std::shared_ptr<ConfigManager> m_configManager;
 };

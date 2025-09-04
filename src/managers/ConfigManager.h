@@ -11,7 +11,6 @@ class ConfigManager {
   ConfigManager();
   ~ConfigManager();
 
-  Vector2 getScreenSize();
   int getScreenWidth();
   int getScreenHeight();
 
